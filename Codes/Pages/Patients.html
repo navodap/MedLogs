@@ -1,1 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patient / Victim Management</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo"><i data-lucide="shield-plus"></i></div>
+      <div>
+        <h2>Forensic Medical Department</h2>
+        <p>Management System</p>
+      </div>
+    </div>
 
+    <nav>
+      <a><i data-lucide="layout-dashboard"></i>Dashboard</a>
+      <a class="active"><i data-lucide="users"></i>Patient/Victim Management</a>
+      <a><i data-lucide="folder"></i>Case Management</a>
+      <a><i data-lucide="stethoscope"></i>Clinical Cases</a>
+      <a><i data-lucide="skull"></i>Postmortem Cases</a>
+      <a><i data-lucide="landmark"></i>Examinations</a>
+      <a><i data-lucide="flask-conical"></i>Evidence & Samples</a>
+      <a><i data-lucide="file-text"></i>Reports</a>
+      <a><i data-lucide="scale"></i>Court & Police</a>
+      <a><i data-lucide="user-round"></i>Staff</a>
+      <a><i data-lucide="users-round"></i>Users</a>
+      <a><i data-lucide="settings"></i>Settings</a>
+    </nav>
+
+    <div class="motto">
+      <i data-lucide="shield-check"></i>
+      <span>Forensic Integrity. Medical Excellence. Justice Served.</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="search">
+        <i data-lucide="search"></i>
+        <input type="text" placeholder="Search cases, patients, reports..." />
+        <kbd>Ctrl + K</kbd>
+      </div>
+
+      <div class="profile">
+        <div class="bell">
+          <i data-lucide="bell"></i>
+          <span>5</span>
+        </div>
+        <img src="https://i.pravatar.cc/80?img=12" alt="doctor" />
+        <div>
+          <strong>Dr. Arjun Patel</strong>
+          <p>Forensic Medical Officer</p>
+        </div>
+        <i data-lucide="chevron-down"></i>
+      </div>
+    </header>
+
+    <section class="page">
+      <div class="title">
+        <h1>Patient / Victim Management</h1>
+        <p>Register, view, update, and manage patient and victim records linked to forensic cases. Authorized users only.</p>
+      </div>
+
+      <section class="stats">
+        <div class="stat blue">
+          <i data-lucide="users"></i>
+          <div>
+            <p>Total Registered</p>
+            <h3>3,248</h3>
+            <span>↗ 12.4% from last month</span>
+          </div>
+        </div>
+
+        <div class="stat green">
+          <i data-lucide="heart-pulse"></i>
+          <div>
+            <p>Living Victims</p>
+            <h3>2,116</h3>
+            <span>↗ 8.7% from last month</span>
+          </div>
+        </div>
+
+        <div class="stat purple">
+          <i data-lucide="activity"></i>
+          <div>
+            <p>Deceased Persons</p>
+            <h3>1,132</h3>
+            <span>↗ 9.3% from last month</span>
+          </div>
+        </div>
+
+        <div class="stat orange">
+          <i data-lucide="briefcase-medical"></i>
+          <div>
+            <p>Linked Forensic Cases</p>
+            <h3>4,982</h3>
+            <span>↗ 14.1% from last month</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="content">
+        <div class="panel list-panel">
+          <div class="panel-title">
+            <h2><i data-lucide="users"></i>Patient / Victim List</h2>
+          </div>
+
+          <div class="filters">
+            <div class="input">
+              <input id="searchInput" type="text" placeholder="Search by name, ID, NIC, or hospital no..." />
+              <i data-lucide="search"></i>
+            </div>
+
+            <select id="statusFilter">
+              <option value="">All Status</option>
+              <option>Living Victim</option>
+              <option>Deceased Person</option>
+            </select>
+
+            <select>
+              <option>All Gender</option>
+              <option>Male</option>
+              <option>Female</option>
+            </select>
+
+            <select>
+              <option>All Case Type</option>
+              <option>Clinical</option>
+              <option>Postmortem</option>
+            </select>
+
+            <button class="primary"><i data-lucide="plus"></i>Add Patient / Victim</button>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Patient ID</th>
+                <th>Full Name</th>
+                <th>NIC / Passport</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Status</th>
+                <th>Hospital No</th>
+                <th>Linked Cases</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="patientTable"></tbody>
+          </table>
+
+          <div class="pagination">
+            <p>Showing 1 to 10 of 120 records</p>
+            <div>
+              <button><i data-lucide="chevron-left"></i></button>
+              <button class="selected">1</button>
+              <button>2</button>
+              <button>3</button>
+              <button>4</button>
+              <button>5</button>
+              <span>...</span>
+              <button>12</button>
+              <button><i data-lucide="chevron-right"></i></button>
+            </div>
+            <label>Rows per page <select><option>10</option></select></label>
+          </div>
+        </div>
+
+        <aside class="right-col">
+          <div class="panel detail-panel">
+            <div class="detail-head">
+              <h2><i data-lucide="user"></i>Patient / Victim Details</h2>
+              <span class="badge living">Living Victim</span>
+            </div>
+
+            <h3>PV-2026-000128</h3>
+
+            <div class="detail-grid">
+              <div class="mini">
+                <h4><i data-lucide="paperclip"></i>Personal Details</h4>
+                <p><b>Full Name</b> Ravi Kumar</p>
+                <p><b>NIC / Passport</b> 200012345678</p>
+                <p><b>Date of Birth</b> 12 Jan 1998</p>
+                <p><b>Age</b> 28 Years</p>
+                <p><b>Gender</b> Male</p>
+              </div>
+
+              <div class="mini">
+                <h4><i data-lucide="contact"></i>Contact Details</h4>
+                <p><b>Address</b> No. 45, Main Street, Colombo 07</p>
+                <p><b>Contact Number</b> 0777 123 456</p>
+                <p><b>Next of Kin</b> Suresh Kumar</p>
+                <p><b>Contact</b> 0712 654 321</p>
+              </div>
+
+              <div class="mini">
+                <h4><i data-lucide="hospital"></i>Hospital Details</h4>
+                <p><b>Hospital Number</b> BHT-26-01456</p>
+                <p><b>Ward</b> Ward 38</p>
+                <p><b>Admission Date</b> 24 May 2026</p>
+              </div>
+
+              <div class="mini">
+                <h4><i data-lucide="map"></i>Demographic Details</h4>
+                <p><b>Nationality</b> Sri Lankan</p>
+                <p><b>Ethnicity</b> Sinhalese</p>
+              </div>
+
+              <div class="mini">
+                <h4><i data-lucide="shield-check"></i>Record Status</h4>
+                <p><b>Status</b> <span class="green-text">Living Victim</span></p>
+              </div>
+
+              <div class="mini">
+                <h4><i data-lucide="link"></i>Linked Cases</h4>
+                <div class="chips">
+                  <span>CL-2026-000151</span>
+                  <span>PM-2026-000067</span>
+                  <span>EX-2026-000083</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="primary"><i data-lucide="pencil"></i>Edit Details</button>
+              <button class="outline"><i data-lucide="eye"></i>View Full Record</button>
+            </div>
+          </div>
+
+          <div class="panel form-panel">
+            <h2><i data-lucide="edit"></i>Add / Edit Patient Form Preview</h2>
+
+            <form>
+              <label>Full Name *<input value="Ravi Kumar" /></label>
+              <label>NIC / Passport *<input value="200012345678" /></label>
+              <label>Age *<input value="28" /></label>
+              <label>Gender *<select><option>Male</option></select></label>
+              <label class="wide">Address *<input value="No. 45, Main Street, Colombo 07, Sri Lanka" /></label>
+              <label>Contact Number *<input value="0777 123 456" /></label>
+              <label>Hospital Number / BHT *<input value="BHT-26-01456" /></label>
+              <label>Nationality *<select><option>Sri Lankan</option></select></label>
+              <label>Ethnicity *<select><option>Sinhalese</option></select></label>
+              <button class="primary wide"><i data-lucide="save"></i>Save Patient / Victim</button>
+            </form>
+          </div>
+        </aside>
+      </section>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
