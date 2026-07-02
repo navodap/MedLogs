@@ -4,51 +4,186 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Forensic Medical Department - Management System</title>
-  <meta http-equiv="refresh" content="0; url=patients.html" />
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Inter", "Segoe UI", sans-serif; }
-    body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f8fbff;
-      color: #071842;
-    }
-    .redirect-box {
-      text-align: center;
-      background: white;
-      border: 1px solid #dce5f4;
-      border-radius: 10px;
-      box-shadow: 0 8px 18px rgba(15, 35, 75, .06);
-      padding: 40px 48px;
-    }
-    .redirect-box h1 {
-      font-size: 20px;
-      margin-bottom: 10px;
-      color: #082b75;
-    }
-    .redirect-box p {
-      color: #596985;
-      font-size: 14px;
-      margin-bottom: 16px;
-    }
-    .redirect-box a {
-      color: #1263e6;
-      font-weight: 700;
-      text-decoration: none;
-    }
-    .redirect-box a:hover {
-      text-decoration: underline;
-    }
-  </style>
+  <title>Dashboard | Forensic Medical Department</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/Dashboard.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-  <div class="redirect-box">
-    <h1>Forensic Medical Department</h1>
-    <p>Redirecting to Patient / Victim Management...</p>
-    <a href="patients.html">Click here if you are not redirected automatically</a>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo"><i data-lucide="shield-plus"></i></div>
+        <div>
+          <h1>Forensic Medical Department</h1>
+          <p>Management System</p>
+        </div>
+      </div>
+
+      <nav class="menu">
+        <a class="active" href="#"><i data-lucide="house"></i>Dashboard</a>
+        <a href="Patients.html"><i data-lucide="users"></i>Patient/Victim Management</a>
+        <a href="CaseManagement.html"><i data-lucide="folder-closed"></i>Case Management</a>
+        <a href="#"><i data-lucide="stethoscope"></i>Clinical Cases</a>
+        <a href="#"><i data-lucide="skull"></i>Postmortem Cases</a>
+        <a href="#"><i data-lucide="flask-conical"></i>Examinations</a>
+        <a href="#"><i data-lucide="folder-search-2"></i>Evidence & Samples</a>
+        <a href="#"><i data-lucide="file-text"></i>Reports</a>
+        <a href="#"><i data-lucide="scale"></i>Court & Police</a>
+        <a href="#"><i data-lucide="user-cog"></i>Staff</a>
+        <a href="#"><i data-lucide="users-round"></i>Users</a>
+        <a href="#"><i data-lucide="settings"></i>Settings</a>
+      </nav>
+
+      <div class="motto">
+        <i data-lucide="shield-check"></i>
+        <span>Forensic Integrity. Medical Excellence. Justice Served.</span>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <label class="search-bar">
+          <i data-lucide="search"></i>
+          <input type="text" placeholder="Search cases, patients, reports..." />
+          <kbd>Ctrl + K</kbd>
+        </label>
+
+        <div class="top-actions">
+          <button class="icon-circle" type="button" aria-label="Notifications">
+            <i data-lucide="bell"></i>
+            <span>5</span>
+          </button>
+
+          <div class="profile">
+            <img src="https://i.pravatar.cc/64?img=12" alt="Dr. Arjun Patel" />
+            <div>
+              <strong>Dr. Arjun Patel</strong>
+              <p>Forensic Medical Officer</p>
+            </div>
+            <i data-lucide="chevron-down"></i>
+          </div>
+        </div>
+      </header>
+
+      <section class="page-content">
+        <div class="heading-row">
+          <div>
+            <h2>Dashboard</h2>
+            <p>Welcome back, Dr. Arjun Patel. Here's what's happening in your department today.</p>
+          </div>
+          <p id="todayDate" class="today-date"></p>
+        </div>
+
+        <section class="stats-grid" id="statsGrid"></section>
+
+        <section class="split-grid top-grid">
+          <article class="card large-card">
+            <div class="card-head">
+              <h3><i data-lucide="bar-chart-3"></i>Monthly Case Statistics</h3>
+              <select>
+                <option>Last 12 Months</option>
+              </select>
+            </div>
+            <div class="bars-wrap" id="monthlyBars"></div>
+            <div class="legend">
+              <span><i class="dot clinical"></i>Clinical Cases</span>
+              <span><i class="dot postmortem"></i>Postmortem Cases</span>
+            </div>
+          </article>
+
+          <article class="card chart-card">
+            <h3><i data-lucide="pie-chart"></i>Case Type Distribution</h3>
+            <div class="donut-wrap">
+              <div class="donut" id="donutChart">
+                <div>
+                  <strong>1,248</strong>
+                  <span>Total Cases</span>
+                </div>
+              </div>
+              <div class="chart-labels">
+                <p><i class="dot clinical"></i>Clinical Cases <strong>732 (58.7%)</strong></p>
+                <p><i class="dot postmortem"></i>Postmortem Cases <strong>516 (41.3%)</strong></p>
+              </div>
+            </div>
+            <small>Last updated today, 09:30 AM</small>
+          </article>
+
+          <article class="card dates-card">
+            <div class="card-head">
+              <h3><i data-lucide="calendar-days"></i>Upcoming Court Dates</h3>
+              <a href="#">View All</a>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Case ID</th>
+                  <th>Court</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="courtDatesTable"></tbody>
+            </table>
+            <a class="link-arrow" href="#">View Full Calendar <i data-lucide="arrow-right"></i></a>
+          </article>
+        </section>
+
+        <section class="split-grid bottom-grid">
+          <article class="card">
+            <div class="card-head">
+              <h3><i data-lucide="activity"></i>Recent Activities</h3>
+              <a href="#">View All</a>
+            </div>
+            <ul class="activity-list" id="activityList"></ul>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h3><i data-lucide="clock-3"></i>Pending Reports Overview</h3>
+              <a href="#">View All</a>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Case ID</th>
+                  <th>Report Type</th>
+                  <th>Assigned To</th>
+                  <th>Due Date</th>
+                  <th>Days Left</th>
+                </tr>
+              </thead>
+              <tbody id="pendingReportsTable"></tbody>
+            </table>
+            <a class="link-arrow" href="#">View All Pending Reports <i data-lucide="arrow-right"></i></a>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h3><i data-lucide="folder-open"></i>Recent Cases</h3>
+              <a href="#">View All</a>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Case ID</th>
+                  <th>Name / Details</th>
+                  <th>Type</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="recentCasesTable"></tbody>
+            </table>
+            <a class="link-arrow" href="#">View All Cases <i data-lucide="arrow-right"></i></a>
+          </article>
+        </section>
+      </section>
+    </main>
   </div>
+
+  <script src="../Js/Dashboard.js"></script>
 </body>
 </html>
