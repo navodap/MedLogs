@@ -1,4 +1,3 @@
-
 const patients = [
   ["PV-2026-000128", "Ravi Kumar", "200012345678", 28, "Male", "Living Victim", "BHT-26-01456", 2],
   ["PV-2026-000129", "Anjali Sharma", "199812345679", 31, "Female", "Living Victim", "BHT-26-01457", 3],
