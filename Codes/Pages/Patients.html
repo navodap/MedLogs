@@ -40,7 +40,6 @@
 
 <main>
 
-  <!-- ============ REGISTER VIEW ============ -->
   <section class="view active" id="view-register">
     <div class="page-title">Register patient / victim</div>
     <div class="page-sub">Add a new patient or victim record. Case details are managed separately.</div>
@@ -53,7 +52,8 @@
           <div class="field"><label>NIC / passport</label><input type="text" id="f-nic" placeholder="912345678V"></div>
           <div class="field"><label>Date of birth</label><input type="date" id="f-dob"></div>
           <div class="field"><label>Gender</label><select id="f-gender"><option>Female</option><option>Male</option><option>Other</option><option>Unknown</option></select></div>
-          <div class="field"><label>Victim status *</label><select id="f-life-status"><option>Living victim</option><option>Deceased person</option></select></div>
+          
+          <div class="field"><label>Victim status *</label><select id="f-life-status" onchange="handleStatusChange()"><option>Living victim</option><option>Deceased person</option></select></div>
         </div>
 
         <div class="section-title">Contact details</div>
@@ -64,22 +64,28 @@
           <div class="field"><label>Next of kin phone</label><input type="text" id="f-kin-phone"></div>
         </div>
 
-        <div class="section-title">Hospital details</div>
-        <div class="grid2">
+        <div class="section-title" id="dynamic-section-title">Hospital details</div>
+        
+        <div class="grid2" id="living-fields">
           <div class="field"><label>Hospital number / BHT</label><input type="text" id="f-hosp-no" placeholder="BHT-26-01456"></div>
           <div class="field"><label>Ward</label><input type="text" id="f-ward" placeholder="Ward 3B"></div>
           <div class="field"><label>Admission date</label><input type="date" id="f-admission-date"></div>
         </div>
+
+        <div class="grid2" id="deceased-fields" style="display: none;">
+          <div class="field"><label>Mortuary Cooler No. *</label><input type="text" id="f-cooler-no" placeholder="Cooler 04"></div>
+          <div class="field"><label>Date & Time Body Received *</label><input type="datetime-local" id="f-body-received"></div>
+          <div class="field"><label>Brought By (Officer Name/Badge)</label><input type="text" id="f-brought-by" placeholder="PC 4582 Perera"></div>
+        </div>
       </form>
 
       <div class="form-actions">
-        <button type="button" class="btn" onclick="document.getElementById('reg-form').reset()">Clear</button>
+        <button type="button" class="btn" onclick="document.getElementById('reg-form').reset(); handleStatusChange();">Clear</button>
         <button type="button" class="btn btn-primary" onclick="registerPatient()">Register patient</button>
       </div>
     </div>
   </section>
 
-  <!-- ============ RECORDS VIEW ============ -->
   <section class="view" id="view-records">
     <div class="page-title">Patient / victim records</div>
     <div class="page-sub">Search and view registered patient and victim records.</div>
@@ -104,7 +110,7 @@
     <div class="card" style="padding:0; overflow:hidden;">
       <table>
         <thead>
-          <tr><th>Patient ID</th><th>Full name</th><th>NIC / passport</th><th>Age</th><th>Gender</th><th>Status</th><th>Hospital no.</th><th>Linked cases</th><th></th></tr>
+          <tr><th>Patient ID</th><th>Full name</th><th>NIC / passport</th><th>Age</th><th>Gender</th><th>Status</th><th>Hospital / Cooler No.</th><th>Linked cases</th><th></th></tr>
         </thead>
         <tbody id="records-tbody"></tbody>
       </table>
@@ -112,7 +118,6 @@
     </div>
   </section>
 
-  <!-- ============ DETAIL VIEW ============ -->
   <section class="view" id="view-detail">
     <span class="back-link" onclick="showView('records')">&larr; Back to patient records</span>
     <div class="detail-header">
