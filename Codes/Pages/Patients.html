@@ -53,7 +53,10 @@
           <div class="field"><label>NIC / passport</label><input type="text" id="f-nic" placeholder="912345678V"></div>
           <div class="field"><label>Date of birth</label><input type="date" id="f-dob"></div>
           <div class="field"><label>Gender</label><select id="f-gender"><option>Female</option><option>Male</option><option>Other</option><option>Unknown</option></select></div>
-          <div class="field"><label>Victim status *</label><select id="f-life-status"><option>Living victim</option><option>Deceased person</option></select></div>
+          <select id="f-life-status" onchange="handleStatusChange()">
+            <option value="Living victim">Living victim</option>
+            <option value="Deceased person">Deceased person</option>
+          </select>
         </div>
 
         <div class="section-title">Contact details</div>
