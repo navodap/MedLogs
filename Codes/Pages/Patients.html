@@ -64,11 +64,21 @@
           <div class="field"><label>Next of kin phone</label><input type="text" id="f-kin-phone"></div>
         </div>
 
-        <div class="section-title">Hospital details</div>
-        <div class="grid2">
+        <!-- Dynamic Section Header -->
+        <div class="section-title" id="dynamic-section-title">Hospital details</div>
+        
+        <!-- LIVING VICTIM FIELDS -->
+        <div class="grid2" id="living-fields">
           <div class="field"><label>Hospital number / BHT</label><input type="text" id="f-hosp-no" placeholder="BHT-26-01456"></div>
           <div class="field"><label>Ward</label><input type="text" id="f-ward" placeholder="Ward 3B"></div>
           <div class="field"><label>Admission date</label><input type="date" id="f-admission-date"></div>
+        </div>
+
+        <!-- DECEASED PERSON FIELDS (Hidden by default) -->
+        <div class="grid2" id="deceased-fields" style="display: none;">
+          <div class="field"><label>Mortuary Cooler No. *</label><input type="text" id="f-cooler-no" placeholder="Cooler 04"></div>
+          <div class="field"><label>Date & Time Body Received *</label><input type="datetime-local" id="f-body-received"></div>
+          <div class="field"><label>Brought By (Officer Name/Badge)</label><input type="text" id="f-brought-by" placeholder="PC 4582 Perera"></div>
         </div>
       </form>
 
