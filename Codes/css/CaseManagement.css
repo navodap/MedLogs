@@ -553,8 +553,10 @@ select[multiple] option {
 
 /* STATS MATRIX */
 .stats-grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
+  width: 100%;
 }
 
 .stat-card {
@@ -565,7 +567,8 @@ select[multiple] option {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: var(--card-bg);
-  min-width: 170px;
+  min-width: 0;
+  width: 100%;
 }
 
 .stat-icon {
@@ -1003,6 +1006,11 @@ tbody tr:hover td,
   color: var(--warning);
 }
 
+.badge.draft {
+  background: var(--soft);
+  color: var(--navy-700, #43536c);
+}
+
 .badge.danger,
 .badge.red {
   background: #fee2e2;
@@ -1293,4 +1301,17 @@ div[id="validationModal"] > div {
     width: 100%;
     flex-direction: column;
   }
+}
+
+label.field-locked input,
+label.field-locked select,
+label.field-locked textarea {
+  background: #eef1f6;
+  color: #7a8a9e;
+  cursor: not-allowed;
+  border-style: dashed;
+}
+
+label.field-locked input[type="checkbox"] {
+  opacity: 0.5;
 }
