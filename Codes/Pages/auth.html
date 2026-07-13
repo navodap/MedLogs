@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Forensic Medical Department | Login</title>
+
+    <link rel="stylesheet" href="auth.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+<main class="login-page">
+
+    <!-- ================= LEFT INFORMATION PANEL ================= -->
+    <section class="information-panel">
+
+        <div class="information-content">
+
+            <header class="brand">
+                <div class="brand-logo">
+                    <i data-lucide="shield-plus"></i>
+                </div>
+
+                <div>
+                    <h1>Forensic Medical Department</h1>
+                    <p>Management System</p>
+                </div>
+            </header>
+
+            <div class="small-line"></div>
+
+            <section class="introduction">
+                <h2>
+                    Secure access for<br>
+                    authorized forensic staff
+                </h2>
+
+                <p>
+                    Streamlined case management, accurate reporting,
+                    and reliable evidence tracking.
+                </p>
+            </section>
+
+            <section class="feature-list">
+
+                <article class="feature">
+                    <div class="feature-icon blue">
+                        <i data-lucide="folder-lock"></i>
+                    </div>
+
+                    <div>
+                        <h3>Case Management</h3>
+                        <p>Efficiently manage cases and documentation</p>
+                    </div>
+                </article>
+
+                <article class="feature">
+                    <div class="feature-icon green">
+                        <i data-lucide="file-text"></i>
+                    </div>
+
+                    <div>
+                        <h3>Report Generation</h3>
+                        <p>Create accurate medico-legal reports</p>
+                    </div>
+                </article>
+
+                <article class="feature">
+                    <div class="feature-icon purple">
+                        <i data-lucide="fingerprint"></i>
+                    </div>
+
+                    <div>
+                        <h3>Evidence Tracking</h3>
+                        <p>Track and maintain chain of custody</p>
+                    </div>
+                </article>
+
+            </section>
+
+            <!-- Decorative background illustration -->
+            <div class="illustration" aria-hidden="true">
+
+                <div class="dna-icon">
+                    <i data-lucide="dna"></i>
+                </div>
+
+                <div class="hospital-building">
+                    <div class="hospital-top"></div>
+                    <div class="hospital-body">
+                        <div class="medical-cross">+</div>
+
+                        <div class="window-grid">
+                            <span></span><span></span><span></span>
+                            <span></span><span></span><span></span>
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+
+                    <div class="hospital-side">
+                        <span></span><span></span>
+                        <span></span><span></span>
+                    </div>
+                </div>
+
+                <div class="magnifier">
+                    <div class="magnifier-glass">
+                        <i data-lucide="fingerprint"></i>
+                    </div>
+
+                    <div class="magnifier-handle"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <footer class="information-footer">
+            <div class="footer-security-icon">
+                <i data-lucide="shield-check"></i>
+            </div>
+
+            <div>
+                <strong>Confidential medico-legal records.</strong>
+                <p>Integrity. Accuracy. Justice.</p>
+            </div>
+        </footer>
+
+    </section>
+
+
+    <!-- ================= RIGHT LOGIN PANEL ================= -->
+    <section class="login-section">
+
+        <div class="login-card">
+
+            <header class="login-header">
+                <div class="login-icon">
+                    <i data-lucide="lock-keyhole"></i>
+                </div>
+
+                <div>
+                    <h2>Login</h2>
+                    <p>Enter the credentials provided by the administrator</p>
+                </div>
+            </header>
+
+            <form id="loginForm" novalidate>
+
+                <!-- Username -->
+                <div class="form-group">
+                    <label for="username">Username</label>
+
+                    <div class="input-container">
+                        <i data-lucide="user"></i>
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Enter your username"
+                            autocomplete="username"
+                        >
+                    </div>
+
+                    <small class="error-message" id="usernameError"></small>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+
+                    <div class="input-container">
+                        <i data-lucide="lock"></i>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="passwordToggle"
+                            aria-label="Show password"
+                        >
+                            <i data-lucide="eye" id="passwordIcon"></i>
+                        </button>
+                    </div>
+
+                    <small class="error-message" id="passwordError"></small>
+                </div>
+
+
+                <!-- Remember Me -->
+                <div class="login-options">
+
+                    <label class="remember-container">
+                        <input type="checkbox" id="rememberMe">
+
+                        <span class="custom-checkbox">
+                            <i data-lucide="check"></i>
+                        </span>
+
+                        Remember me
+                    </label>
+
+                    <a href="#" id="forgotPassword">Forgot password?</a>
+
+                </div>
+
+
+                <!-- Login Message -->
+                <div
+                    class="form-status"
+                    id="formStatus"
+                    role="alert"
+                ></div>
+
+
+                <!-- Sign In Button -->
+                <button type="submit" class="sign-in-button" id="loginButton">
+                    <i data-lucide="log-in"></i>
+                    <span>Login</span>
+                </button>
+
+                <div class="account-notice">
+                    <i data-lucide="info"></i>
+
+                    <p>
+                        Staff accounts are created by the system administrator.
+                        Contact the administrator if you do not have login credentials.
+                    </p>
+                </div>
+                
+                <!-- Security Notice -->
+                <div class="security-notice">
+                    <i data-lucide="shield-check"></i>
+                    <span>
+                        Authorized forensic staff only. All login activity is monitored.
+                    </span>
+                </div>
+
+            </form>
+
+        </div>
+
+        <footer class="page-footer">
+            <i data-lucide="shield-check"></i>
+
+            <span>Forensic Medical Department Management System</span>
+
+            <span class="footer-divider"></span>
+
+            <span>&copy; 2026 All rights reserved.</span>
+        </footer>
+
+    </section>
+
+</main>
+
+<script src="auth.js"></script>
+
+</body>
+</html>
