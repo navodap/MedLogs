@@ -1,166 +1,28 @@
 const STORAGE_KEY = "fmdis_cases_v2";
 
-const sampleCases = [
-  {
-    id: "CL-2026-000123",
-    type: "clinical",
-    category: "Assault",
-    status: "Under Examination",
-    registeredDateTime: "2026-05-27T08:15",
-    patientId: "PV-2026-00124",
-    patientName: "Kumara, W. A. S.",
-    jmoOffice: "Colombo JMO Office",
-    confidentiality: "Restricted",
-    minor: false,
-    sexualAssault: false,
-    primaryDoctor: "Dr. N. Perera",
-    doctorRole: "Primary Examiner",
-    assignedDate: "2026-05-27",
-    assignmentStatus: "Active",
-    mlefNo: "MLEF/2026/145",
-    mlefDate: "2026-05-27",
-    mlrSerial: "MLR-2026-0088",
-    clinicalReason: "Physical Assault",
-    hospital: "National Hospital of Sri Lanka",
-    wardBed: "Ward 12 / Bed 05",
-    admittedDateTime: "2026-05-27T07:40",
-    dischargedDateTime: "",
-    examDateTime: "2026-05-27T09:30",
-    natureOfHarm: "Contusions and suspected fracture",
-    natureOfWeapon: "Blunt object",
-    hurtCategory: "Pending Opinion",
-    alcoholStatus: "Not suspected",
-    drugStatus: "Not suspected",
-    patientHistory: "Patient referred by police after alleged physical assault. Injuries are being documented for medico-legal opinion.",
-    policeStation: "Borella Police Station",
-    policeOfficer: "PS 4521 A. Silva",
-    policeRef: "BOR/CR/2026/321",
-    courtName: "Colombo Magistrate Court",
-    courtRef: "MC/2026/114",
-    trialDate: "2026-08-16",
-    magistrate: "Magistrate Colombo",
-    referralDocument: "MLEF"
-  },
-  {
-    id: "CL-2026-000124",
-    type: "clinical",
-    category: "Toxicology",
-    status: "Awaiting Lab Results",
-    registeredDateTime: "2026-05-27T14:42",
-    patientId: "PV-2026-00125",
-    patientName: "Perera, M. N.",
-    jmoOffice: "Kandy JMO Office",
-    confidentiality: "Normal",
-    minor: false,
-    sexualAssault: false,
-    primaryDoctor: "Dr. M. Dissanayake",
-    doctorRole: "Primary Examiner",
-    assignedDate: "2026-05-27",
-    assignmentStatus: "Active",
-    mlefNo: "MLEF/2026/146",
-    mlefDate: "2026-05-27",
-    mlrSerial: "MLR-2026-0089",
-    clinicalReason: "Alcohol / Drug Influence",
-    hospital: "Teaching Hospital Kandy",
-    wardBed: "OPD",
-    admittedDateTime: "",
-    dischargedDateTime: "",
-    examDateTime: "2026-05-27T15:00",
-    natureOfHarm: "No external injury recorded",
-    natureOfWeapon: "Not applicable",
-    hurtCategory: "Non-Grievous",
-    alcoholStatus: "Pending test",
-    drugStatus: "Pending test",
-    patientHistory: "Patient produced for toxicology assessment and sample collection.",
-    policeStation: "Kandy Police Station",
-    policeOfficer: "PC 7782 R. Bandara",
-    policeRef: "KDY/TR/2026/054",
-    courtName: "Kandy Magistrate Court",
-    courtRef: "",
-    trialDate: "",
-    magistrate: "",
-    referralDocument: "MLEF"
-  },
-  {
-    id: "PM-2026-000045",
-    type: "autopsy",
-    category: "Accidental Death",
-    status: "Report Drafting",
-    registeredDateTime: "2026-05-26T11:35",
-    patientId: "PV-2026-00126",
-    patientName: "Fernando, R. T.",
-    jmoOffice: "Galle JMO Office",
-    confidentiality: "Restricted",
-    minor: false,
-    sexualAssault: false,
-    primaryDoctor: "Dr. H. Jayasinghe",
-    doctorRole: "Primary Examiner",
-    assignedDate: "2026-05-26",
-    assignmentStatus: "Active",
-    pmRegistryNo: "PM-REG-2026-045",
-    inquestNo: "INQ/2026/310",
-    courtOrderNo: "CO/2026/221",
-    deathReportNo: "DR/2026/188",
-    dateOfInquest: "2026-05-26",
-    dateOfDeath: "2026-05-25",
-    timeOfDeath: "21:30",
-    placeOfDeath: "Road traffic scene",
-    bodyReceivedDateTime: "2026-05-26T08:20",
-    placeOfPM: "Galle Mortuary",
-    mannerOfDeath: "Accidental",
-    identificationStatus: "Identified",
-    causeSummary: "Pending histology and toxicology. Preliminary findings suggest blunt force injuries.",
-    policeStation: "Galle Police Station",
-    policeOfficer: "IP 2210 D. Kumara",
-    policeRef: "GAL/ACC/2026/056",
-    courtName: "Galle Magistrate Court",
-    courtRef: "MC-GAL/2026/77",
-    trialDate: "2026-09-10",
-    magistrate: "ISD Galle Division",
-    referralDocument: "Inquest Order"
-  },
-  {
-    id: "PM-2026-000046",
-    type: "autopsy",
-    category: "Natural Death",
-    status: "Closed",
-    registeredDateTime: "2026-05-26T09:10",
-    patientId: "PV-2026-00127",
-    patientName: "Silva, K. D.",
-    jmoOffice: "Ragama JMO Office",
-    confidentiality: "Normal",
-    minor: false,
-    sexualAssault: false,
-    primaryDoctor: "Dr. S. Rathnayake",
-    doctorRole: "Primary Examiner",
-    assignedDate: "2026-05-26",
-    assignmentStatus: "Completed",
-    pmRegistryNo: "PM-REG-2026-046",
-    inquestNo: "INQ/2026/314",
-    courtOrderNo: "",
-    deathReportNo: "DR/2026/191",
-    dateOfInquest: "2026-05-26",
-    dateOfDeath: "2026-05-25",
-    timeOfDeath: "06:45",
-    placeOfDeath: "Hospital ward",
-    bodyReceivedDateTime: "2026-05-26T09:10",
-    placeOfPM: "Ragama Mortuary",
-    mannerOfDeath: "Natural",
-    identificationStatus: "Identified",
-    causeSummary: "Cause of death form issued after postmortem examination.",
-    policeStation: "Ragama Police Station",
-    policeOfficer: "PC 6533 N. Perera",
-    policeRef: "RGM/DR/2026/221",
-    courtName: "Ragama Magistrate Court",
-    courtRef: "",
-    trialDate: "",
-    magistrate: "ISD Ragama Division",
-    referralDocument: "Inquest Order"
-  }
-];
+const sampleCases = [];
 
 const clinicalCategories = ["Accident", "Assault", "Sexual Assault", "Toxicology", "Detainee Examination", "Age Estimation", "DNA Sampling"];
 const autopsyCategories = ["Natural Death", "Accidental Death", "Suicidal Death", "Homicidal Death", "Undetermined Death"];
+
+const ALWAYS_LOCKED = ["caseId", "caseTypeDisplay", "registeredDateTime", "caseStatus"];
+
+const ROLE_LOCKED_FIELDS = {
+  "Administrative Clerk": [
+    "confidentiality", "natureOfHarm", "hurtCategory",
+    "supervisingConsultant", "expectedReportType",
+    "reqXray", "reqCt", "reqBlood", "reqUrine",
+    "reqSwabs", "reqDna", "reqPhotos", "chainOfCustodyRequired"
+  ],
+  "MOML": [
+    "supervisingConsultant", "primaryDoctor"
+  ],
+  "AJMO": [
+    "supervisingConsultant", "primaryDoctor"
+  ],
+  "Consultant JMO": [],
+  "System Administrator": []
+};
 
 const dom = {
   tabButtons: document.querySelectorAll(".tab-btn"),
@@ -188,7 +50,13 @@ const dom = {
   dayDisplay: document.getElementById("currentDayDisplay"),
   formHeader: document.getElementById("registrationFormHeader"),
   submitBtn: document.getElementById("btnSubmitForm"),
-  btnEditCaseDetails: document.getElementById("btnEditCaseDetails")
+  btnEditCaseDetails: document.getElementById("btnEditCaseDetails"),
+  totalCasesCount: document.getElementById("totalCasesCount"),
+  clinicalCasesCount: document.getElementById("clinicalCasesCount"),
+  autopsyCasesCount: document.getElementById("autopsyCasesCount"),
+  totalCasesNote: document.getElementById("totalCasesNote"),
+  clinicalCasesNote: document.getElementById("clinicalCasesNote"),
+  autopsyCasesNote: document.getElementById("autopsyCasesNote")
 };
 
 let records = loadRecords();
@@ -205,6 +73,34 @@ function loadRecords() {
   } catch (error) {
     console.warn("Saved records could not be read. Sample records were loaded.", error);
     return [...sampleCases];
+  }
+}
+
+function renderStats() {
+  const totalCases = records.length;
+  const clinicalCases = records.filter(record => record.type === "clinical").length;
+  const autopsyCases = records.filter(record => record.type === "autopsy").length;
+
+  if (dom.totalCasesCount) dom.totalCasesCount.textContent = totalCases;
+  if (dom.clinicalCasesCount) dom.clinicalCasesCount.textContent = clinicalCases;
+  if (dom.autopsyCasesCount) dom.autopsyCasesCount.textContent = autopsyCases;
+
+  if (dom.totalCasesNote) {
+    dom.totalCasesNote.textContent = totalCases === 0
+      ? "No cases registered yet"
+      : `${totalCases} case${totalCases === 1 ? "" : "s"} registered`;
+  }
+
+  if (dom.clinicalCasesNote) {
+    dom.clinicalCasesNote.textContent = clinicalCases === 0
+      ? "No clinical cases yet"
+      : `${clinicalCases} clinical case${clinicalCases === 1 ? "" : "s"}`;
+  }
+
+  if (dom.autopsyCasesNote) {
+    dom.autopsyCasesNote.textContent = autopsyCases === 0
+      ? "No autopsy cases yet"
+      : `${autopsyCases} autopsy case${autopsyCases === 1 ? "" : "s"}`;
   }
 }
 
@@ -266,22 +162,26 @@ function formatDate(input) {
 }
 
 function updateTopbarLiveDate() {
+  const dateDisplay = document.getElementById("currentDateDisplay");
+  const dayDisplay = document.getElementById("currentDayDisplay");
+
+  if (!dateDisplay || !dayDisplay) return;
+
   const now = new Date();
-  
-  // Formats to: "Month Day, Year" (e.g., "July 04, 2026")
-  dom.dateDisplay.textContent = now.toLocaleDateString(undefined, {
+
+  dateDisplay.textContent = now.toLocaleDateString("en-US", {
     month: "long",
     day: "2-digit",
     year: "numeric"
   });
-  
-  // Formats to: "Weekday" (e.g., "Saturday")
-  dom.dayDisplay.textContent = now.toLocaleDateString(undefined, {
+
+  dayDisplay.textContent = now.toLocaleDateString("en-US", {
     weekday: "long"
   });
 }
 
 function statusClass(status) {
+  if (status === "Draft") return "draft";
   if (["Closed", "Report Submitted"].includes(status)) return "success";
   if (["Awaiting Lab Results", "Report Drafting"].includes(status)) return "warn";
   if (["Highly Restricted"].includes(status)) return "danger";
@@ -291,6 +191,27 @@ function statusClass(status) {
 
 function typeLabel(type) {
   return type === "clinical" ? "Clinical" : "Autopsy";
+}
+
+function applyRolePermissions() {
+  const role = value("registeredBy");
+  const lockedForRole = ROLE_LOCKED_FIELDS[role] || [];
+  const allLocked = [...ALWAYS_LOCKED, ...lockedForRole];
+
+  dom.caseForm.querySelectorAll("input, select, textarea").forEach(field => {
+    if (!field.id || field.id === "registeredBy" || field.id === "caseType") return;
+
+    const shouldLock = allLocked.includes(field.id);
+
+    if (field.type === "checkbox" || field.tagName === "SELECT") {
+      field.disabled = shouldLock;
+    } else {
+      field.readOnly = shouldLock;
+    }
+
+    const label = field.closest("label");
+    if (label) label.classList.toggle("field-locked", shouldLock);
+  });
 }
 
 function mainReference(record) {
@@ -477,6 +398,7 @@ function resetForm() {
   isEditMode = false;
   activateCaseType("registration", currentRegistrationType);
   setInitialFormValues();
+  applyRolePermissions();
 }
 
 function saveCase(event) {
@@ -497,8 +419,10 @@ function saveCase(event) {
   renderLinkedRecords();
   renderRecentRecords();
   renderCaseTable();
-  alert(`${record.id} saved successfully.`);
-  resetForm();
+  renderStats();
+  const successMsg = document.getElementById("successModalMessage");
+  if (successMsg) successMsg.textContent = `Case ${record.id} has been registered successfully.`;
+  document.getElementById("successModal").style.display = "grid";
 }
 
 function previewFromForm() {
@@ -647,7 +571,7 @@ function populateFullCaseDetails(caseId) {
 
   // B. Basic Block Information
   document.getElementById("detBasicDateTime").textContent = formatDate(record.registeredDateTime);
-  document.getElementById("detBasicBy").textContent = display(record.registeredBy || "System Clerk");
+  document.getElementById("detBasicBy").textContent = display(record.registeredBy || "Administrative Clerk");
 
   // C. Patient Target Block
   document.getElementById("detPatId").textContent = display(record.patientId);
@@ -805,6 +729,8 @@ function bindEvents() {
     });
   });
 
+  document.getElementById("registeredBy")?.addEventListener("change", applyRolePermissions);
+
   //dom.previewBtn.addEventListener("click", previewFromForm);
   dom.caseSearch.addEventListener("input", renderCaseTable);
   dom.statusFilter.addEventListener("change", renderCaseTable);
@@ -843,16 +769,30 @@ function bindEvents() {
   const btnCloseDraftModal = document.getElementById("btnCloseDraftModal");
 
   document.getElementById("btnSaveAsDraft").addEventListener("click", () => {
+    const record = getFormData();
+    record.status = "Draft";
+
+    records = [record, ...records.filter(item => item.id !== record.id)];
+    selectedCaseId = record.id;
+    saveRecords();
+    renderRecentRecords();
+    renderCaseTable();
+    renderStats();
+
+    const msgEl = document.getElementById("draftModalMessage");
+    if (msgEl) msgEl.textContent = `Case ${record.id} saved as draft. You can resume editing from the Case Details tab.`;
+
     if (draftModal) {
-      draftModal.style.display = "grid"; // Displays the modal container centered
+      draftModal.style.display = "grid";
     }
   });
 
   if (btnCloseDraftModal) {
     btnCloseDraftModal.addEventListener("click", () => {
       if (draftModal) {
-        draftModal.style.display = "none"; // Hides the modal container
+        draftModal.style.display = "none";
       }
+      resetForm();
     });
   }
 
@@ -890,11 +830,11 @@ document.getElementById("btnGenerateMlrLater")?.addEventListener("click", () => 
     });
   }
 
-  // Close Custom Success Modal when clicking OK
   const closeSuccessBtn = document.getElementById("btnCloseSuccessModal");
   if (closeSuccessBtn) {
     closeSuccessBtn.addEventListener("click", () => {
       document.getElementById("successModal").style.display = "none";
+      resetForm();
     });
   }
 
@@ -915,6 +855,8 @@ function populateFormForEditing(caseId) {
 }
 
 function init() {
+  updateTopbarLiveDate();
+
   bindEvents();
   setCategoryOptions(currentRegistrationType);
   setInitialFormValues();
@@ -922,7 +864,8 @@ function init() {
   renderLinkedRecords();
   renderRecentRecords();
   renderCaseTable();
-  updateTopbarLiveDate();
+  renderStats();
+  applyRolePermissions();
 }
 
 init();
