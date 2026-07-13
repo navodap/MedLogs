@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examination Forms | Forensic Medical Department Information System</title>
+  <link rel="stylesheet" href="../css/ExaminationForms.css" />
+</head>
+<body>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="app-layout">
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="brand-block">
+        <img src="../images/medlogs-logo.png" alt="MedLogs Logo" class="brand-logo-img" />
+        <div class="brand-text">
+          <h1 class="brand-title">MedLogs</h1>
+          <p class="brand-subtitle">Forensic Medico-Legal<br />Information Management</p>
+        </div>
+      </div>
+
+      <nav class="side-nav">
+        <a href="#" class="nav-item"><span>⌂</span>Dashboard</a>
+        <a href="PatientManagement.html" class="nav-item"><span>☤</span>Patient Management</a>
+        <a href="CaseManagement.html" class="nav-item"><span>▣</span>Case Management</a>
+        <a href="ExaminationForms.html" class="nav-item active"><span>☷</span>Examination Forms</a>
+        <a href="#" class="nav-item"><span>⚗</span>Evidence & Samples</a>
+        <a href="#" class="nav-item"><span>🔬</span>Lab / Toxicology</a>
+        <a href="#" class="nav-item"><span>⚖</span>Police & Court</a>
+        <a href="#" class="nav-item"><span>▤</span>Documents</a>
+        <a href="#" class="nav-item"><span>▥</span>Reports</a>
+        <a href="#" class="nav-item"><span>⌕</span>Search</a>
+        <a href="#" class="nav-item"><span>◌</span>Staff Management</a>
+        <a href="#" class="nav-item"><span>▣</span>Users & Roles</a>
+        <a href="#" class="nav-item"><span>☑</span>Audit Logs</a>
+        <a href="#" class="nav-item"><span>◷</span>Statistics</a>
+        <a href="#" class="nav-item"><span>⚙</span>Settings</a>
+      </nav>
+
+      <div class="secure-panel">
+        <div class="secure-icon">🔒</div>
+        <p>SECURE. ACCURATE. ACCOUNTABLE.</p>
+        <strong>Trusted Forensic Care.<br />Reliable Medico-Legal Records.</strong>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="menu-btn" type="button" aria-label="Open menu">☰</button>
+        <h2>Examination Forms</h2>
+        <label class="global-search">
+          <span>⌕</span>
+          <input id="globalExaminationSearch" type="search" placeholder="Search examinations, cases, patients, doctors..." />
+          <kbd>Ctrl + K</kbd>
+        </label>
+        <div class="top-actions">
+          <button class="notify-btn" type="button" aria-label="Notifications">🔔<small>5</small></button>
+          <div class="date-box">
+            <strong id="currentDateDisplay">May 27, 2026</strong>
+            <span id="currentDayDisplay">Tuesday</span>
+          </div>
+          <div class="profile-box">
+            <div class="avatar">J</div>
+            <div>
+              <strong>Dr. N. Perera</strong>
+              <span>JMO</span>
+            </div>
+            <span class="chevron">⌄</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <section class="hero-card">
+          <div class="hero-left">
+            <div class="hero-icon">☷</div>
+            <div>
+              <h3>Record Clinical and Postmortem Examination Findings</h3>
+              <p class="hero-subtext">Select an existing case, mark injuries on the body diagram, record findings, and prepare data for evidence, lab and reports.</p>
+            </div>
+          </div>
+          <div class="stats-grid" aria-label="Examination summary statistics">
+            <article class="stat-card">
+              <span class="stat-icon teal">☷</span>
+              <div><strong id="totalExamStat">0</strong><p>Total Examinations</p><small>Saved locally</small></div>
+            </article>
+            <article class="stat-card">
+              <span class="stat-icon purple">☤</span>
+              <div><strong id="clinicalExamStat">0</strong><p>Clinical Exams</p><small>Living victims</small></div>
+            </article>
+            <article class="stat-card">
+              <span class="stat-icon blue">✎</span>
+              <div><strong id="autopsyExamStat">0</strong><p>Autopsy Exams</p><small>Postmortem</small></div>
+            </article>
+          </div>
+        </section>
+
+        <div class="dashboard-grid">
+          <section class="panel main-panel">
+            <div class="panel-tabs" role="tablist" aria-label="Examination module tabs">
+              <button class="tab-btn active" type="button" data-tab="entry"><span>✍</span>Examination Entry</button>
+              <button class="tab-btn" type="button" data-tab="records"><span>▤</span>Examination Records / Details</button>
+              <p class="auto-note">ⓘ Select a registered case first. The correct clinical or autopsy form loads automatically.</p>
+            </div>
+
+            <section class="tab-panel active" id="entryPanel">
+              <div class="section-heading">
+                <div>
+                  <h3 id="entryFormHeader">Create Examination Record</h3>
+                  <p>The examination page records what the doctor observed, measured, collected and concluded.</p>
+                </div>
+                <div class="case-switch" role="group" aria-label="Examination type">
+                  <button type="button" class="case-switch-btn active" data-context="entryType" data-type="clinical">Clinical Examination</button>
+                  <button type="button" class="case-switch-btn" data-context="entryType" data-type="autopsy">Autopsy / PM Examination</button>
+                </div>
+              </div>
+
+              <form id="examinationForm" class="case-form">
+                <fieldset>
+                  <legend><span>1</span>Select Existing Case</legend>
+                  <p class="field-note">Search and select a case that was already registered in Case Management. The examination will be linked to that Case ID and Patient/Victim ID.</p>
+                  <div class="form-grid four">
+                    <label>Search Case / Patient / Reference
+                      <input id="caseSearchInput" type="search" placeholder="CL-2026-000123, patient name, MLEF, PM registry..." />
+                    </label>
+                    <label>Registered Case *
+                      <select id="caseSelect"></select>
+                    </label>
+                    <label>Case Type
+                      <input id="selectedCaseType" type="text" readonly />
+                      <input id="examTypeHidden" type="hidden" value="clinical" />
+                    </label>
+                    <label>Manual Form Type
+                      <input id="manualFormType" type="text" readonly value="Clinical Forensic Examination Form" />
+                    </label>
+                  </div>
+
+                  <div class="selected-case-card" id="caseSummaryPanel">
+                    <div class="preview-empty compact-empty">
+                      <div><span>⌕</span><h4>No case selected</h4><p>Select a registered case to load patient, police, court and JMO details.</p></div>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend><span>2</span>Examination Header</legend>
+                  <div class="form-grid four">
+                    <label>Examination ID *
+                      <input id="examinationId" type="text" readonly />
+                    </label>
+                    <label>Case ID *
+                      <input id="examCaseId" type="text" readonly />
+                    </label>
+                    <label>Patient / Victim ID
+                      <input id="examPatientId" type="text" readonly />
+                    </label>
+                    <label>Examination Status
+                      <select id="examinationStatus">
+                        <option>Draft</option>
+                        <option selected>In Progress</option>
+                        <option>Completed</option>
+                        <option>Pending Lab Results</option>
+                        <option>Pending Review</option>
+                        <option>Locked</option>
+                      </select>
+                    </label>
+                    <label>Examination Date & Time *
+                      <input id="examDateTime" type="datetime-local" />
+                    </label>
+                    <label>Examination Place *
+                      <input id="examPlace" type="text" placeholder="JMO Office / Ward / Mortuary" />
+                    </label>
+                    <label>Created By
+                      <input id="createdBy" type="text" value="Dr. N. Perera" />
+                    </label>
+                    <label>Purpose of Examination
+                      <select id="examPurpose">
+                        <option>Initial Examination</option>
+                        <option>Follow-up Examination</option>
+                        <option>Supplementary Examination</option>
+                        <option>Court Ordered Re-examination</option>
+                        <option>Main Postmortem Examination</option>
+                        <option>Supplementary PM Review</option>
+                      </select>
+                    </label>
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend><span>3</span>Doctor Assignment</legend>
+                  <div class="form-grid four">
+                    <label>Primary Examiner / JMO *
+                      <select id="primaryDoctor">
+                        <option value="">Select doctor</option>
+                        <option>Dr. N. Perera</option>
+                        <option>Dr. M. Dissanayake</option>
+                        <option>Dr. H. Jayasinghe</option>
+                        <option>Dr. S. Rathnayake</option>
+                      </select>
+                    </label>
+                    <label>Role in Examination
+                      <select id="doctorRole">
+                        <option>Primary Examiner</option>
+                        <option>Assisting Doctor</option>
+                        <option>Supervising Consultant</option>
+                        <option>Photographing Officer</option>
+                      </select>
+                    </label>
+                    <label>Assisting Doctor(s)
+                      <input id="assistingDoctor" type="text" placeholder="Dr. A, Dr. B" />
+                    </label>
+                    <label>Supervising Consultant
+                      <input id="supervisingConsultant" type="text" />
+                    </label>
+                    <label>Female Doctor Required?
+                      <select id="femaleDoctorRequired">
+                        <option>No</option>
+                        <option>Yes</option>
+                      </select>
+                    </label>
+                    <label>Examination Privacy Level
+                      <select id="examPrivacyLevel">
+                        <option>Normal</option>
+                        <option>Restricted</option>
+                        <option>Highly Restricted</option>
+                      </select>
+                    </label>
+                  </div>
+                </fieldset>
+
+                <fieldset class="case-section clinical-section active">
+                  <legend><span>4</span>Clinical Examination Notes</legend>
+                  <div class="form-grid four">
+                    <label>Patient Condition
+                      <select id="patientCondition">
+                        <option>Stable</option>
+                        <option>Critical</option>
+                        <option>Unconscious</option>
+                        <option>Distressed</option>
+                        <option>Requires urgent care</option>
+                        <option>Other</option>
+                      </select>
+                    </label>
+                    <label>Consciousness Level
+                      <select id="consciousnessLevel">
+                        <option>Alert</option>
+                        <option>Drowsy</option>
+                        <option>Confused</option>
+                        <option>Unconscious</option>
+                        <option>Unable to assess</option>
+                      </select>
+                    </label>
+                    <label>Alcohol Observation
+                      <select id="alcoholObservation">
+                        <option>Not suspected</option>
+                        <option>Suspected</option>
+                        <option>Smell of alcohol noted</option>
+                        <option>Pending toxicology</option>
+                      </select>
+                    </label>
+                    <label>Drug Observation
+                      <select id="drugObservation">
+                        <option>Not suspected</option>
+                        <option>Suspected</option>
+                        <option>Clinical signs present</option>
+                        <option>Pending toxicology</option>
+                      </select>
+                    </label>
+                  </div>
+                  <label class="wide-label">History Given by Patient / Police
+                    <textarea id="historyGiven" rows="3" placeholder="Brief history relevant to medico-legal examination..."></textarea>
+                  </label>
+                  <label class="wide-label">General Appearance / Clinical Notes
+                    <textarea id="generalAppearance" rows="3" placeholder="General condition, clothing condition, visible distress, cooperation, etc."></textarea>
+                  </label>
+                </fieldset>
+
+                <fieldset class="case-section autopsy-section">
+                  <legend><span>4</span>Autopsy / Postmortem Examination Notes</legend>
+                  <div class="form-grid four">
+                    <label>Identification Confirmed?
+                      <select id="identificationConfirmed">
+                        <option>Yes</option>
+                        <option>No</option>
+                        <option>Partially Identified</option>
+                        <option>Unknown</option>
+                      </select>
+                    </label>
+                    <label>Body Condition
+                      <select id="bodyCondition">
+                        <option>Fresh</option>
+                        <option>Decomposed</option>
+                        <option>Burnt</option>
+                        <option>Skeletal</option>
+                        <option>Fragmented</option>
+                        <option>Unknown</option>
+                      </select>
+                    </label>
+                    <label>Rigor Mortis
+                      <select id="rigorMortis">
+                        <option>Not recorded</option>
+                        <option>Absent</option>
+                        <option>Developing</option>
+                        <option>Established</option>
+                        <option>Passing off</option>
+                      </select>
+                    </label>
+                    <label>Livor Mortis
+                      <select id="livorMortis">
+                        <option>Not recorded</option>
+                        <option>Absent</option>
+                        <option>Present and fixed</option>
+                        <option>Present and unfixed</option>
+                      </select>
+                    </label>
+                    <label>Decomposition Stage
+                      <select id="decompositionStage">
+                        <option>None</option>
+                        <option>Early</option>
+                        <option>Moderate</option>
+                        <option>Advanced</option>
+                        <option>Skeletal</option>
+                      </select>
+                    </label>
+                    <label>Estimated Time Since Death
+                      <input id="estimatedTimeSinceDeath" type="text" placeholder="e.g., 12-24 hours" />
+                    </label>
+                    <label>Manner of Death
+                      <select id="mannerOfDeath">
+                        <option>Pending</option>
+                        <option>Natural</option>
+                        <option>Accidental</option>
+                        <option>Suicide</option>
+                        <option>Homicide</option>
+                        <option>Undetermined</option>
+                      </select>
+                    </label>
+                  </div>
+                  <label class="wide-label">Clothing Description
+                    <textarea id="clothingDescription" rows="2" placeholder="Clothing, property, condition, stains, tears, etc."></textarea>
+                  </label>
+                  <label class="wide-label">External Appearance
+                    <textarea id="externalAppearance" rows="3" placeholder="General external appearance, identifying features, postmortem changes..."></textarea>
+                  </label>
+                  <label class="wide-label">Preliminary Cause of Death Summary
+                    <textarea id="causeOfDeathSummary" rows="3" placeholder="Preliminary opinion or pending lab/histology/toxicology..."></textarea>
+                  </label>
+                </fieldset>
+
+                <fieldset>
+                  <legend><span>5</span>Body Diagram Marking and Injury Findings</legend>
+                  <p class="field-note">Click the front or back body figure to place numbered injury markers. Each marker can be linked to a structured injury record. You can also upload a scanned/photo copy of a manual body diagram.</p>
+
+                  <div class="body-diagram-layout">
+                    <div class="diagram-panel">
+                      <div class="diagram-toolbar">
+                        <div class="case-switch small-switch" role="group" aria-label="Body diagram view">
+                          <button type="button" class="diagram-view-btn active" data-view="front">Front View</button>
+                          <button type="button" class="diagram-view-btn" data-view="back">Back View</button>
+                        </div>
+                        <button type="button" class="btn light mini-btn" id="btnClearMarkers">Clear Markers</button>
+                      </div>
+
+                      <div class="diagram-stage" id="bodyDiagramStage" aria-label="Clickable body diagram">
+                        <svg class="body-svg" viewBox="0 0 240 520" role="img" aria-label="Human body diagram">
+                          <text x="120" y="24" text-anchor="middle" class="diagram-title" id="diagramTitleSvg">FRONT</text>
+                          <circle cx="120" cy="62" r="28" class="body-part" />
+                          <rect x="98" y="90" width="44" height="26" rx="12" class="body-part" />
+                          <path d="M75 125 Q120 98 165 125 L152 255 Q120 285 88 255 Z" class="body-part" />
+                          <path d="M76 135 Q42 170 39 247 Q38 284 52 310 L70 305 Q61 260 67 218 Q72 178 93 145 Z" class="body-part" />
+                          <path d="M164 135 Q198 170 201 247 Q202 284 188 310 L170 305 Q179 260 173 218 Q168 178 147 145 Z" class="body-part" />
+                          <path d="M90 260 Q104 285 114 305 L105 470 Q102 498 84 500 Q70 498 72 470 L78 320 Q80 288 90 260 Z" class="body-part" />
+                          <path d="M150 260 Q136 285 126 305 L135 470 Q138 498 156 500 Q170 498 168 470 L162 320 Q160 288 150 260 Z" class="body-part" />
+                          <line x1="120" y1="120" x2="120" y2="256" class="body-guide" />
+                          <line x1="85" y1="185" x2="155" y2="185" class="body-guide" />
+                          <line x1="92" y1="246" x2="148" y2="246" class="body-guide" />
+                        </svg>
+                        <div class="diagram-marker-layer" id="diagramMarkerLayer"></div>
+                      </div>
+                      <p class="diagram-help">Tip: click on the body area to add a marker. The marker number can be used in the injury list and later in the report.</p>
+                    </div>
+
+                    <div class="marker-panel">
+                      <h4>Marked Locations</h4>
+                      <div id="markerList" class="marker-list empty-marker-list">No body markers added yet.</div>
+                      <label class="wide-label">Upload Manual Body Diagram / Sketch
+                        <input id="manualDiagramUpload" type="file" accept="image/*,.pdf" />
+                      </label>
+                      <div class="upload-preview" id="manualDiagramPreviewWrap" hidden>
+                        <img id="manualDiagramPreview" alt="Manual body diagram preview" />
+                        <small id="manualDiagramFileName"></small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="injury-entry-card clinical-injury-area">
+                    <h4>Add External Injury Record</h4>
+                    <div class="form-grid four">
+                      <label>Injury Type
+                        <select id="injuryType">
+                          <option>Abrasion</option>
+                          <option>Contusion</option>
+                          <option>Laceration</option>
+                          <option>Incised wound</option>
+                          <option>Stab wound</option>
+                          <option>Burn</option>
+                          <option>Fracture</option>
+                          <option>Firearm wound</option>
+                          <option>Other</option>
+                        </select>
+                      </label>
+                      <label>Body Location
+                        <input id="bodyLocation" type="text" placeholder="e.g., Left forearm" />
+                      </label>
+                      <label>Side
+                        <select id="injurySide">
+                          <option>Not applicable</option>
+                          <option>Left</option>
+                          <option>Right</option>
+                          <option>Midline</option>
+                          <option>Bilateral</option>
+                        </select>
+                      </label>
+                      <label>Linked Marker
+                        <input id="linkedMarker" type="text" readonly placeholder="Click body diagram" />
+                      </label>
+                      <label>Length (cm)
+                        <input id="injuryLength" type="number" step="0.01" min="0" />
+                      </label>
+                      <label>Width (cm)
+                        <input id="injuryWidth" type="number" step="0.01" min="0" />
+                      </label>
+                      <label>Depth (cm)
+                        <input id="injuryDepth" type="number" step="0.01" min="0" />
+                      </label>
+                      <label>Injury Age
+                        <select id="injuryAge">
+                          <option>Fresh</option>
+                          <option>Healing</option>
+                          <option>Healed</option>
+                          <option>Old scar</option>
+                          <option>Unable to assess</option>
+                        </select>
+                      </label>
+                      <label>Severity
+                        <select id="injurySeverity">
+                          <option>Minor</option>
+                          <option>Non-Grievous</option>
+                          <option>Grievous</option>
+                          <option>Life Threatening</option>
+                          <option>Fatal</option>
+                          <option>Pending Opinion</option>
+                        </select>
+                      </label>
+                      <label>Weapon Opinion
+                        <select id="weaponOpinion">
+                          <option>Pending opinion</option>
+                          <option>Blunt force possible</option>
+                          <option>Sharp force possible</option>
+                          <option>Thermal injury possible</option>
+                          <option>Firearm related</option>
+                          <option>Self-inflicted possible</option>
+                          <option>Not consistent with history</option>
+                        </select>
+                      </label>
+                      <label>Is Fatal?
+                        <select id="isFatal">
+                          <option>No</option>
+                          <option>Yes</option>
+                          <option>Undetermined</option>
+                        </select>
+                      </label>
+                    </div>
+                    <label class="wide-label">Injury Description
+                      <textarea id="injuryDescription" rows="2" placeholder="Shape, color, edges, direction, surrounding features..."></textarea>
+                    </label>
+                    <div class="inline-actions">
+                      <button type="button" class="btn outline" id="btnAddInjury">+ Add Injury</button>
+                    </div>
+                  </div>
+
+                  <div class="table-wrap compact-table-wrap">
+                    <table>
+                      <thead>
+                        <tr><th>No</th><th>Marker</th><th>Type</th><th>Location</th><th>Size</th><th>Severity</th><th>Action</th></tr>
+                      </thead>
+                      <tbody id="injuryTableBody"></tbody>
+                    </table>
+                    <p class="empty-state" id="injuryEmptyMessage">No injury records added yet.</p>
+                  </div>
+                </fieldset>
+
+                <fieldset class="case-section autopsy-section">
+                  <legend><span>6</span>Internal Organ Findings</legend>
+                  <p class="field-note">Use this section for postmortem organ-by-organ findings. Add one record per organ or body cavity.</p>
+                  <div class="form-grid four">
+                    <label>Organ / Region
+                      <select id="organName">
+                        <option>Brain</option>
+                        <option>Heart</option>
+                        <option>Lungs</option>
+                        <option>Liver</option>
+                        <option>Kidneys</option>
+                        <option>Spleen</option>
+                        <option>Stomach</option>
+                        <option>Intestines</option>
+                        <option>Skull</option>
+                        <option>Chest Cavity</option>
+                        <option>Abdominal Cavity</option>
+                        <option>Other</option>
+                      </select>
+                    </label>
+                    <label>Pathological Condition
+                      <input id="pathologicalCondition" type="text" placeholder="e.g., congestion, hemorrhage" />
+                    </label>
+                  </div>
+                  <label class="wide-label">Finding Description
+                    <textarea id="findingDescription" rows="2" placeholder="Detailed internal finding..."></textarea>
+                  </label>
+                  <div class="inline-actions">
+                    <button type="button" class="btn outline" id="btnAddOrganFinding">+ Add Organ Finding</button>
+                  </div>
+
+                  <div class="table-wrap compact-table-wrap">
+                    <table>
+                      <thead><tr><th>No</th><th>Organ / Region</th><th>Finding</th><th>Condition</th><th>Action</th></tr></thead>
+                      <tbody id="organTableBody"></tbody>
+                    </table>
+                    <p class="empty-state" id="organEmptyMessage">No internal organ findings added yet.</p>
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend><span>7</span>Samples Collected / Investigation Requests</legend>
+                  <p class="field-note">This section records what was collected or requested during the examination. Full custody transfer will be managed later in Evidence & Samples.</p>
+                  <div class="sample-grid">
+                    <label><input class="sample-checkbox" type="checkbox" data-sample="Blood" /> Blood</label>
+                    <label><input class="sample-checkbox" type="checkbox" data-sample="Urine" /> Urine</label>
+                    <label><input class="sample-checkbox" type="checkbox" data-sample="Swabs" /> Swabs</label>
+                    <label><input class="sample-checkbox" type="checkbox" data-sample="DNA" /> DNA</label>
+                    <label><input class="sample-checkbox" type="checkbox" data-sample="Hair" /> Hair</label>
+                    <label><input class="sample-checkbox" type="checkbox" data-sample="Nails" /> Nails</label>
+                    <label><input class="sample-checkbox" type="checkbox" data-sample="Vitreous Humor" /> Vitreous Humor</label>
+                    <label><input class="sample-checkbox" type="checkbox" data-sample="Stomach Contents" /> Stomach Contents</label>
+                    <label><input class="sample-checkbox" type="checkbox" data-sample="Clothing" /> Clothing</label>
+                    <label><input class="sample-checkbox" type="checkbox" data-sample="Photographs" /> Photographs</label>
+                    <label><input class="sample-checkbox" type="checkbox" data-sample="X-ray / CT" /> X-ray / CT</label>
+                    <label><input class="sample-checkbox" type="checkbox" data-sample="Histology" /> Histology</label>
+                    <label><input class="sample-checkbox" type="checkbox" data-sample="Toxicology" /> Toxicology</label>
+                  </div>
+
+                  <div class="form-grid four wide-top-gap">
+                    <label>Seal Number / Temporary Label
+                      <input id="temporarySealNo" type="text" placeholder="SEAL/2026/001" />
+                    </label>
+                    <label>Storage Condition
+                      <select id="storageCondition">
+                        <option>Room temperature</option>
+                        <option>Refrigerated</option>
+                        <option>Frozen</option>
+                        <option>Dry sealed packet</option>
+                        <option>Formalin</option>
+                        <option>Other</option>
+                      </select>
+                    </label>
+                    <label>Lab Request Needed?
+                      <select id="labRequestNeeded">
+                        <option>No</option>
+                        <option>Yes</option>
+                      </select>
+                    </label>
+                    <label>Priority
+                      <select id="samplePriority">
+                        <option>Normal</option>
+                        <option>Urgent</option>
+                        <option>Court Priority</option>
+                      </select>
+                    </label>
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend><span>8</span>Doctor Opinion and Notes</legend>
+                  <label class="wide-label">Doctor Opinion / Preliminary Medico-Legal Opinion
+                    <textarea id="doctorOpinion" rows="4" placeholder="Opinion on injury consistency, weapon, cause/manner of death, pending lab results..."></textarea>
+                  </label>
+                  <label class="wide-label">General Notes / Follow-up Instructions
+                    <textarea id="generalNotes" rows="3" placeholder="Further examination, lab follow-up, court priority, document requirements..."></textarea>
+                  </label>
+                </fieldset>
+
+                <div class="form-actions" id="formActionButtonsBar">
+                  <button type="button" class="btn light" id="clearFormBtn">Cancel</button>
+                  <button type="button" class="btn outline" id="btnSaveDraft">Save as Draft</button>
+                  <button type="button" class="btn primary" id="btnCompleteExam">Complete Examination</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="tab-panel" id="recordsPanel">
+              <div class="section-heading">
+                <div>
+                  <h3>Search and Review Examination Records</h3>
+                  <p>View clinical or autopsy examinations. Select a record to open the full examination details.</p>
+                </div>
+                <div class="case-switch" role="group" aria-label="Examination record type">
+                  <button type="button" class="case-switch-btn active" data-context="details" data-type="clinical">Clinical Exams</button>
+                  <button type="button" class="case-switch-btn" data-context="details" data-type="autopsy">Autopsy Exams</button>
+                </div>
+              </div>
+
+              <div class="details-tools">
+                <label class="case-search" style="flex: 1;">
+                  <span>⌕</span>
+                  <input id="examSearch" type="search" placeholder="Search by Examination ID, Case ID, patient, doctor, marker or finding..." />
+                </label>
+                <select id="examStatusFilter" style="width: 220px;">
+                  <option value="all">All statuses</option>
+                  <option>Draft</option>
+                  <option>In Progress</option>
+                  <option>Completed</option>
+                  <option>Pending Lab Results</option>
+                  <option>Pending Review</option>
+                  <option>Locked</option>
+                </select>
+              </div>
+
+              <div class="table-wrap" style="margin-bottom: 24px;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Examination ID</th>
+                      <th>Case / Patient</th>
+                      <th>Type</th>
+                      <th>Doctor</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="examTableBody"></tbody>
+                </table>
+                <p class="empty-state" id="examEmptyMessage" hidden>No matching examination records found.</p>
+              </div>
+
+              <div id="fullExamDetailsContainer" style="display:none; border-top: 2px dashed var(--border); padding-top: 24px; margin-top: 24px;">
+                <div class="detail-view-header">
+                  <div class="header-left">
+                    <h2 id="detHeaderExamId">EXAM-2026-000001</h2>
+                    <span id="detHeaderType" class="badge purple">Clinical Examination</span>
+                    <span id="detHeaderStatus" class="badge">Completed</span>
+                  </div>
+                  <div class="header-right">
+                    <span id="detHeaderCasePatient">Case: Loading...</span>
+                    <span id="detHeaderPrivacy" class="badge light">Normal</span>
+                    <span id="detHeaderMarkers" class="badge orange">0 markers</span>
+                  </div>
+                </div>
+
+                <div class="details-modules-grid">
+                  <div class="detail-block-card">
+                    <h4>Examination Header</h4>
+                    <div class="card-info-row"><small>Case ID:</small><span id="detCaseId"></span></div>
+                    <div class="card-info-row"><small>Patient / Victim ID:</small><span id="detPatientId"></span></div>
+                    <div class="card-info-row"><small>Date & Time:</small><span id="detExamDateTime"></span></div>
+                    <div class="card-info-row"><small>Place:</small><span id="detExamPlace"></span></div>
+                    <div class="card-info-row"><small>Purpose:</small><span id="detExamPurpose"></span></div>
+                  </div>
+
+                  <div class="detail-block-card">
+                    <h4>Doctor Team</h4>
+                    <div class="card-info-row"><small>Primary Examiner:</small><span id="detPrimaryDoctor"></span></div>
+                    <div class="card-info-row"><small>Assisting Doctor:</small><span id="detAssistingDoctor"></span></div>
+                    <div class="card-info-row"><small>Supervisor:</small><span id="detSupervisor"></span></div>
+                    <div class="card-info-row"><small>Privacy Level:</small><span id="detPrivacyLevel"></span></div>
+                  </div>
+
+                  <div class="detail-block-card">
+                    <h4>Clinical / External Findings</h4>
+                    <div class="card-info-row"><small>Patient Condition:</small><span id="detPatientCondition"></span></div>
+                    <div class="card-info-row"><small>History:</small><span id="detHistory"></span></div>
+                    <div class="card-info-row"><small>General Appearance:</small><span id="detGeneralAppearance"></span></div>
+                    <div class="card-info-row"><small>Alcohol / Drug:</small><span id="detAlcoholDrug"></span></div>
+                  </div>
+
+                  <div class="detail-block-card">
+                    <h4>Autopsy / PM Findings</h4>
+                    <div class="card-info-row"><small>Body Condition:</small><span id="detBodyCondition"></span></div>
+                    <div class="card-info-row"><small>Postmortem Changes:</small><span id="detPmChanges"></span></div>
+                    <div class="card-info-row"><small>External Appearance:</small><span id="detExternalAppearance"></span></div>
+                    <div class="card-info-row"><small>Cause / Manner:</small><span id="detCauseManner"></span></div>
+                  </div>
+
+                  <div class="detail-block-card wide-detail-card">
+                    <h4>Injury Records and Body Markers</h4>
+                    <div id="detInjuryList" class="detail-list"></div>
+                  </div>
+
+                  <div class="detail-block-card wide-detail-card">
+                    <h4>Internal Organ Findings</h4>
+                    <div id="detOrganList" class="detail-list"></div>
+                  </div>
+
+                  <div class="detail-block-card">
+                    <h4>Samples / Investigation Requests</h4>
+                    <div id="detSampleList" class="detail-list"></div>
+                  </div>
+
+                  <div class="detail-block-card">
+                    <h4>Opinion and Follow-up</h4>
+                    <div class="card-info-row"><small>Doctor Opinion:</small><span id="detDoctorOpinion"></span></div>
+                    <div class="card-info-row"><small>General Notes:</small><span id="detGeneralNotes"></span></div>
+                    <div class="card-info-row"><small>Manual Diagram:</small><span id="detManualDiagram"></span></div>
+                  </div>
+                </div>
+
+                <div class="details-action-bar">
+                  <button type="button" class="btn light" id="btnEditExamDetails">Edit Examination</button>
+                  <button type="button" class="btn primary" onclick="alert('Opening Evidence & Samples module...')">Open Evidence & Samples</button>
+                  <button type="button" class="btn outline" onclick="alert('Opening Report Generation module...')">Generate Report Later</button>
+                </div>
+              </div>
+            </section>
+          </section>
+        </div>
+
+        <section class="bottom-grid">
+          <article class="panel guidance-panel">
+            <h3>ⓘ Examination Guidelines</h3>
+            <ul>
+              <li>Select an existing case before recording findings.</li>
+              <li>Use body diagram markers for visual injury location.</li>
+              <li>Use structured injury fields for report generation.</li>
+              <li>Upload manual body diagram if the doctor used paper marking.</li>
+              <li>Complete examination only when medical findings are ready for evidence, lab or report flow.</li>
+            </ul>
+          </article>
+
+          <article class="panel recent-panel">
+            <div class="panel-title-row between">
+              <h3>Recent Examination Records</h3>
+              <button type="button" class="text-btn" id="viewRecentBtn">View all →</button>
+            </div>
+            <table class="mini-table">
+              <thead><tr><th>Exam ID</th><th>Case</th><th>Type</th><th>Status</th><th>Date</th></tr></thead>
+              <tbody id="recentExamBody"></tbody>
+            </table>
+          </article>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div id="validationModal" class="modal-shell">
+    <div class="modal-card danger-modal">
+      <div class="modal-icon">⚠️</div>
+      <h4>Required Fields Missing</h4>
+      <p>Please complete these required fields:</p>
+      <ul id="validationMissingList"></ul>
+      <button type="button" id="btnCloseValidationModal" class="btn primary">OK</button>
+    </div>
+  </div>
+
+  <div id="successModal" class="modal-shell">
+    <div class="modal-card success-modal">
+      <div class="modal-icon">✅</div>
+      <h4>Examination Saved</h4>
+      <p id="successModalMessage">Examination record saved successfully.</p>
+      <button type="button" id="btnCloseSuccessModal" class="btn primary">OK</button>
+    </div>
+  </div>
+
+  <script src="../Js/ExaminationForms.js"></script>
+</body>
+</html>
