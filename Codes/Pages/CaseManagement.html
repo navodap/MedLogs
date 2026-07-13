@@ -29,10 +29,10 @@
 
       <nav class="side-nav">
         <a href="#" class="nav-item"><span>⌂</span>Dashboard</a>
-        <a href="PatientManagement.html" class="nav-item"><span>☤</span>Patient Management</a>
+        <a href="Patients.html" class="nav-item"><span>☤</span>Patient Management</a>
         <a href="#" class="nav-item active"><span>▣</span>Case Management </a>
-        <a href="ExaminationForms.html" class="nav-item"><span>☷</span>Examination Forms</a>
-        <a href="EvidenceSamples.html" class="nav-item active"><span>⚗</span>Evidence & Samples</a>
+        <a href="#" class="nav-item"><span>☷</span>Examination Forms</a>
+        <a href="#" class="nav-item"><span>⚗</span>Evidence & Samples</a>
         <a href="#" class="nav-item"><span>🔬</span>Lab / Toxicology</a>
         <a href="#" class="nav-item"><span>⚖</span>Police & Court</a>
         <a href="#" class="nav-item"><span>▤</span>Documents</a>
@@ -64,8 +64,8 @@
         <div class="top-actions">
           <button class="notify-btn" type="button" aria-label="Notifications">🔔<small>4</small></button>
           <div class="date-box">
-            <strong id="currentDateDisplay">May 27, 2026</strong>
-            <span id="currentDayDisplay">Tuesday</span>
+            <strong id="currentDateDisplay">Loading date...</strong>
+            <span id="currentDayDisplay">Loading day...</span>
           </div>
           <div class="profile-box">
             <div class="avatar">J</div>
@@ -87,19 +87,33 @@
             </div>
           </div>
           <div class="stats-grid" aria-label="Case summary statistics">
-            <article class="stat-card">
-              <span class="stat-icon teal">▣</span>
-              <div><strong>1,248</strong><p>Total Cases</p><small>↑ 8% vs last month</small></div>
-            </article>
-            <article class="stat-card">
-              <span class="stat-icon purple">⌁</span>
-              <div><strong>768</strong><p>Clinical Cases</p><small>↑ 5% vs last month</small></div>
-            </article>
-            <article class="stat-card">
-              <span class="stat-icon blue">✎</span>
-              <div><strong>480</strong><p>Autopsy Cases</p><small>↑ 3% vs last month</small></div>
-            </article>
-          </div>
+  <article class="stat-card">
+    <span class="stat-icon teal">▣</span>
+    <div>
+      <strong id="totalCasesCount">0</strong>
+      <p>Total Cases</p>
+      <small id="totalCasesNote">No cases registered yet</small>
+    </div>
+  </article>
+
+  <article class="stat-card">
+    <span class="stat-icon purple">⌁</span>
+    <div>
+      <strong id="clinicalCasesCount">0</strong>
+      <p>Clinical Cases</p>
+      <small id="clinicalCasesNote">No clinical cases yet</small>
+    </div>
+  </article>
+
+  <article class="stat-card">
+    <span class="stat-icon blue">✎</span>
+    <div>
+      <strong id="autopsyCasesCount">0</strong>
+      <p>Autopsy Cases</p>
+      <small id="autopsyCasesNote">No autopsy cases yet</small>
+    </div>
+  </article>
+</div>
         </section>
 
         <div class="dashboard-grid">
@@ -146,12 +160,14 @@
         </select>
       </label>
 
-      <label>Registered Date & Time
-        <input id="registeredDateTime" type="datetime-local" readonly />
-      </label>
-
       <label>Registered By
-        <input id="registeredBy" type="text" value="System Clerk" />
+        <select id="registeredBy">
+          <option value="Consultant JMO">Consultant JMO</option>
+          <option value="MOML">Medical Officer Medico-Legal (MOML)</option>
+          <option value="AJMO">Assistant JMO (AJMO)</option>
+          <option value="Administrative Clerk" selected>Administrative Clerk / Typist</option>
+          <option value="System Administrator">System Administrator</option>
+        </select>
       </label>
 
       <label>Priority Level
@@ -732,10 +748,13 @@
             <h3>ⓘ Registration Guidelines</h3>
             <ul>
               <li>Fields marked with <strong>*</strong> are mandatory.</li>
-              <li>Verify patient/victim ID before saving.</li>
-              <li>Use restricted record flag for minors, sexual assault or confidential cases.</li>
-              <li>Every change should be captured in audit logs.</li>
-              <li>Police and court references should be linked before report submission.</li>
+              <li>Verify patient/victim identity matches the MLEF or Inquest Order before saving.</li>
+              <li>Clinical cases require a valid MLEF number and issuing police station.</li>
+              <li>Autopsy cases require an Inquest Order or Court Order before registration.</li>
+              <li>Flag cases involving minors or sexual assault as Restricted immediately.</li>
+              <li>Ensure chain of custody is marked when collecting forensic samples or evidence.</li>
+              <li>Police and court references must be linked before any report submission.</li>
+              <li>All changes are recorded in audit logs for legal accountability.</li>
             </ul>
           </article>
 
@@ -758,7 +777,7 @@
     <div style="background: #ffffff; padding: 24px; border-radius: 12px; box-shadow: 0 18px 45px rgba(10, 49, 86, 0.2); width: 90%; max-width: 450px; text-align: center; border-left: 5px solid var(--cyan-500);">
       <div style="font-size: 2.5rem; margin-bottom: 12px;">💾</div>
       <h4 style="margin: 0 0 10px; color: var(--navy-900); font-size: 1.2rem;">Draft Status</h4>
-      <p style="margin: 0 0 20px; color: #43536c; font-size: 0.9rem; line-height: 1.5;">Draft metrics recorded successfully inside temporary context state storage registry.</p>
+      <p id="draftModalMessage" style="margin: 0 0 20px; color: #43536c; font-size: 0.9rem; line-height: 1.5;">Draft saved successfully.</p>
       <button type="button" id="btnCloseDraftModal" class="btn primary" style="min-width: 100px;">OK</button>
     </div>
   </div>
@@ -789,4 +808,3 @@
   <script src="../Js/CaseManagement.js"></script>
 </body>
 </html>
-
