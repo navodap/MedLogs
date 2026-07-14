@@ -1315,3 +1315,51 @@ label.field-locked textarea {
 label.field-locked input[type="checkbox"] {
   opacity: 0.5;
 }
+.sub-form-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.sub-form-card h4 {
+  margin: 0 0 6px;
+  color: var(--navy-900);
+}
+
+.case-mini-list {
+  display: grid;
+  gap: 8px;
+  font-size: 0.82rem;
+}
+
+.case-mini-item {
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 9px 10px;
+}
+
+.case-mini-item strong {
+  display: block;
+  color: var(--navy-900);
+  margin-bottom: 2px;
+}
+
+.case-mini-item small {
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.details-action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn.dark {
+  background: #0f172a;
+  color: #fff;
+  box-shadow: 0 12px 22px rgba(15, 23, 42, 0.18);
+}
