@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report Generation | Forensic Medical Department Information System</title>
+  <link rel="stylesheet" href="../css/ReportGeneration.css" />
+</head>
+<body>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="app-layout">
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="brand-block">
+        <img src="../images/medlogs-logo.png" alt="MedLogs Logo" class="brand-logo-img" />
+        <div class="brand-text">
+          <h1 class="brand-title">MedLogs</h1>
+          <p class="brand-subtitle">Forensic Medico-Legal<br />Information Management</p>
+        </div>
+      </div>
+
+      <nav class="side-nav">
+        <a href="#" class="nav-item"><span>⌂</span>Dashboard</a>
+        <a href="PatientManagement.html" class="nav-item"><span>☤</span>Patient Management</a>
+        <a href="CaseManagement.html" class="nav-item"><span>▣</span>Case Management</a>
+        <a href="ExaminationForms.html" class="nav-item"><span>☷</span>Examination Forms</a>
+        <a href="EvidenceSamples.html" class="nav-item"><span>⚗</span>Evidence & Samples</a>
+        <a href="#" class="nav-item"><span>🔬</span>Lab / Toxicology</a>
+        <a href="#" class="nav-item"><span>⚖</span>Police & Court</a>
+        <a href="#" class="nav-item"><span>▤</span>Documents</a>
+        <a href="ReportGeneration.html" class="nav-item active"><span>▥</span>Reports</a>
+        <a href="#" class="nav-item"><span>⌕</span>Search</a>
+        <a href="#" class="nav-item"><span>◌</span>Staff Management</a>
+        <a href="#" class="nav-item"><span>▣</span>Users & Roles</a>
+        <a href="#" class="nav-item"><span>☑</span>Audit Logs</a>
+        <a href="#" class="nav-item"><span>◷</span>Statistics</a>
+        <a href="#" class="nav-item"><span>⚙</span>Settings</a>
+      </nav>
+
+      <div class="secure-panel">
+        <div class="secure-icon">🔒</div>
+        <p>SECURE. ACCURATE. ACCOUNTABLE.</p>
+        <strong>Trusted Forensic Care.<br />Reliable Medico-Legal Records.</strong>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="menu-btn" type="button" aria-label="Open menu">☰</button>
+        <h2>Report Generation</h2>
+        <label class="global-search">
+          <span>⌕</span>
+          <input id="globalReportSearch" type="search" placeholder="Search reports, cases, patients, MLR, PMR, COD..." />
+          <kbd>Ctrl + K</kbd>
+        </label>
+        <div class="top-actions">
+          <button class="notify-btn" type="button" aria-label="Notifications">🔔<small>7</small></button>
+          <div class="date-box">
+            <strong id="currentDateDisplay">May 27, 2026</strong>
+            <span id="currentDayDisplay">Tuesday</span>
+          </div>
+          <div class="profile-box">
+            <div class="avatar">J</div>
+            <div>
+              <strong>Dr. N. Perera</strong>
+              <span>JMO</span>
+            </div>
+            <span class="chevron">⌄</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <section class="hero-card">
+          <div class="hero-left">
+            <div class="hero-icon">▥</div>
+            <div>
+              <h3>Generate Manual-Style Medico-Legal Reports</h3>
+              <p class="hero-subtext">Auto-build MLR, PMR and COD reports from verified patient, case, examination, evidence and lab data. Review, approve, print and lock the final record.</p>
+            </div>
+          </div>
+          <div class="stats-grid" aria-label="Report summary statistics">
+            <article class="stat-card">
+              <span class="stat-icon teal">▥</span>
+              <div><strong id="totalReportStat">0</strong><p>Total Reports</p><small>Saved locally</small></div>
+            </article>
+            <article class="stat-card">
+              <span class="stat-icon purple">✎</span>
+              <div><strong id="draftReportStat">0</strong><p>Drafts</p><small>Editable</small></div>
+            </article>
+            <article class="stat-card">
+              <span class="stat-icon blue">✓</span>
+              <div><strong id="approvedReportStat">0</strong><p>Approved</p><small>Locked/ready</small></div>
+            </article>
+          </div>
+        </section>
+
+        <div class="dashboard-grid">
+          <section class="panel main-panel">
+            <div class="panel-tabs" role="tablist" aria-label="Report module tabs">
+              <button class="tab-btn active" type="button" data-tab="generate"><span>▥</span>Generate Report</button>
+              <button class="tab-btn" type="button" data-tab="records"><span>▤</span>Report Register / Details</button>
+              <p class="auto-note">ⓘ Reports are generated from saved records first. Doctors edit only the medical opinion and final conclusion.</p>
+            </div>
+
+            <section class="tab-panel active" id="generatePanel">
+              <div class="section-heading">
+                <div>
+                  <h3>Report Builder</h3>
+                  <p>Select case/examination, choose a manual-world report template, then auto-generate an A4 printable preview.</p>
+                </div>
+                <div class="case-switch" role="group" aria-label="Template shortcut">
+                  <button type="button" class="case-switch-btn active" data-template-shortcut="MLR">MLR</button>
+                  <button type="button" class="case-switch-btn" data-template-shortcut="PMR">PMR</button>
+                  <button type="button" class="case-switch-btn" data-template-shortcut="COD">COD</button>
+                </div>
+              </div>
+
+              <form id="reportForm" class="case-form">
+                <fieldset>
+                  <legend><span>1</span>Select Source Data</legend>
+                  <p class="field-note">The report should be connected to a registered case and examination. Direct links like ReportGeneration.html?caseId=...&examId=... are supported.</p>
+                  <div class="form-grid four">
+                    <label>Search Case / Examination / Patient
+                      <input id="sourceSearchInput" type="search" placeholder="Case ID, Exam ID, patient, doctor, report type..." />
+                    </label>
+                    <label>Registered Examination
+                      <select id="examinationSelect"></select>
+                    </label>
+                    <label>Case ID
+                      <input id="reportCaseId" type="text" readonly />
+                    </label>
+                    <label>Patient / Deceased ID
+                      <input id="reportPatientId" type="text" readonly />
+                    </label>
+                  </div>
+
+                  <div class="selected-case-card" id="sourceSummaryPanel">
+                    <div class="preview-empty compact-empty">
+                      <div><span>⌕</span><h4>No source selected</h4><p>Select an examination to load patient, case, injury, evidence and lab information.</p></div>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend><span>2</span>Report Identification</legend>
+                  <div class="form-grid four">
+                    <label>Report ID
+                      <input id="reportId" type="text" readonly />
+                    </label>
+                    <label>Report Type
+                      <select id="reportType">
+                        <option value="MLR">MLR - Medico-Legal Report</option>
+                        <option value="PMR">PMR - Postmortem Report</option>
+                        <option value="COD">COD - Cause of Death Form</option>
+                        <option value="SUPPLEMENTARY">Supplementary Report</option>
+                      </select>
+                    </label>
+                    <label>Report Status
+                      <select id="reportStatus">
+                        <option>Draft</option>
+                        <option>Pending Approval</option>
+                        <option>Approved</option>
+                        <option>Dispatched</option>
+                        <option>Amended</option>
+                        <option>Locked</option>
+                      </select>
+                    </label>
+                    <label>Issue Date
+                      <input id="issueDate" type="date" />
+                    </label>
+                    <label>Forensic Office / Hospital
+                      <input id="officeName" type="text" value="Forensic Medicine Department" />
+                    </label>
+                    <label>Prepared By
+                      <input id="preparedBy" type="text" placeholder="Dr. N. Perera" />
+                    </label>
+                    <label>Approving Consultant JMO
+                      <input id="approvedBy" type="text" placeholder="Consultant JMO" />
+                    </label>
+                    <label>Dispatch To
+                      <input id="dispatchTo" type="text" placeholder="Court / Police Station" />
+                    </label>
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend><span>3</span>Readiness Check</legend>
+                  <p class="field-note">Missing data warnings do not block saving a draft, but approval should only happen when critical data is complete.</p>
+                  <div class="warning-grid" id="readinessWarnings"></div>
+                </fieldset>
+
+                <fieldset>
+                  <legend><span>4</span>Editable Report Sections</legend>
+                  <div class="report-layout">
+                    <div class="report-builder-card">
+                      <div class="report-section-list">
+                        <label>History / Circumstances
+                          <textarea id="historyNarrative" placeholder="Auto-generated history appears here..."></textarea>
+                        </label>
+                        <label>Findings
+                          <textarea id="findingsNarrative" placeholder="Auto-generated examination findings appear here..."></textarea>
+                        </label>
+                        <label>Evidence / Samples / Lab Results
+                          <textarea id="labNarrative" placeholder="Auto-generated evidence and lab summary appears here..."></textarea>
+                        </label>
+                        <label>Opinion
+                          <textarea id="opinionNarrative" placeholder="Doctor's medico-legal opinion..."></textarea>
+                        </label>
+                        <label>Final Conclusion / Cause of Death
+                          <textarea id="conclusionNarrative" placeholder="Final conclusion or cause of death statement..."></textarea>
+                        </label>
+                        <label>Amendment Reason, if any
+                          <textarea id="amendmentReason" placeholder="Required if an approved report is amended later."></textarea>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="report-preview-card">
+                      <div class="preview-toolbar">
+                        <div class="toolbar-left">
+                          <button class="btn primary" type="button" id="btnAutoGenerate">Auto Generate</button>
+                          <button class="btn outline" type="button" id="btnRefreshPreview">Refresh Preview</button>
+                          <span class="watermark-select-note">Preview uses official printable A4 style.</span>
+                        </div>
+                        <div class="toolbar-right">
+                          <button class="btn light" type="button" id="btnPrintReport">Print / Export PDF</button>
+                        </div>
+                      </div>
+                      <div class="paper-shell">
+                        <div id="reportPreview" class="official-paper">
+                          <div class="paper-watermark">DRAFT</div>
+                          <div class="paper-header">
+                            <h1>Forensic Medicine Department</h1>
+                            <h2>Report Preview</h2>
+                            <p>Select a case and click Auto Generate.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-actions">
+                    <button class="btn light" type="button" id="clearFormBtn">Clear</button>
+                    <button class="btn outline" type="button" id="btnSaveDraft">Save Draft</button>
+                    <button class="btn primary" type="button" id="btnSubmitApproval">Submit for Approval</button>
+                    <button class="btn success" type="button" id="btnApproveReport">Approve Report</button>
+                    <button class="btn dark" type="button" id="btnDispatchReport">Mark Dispatched</button>
+                  </div>
+                </fieldset>
+              </form>
+            </section>
+
+            <section class="tab-panel" id="recordsPanel">
+              <div class="section-heading">
+                <div>
+                  <h3>Report Register</h3>
+                  <p>Search, view, edit and print generated medico-legal reports.</p>
+                </div>
+                <div class="case-switch" role="group" aria-label="Report type filter">
+                  <button type="button" class="case-switch-btn active" data-report-filter="all">All</button>
+                  <button type="button" class="case-switch-btn" data-report-filter="MLR">MLR</button>
+                  <button type="button" class="case-switch-btn" data-report-filter="PMR">PMR</button>
+                  <button type="button" class="case-switch-btn" data-report-filter="COD">COD</button>
+                </div>
+              </div>
+
+              <div class="table-tools">
+                <label class="table-search"><span>⌕</span><input id="reportSearch" type="search" placeholder="Search Report ID, Case ID, patient, status..." /></label>
+                <select id="reportStatusFilter">
+                  <option value="all">All statuses</option>
+                  <option>Draft</option>
+                  <option>Pending Approval</option>
+                  <option>Approved</option>
+                  <option>Dispatched</option>
+                  <option>Amended</option>
+                  <option>Locked</option>
+                </select>
+              </div>
+
+              <div class="table-wrap">
+                <table class="mini-table">
+                  <thead>
+                    <tr>
+                      <th>Report ID</th>
+                      <th>Case / Patient</th>
+                      <th>Type</th>
+                      <th>Prepared By</th>
+                      <th>Status</th>
+                      <th>Issue Date</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="reportTableBody"></tbody>
+                </table>
+                <p id="reportEmptyMessage" class="empty-state" hidden>No reports match your search.</p>
+              </div>
+
+              <div id="fullReportDetailsContainer" class="full-details-card" style="display:none;">
+                <div class="detail-view-header">
+                  <div>
+                    <small>Selected Report</small>
+                    <h3 id="detHeaderReportId">RPT-2026-000001</h3>
+                    <p id="detHeaderCasePatient">Case and patient summary</p>
+                  </div>
+                  <div class="status-badges">
+                    <span id="detHeaderType" class="badge">MLR</span>
+                    <span id="detHeaderStatus" class="badge">Draft</span>
+                    <span id="detHeaderVersion" class="badge light">Version 1</span>
+                  </div>
+                </div>
+
+                <div class="details-modules-grid">
+                  <article class="detail-block-card">
+                    <h4>Report Summary</h4>
+                    <p class="card-info-row"><span>Case ID</span><strong id="detCaseId">-</strong></p>
+                    <p class="card-info-row"><span>Examination ID</span><strong id="detExamId">-</strong></p>
+                    <p class="card-info-row"><span>Patient / Deceased ID</span><strong id="detPatientId">-</strong></p>
+                    <p class="card-info-row"><span>Issue Date</span><strong id="detIssueDate">-</strong></p>
+                  </article>
+                  <article class="detail-block-card">
+                    <h4>Approval and Dispatch</h4>
+                    <p class="card-info-row"><span>Prepared By</span><strong id="detPreparedBy">-</strong></p>
+                    <p class="card-info-row"><span>Approved By</span><strong id="detApprovedBy">-</strong></p>
+                    <p class="card-info-row"><span>Dispatch To</span><strong id="detDispatchTo">-</strong></p>
+                    <p class="card-info-row"><span>Updated</span><strong id="detUpdatedAt">-</strong></p>
+                  </article>
+                  <article class="detail-block-card wide-card">
+                    <h4>Version History</h4>
+                    <div id="detVersionTimeline" class="version-timeline"></div>
+                  </article>
+                </div>
+
+                <div class="report-action-line">
+                  <button class="btn outline" type="button" id="btnEditReportDetails">Edit Report</button>
+                  <button class="btn primary" type="button" id="btnPrintSelectedReport">Print Selected</button>
+                </div>
+              </div>
+            </section>
+          </section>
+
+          <aside class="bottom-grid report-side-grid">
+            <section class="guidance-panel">
+              <h4>Report Safety Rules</h4>
+              <ul>
+                <li>Generate reports from stored data instead of retyping details.</li>
+                <li>Use Draft until the JMO verifies all findings.</li>
+                <li>Approved reports should be amended only with a reason.</li>
+                <li>Print preview keeps manual-world black and white A4 style.</li>
+              </ul>
+            </section>
+
+            <section class="recent-panel">
+              <div class="recent-header">
+                <h4>Recent Reports</h4>
+                <button type="button" id="viewRecentBtn">View Register</button>
+              </div>
+              <div class="table-wrap compact-table-wrap">
+                <table class="mini-table compact-table">
+                  <thead><tr><th>Report</th><th>Case</th><th>Type</th><th>Status</th></tr></thead>
+                  <tbody id="recentReportBody"></tbody>
+                </table>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="validationModal" style="display:none;">
+    <div class="modal-card warning-modal">
+      <h3>Missing details</h3>
+      <p>Please fix these before continuing.</p>
+      <ul id="validationMissingList"></ul>
+      <button class="btn primary" type="button" id="btnCloseValidationModal">OK</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="successModal" style="display:none;">
+    <div class="modal-card success-modal">
+      <h3>Report saved</h3>
+      <p id="successModalMessage">Report saved successfully.</p>
+      <div class="form-actions compact-actions">
+        <button class="btn light" type="button" id="btnSuccessClose">Close</button>
+        <button class="btn primary" type="button" id="btnSuccessPrint">Print Report</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../Js/ReportGeneration.js"></script>
+</body>
+</html>
