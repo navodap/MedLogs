@@ -25,7 +25,10 @@ const ALWAYS_LOCKED = [
   "patientContact",
   "patientBht",
   "patientAddress",
-  "minor"
+  "minor",
+  "caseConsentStatus",
+  "caseConsentFormAvailability",
+  "caseConsentGivenBy"
 ];
 
 const ROLE_LOCKED_FIELDS = {
@@ -245,7 +248,27 @@ function patientMinorValue(patient) {
 
   return "No";
 }
+function patientConsentAvailability(patient) {
+  const documents = patient?.documents || [];
 
+  const consentDoc = documents.find(doc =>
+    doc.label === "Consent Form"
+  );
+
+  if (consentDoc?.fileName) {
+    return `Available - ${consentDoc.fileName}`;
+  }
+
+  if (patient?.living?.consentFormNo) {
+    return `Recorded - ${patient.living.consentFormNo}`;
+  }
+
+  if (patient?.personStatus === "deceased") {
+    return "Not applicable";
+  }
+
+  return "Not uploaded";
+}
 function applyPatientToCaseForm(patient) {
   if (!patient) return;
 
@@ -260,7 +283,9 @@ function applyPatientToCaseForm(patient) {
   setValue("patientContact", patient.contactNo || patient.nextOfKin?.contactNo || "");
   setValue("patientBht", patient.bhtNo || patient.hospitalNo || "");
   setValue("patientAddress", patient.permanentAddress || "");
-
+  setValue("caseConsentStatus", patient.living?.consentStatus || "Not applicable");
+  setValue("caseConsentFormAvailability", patientConsentAvailability(patient));
+  setValue("caseConsentGivenBy", patient.living?.consentGivenBy || "Not applicable");
   const minorValue = patientMinorValue(patient);
   setValue("minor", minorValue);
 
@@ -295,15 +320,15 @@ function buildCaseDocuments(type) {
   const docs = [];
 
   if (type === "clinical") {
-    [
-      ["mlefDocumentUpload", "MLEF Document"],
-      ["clinicalPoliceRequestUpload", "Police Request / Letter"],
-      ["hospitalReferralUpload", "Hospital Referral Note"],
-      ["caseConsentCopyUpload", "Consent Copy"]
-    ].forEach(([id, label]) => {
-      const doc = getUploadedFileInfo(id, label, "clinical");
-      if (doc) docs.push(doc);
-    });
+   [
+  ["mlefDocumentUpload", "MLEF Document"],
+  ["clinicalPoliceRequestUpload", "Police Request / Letter"],
+  ["hospitalReferralUpload", "Hospital Referral Note"],
+  ["additionalClinicalCaseUpload", "Additional Clinical Case Document"]
+].forEach(([id, label]) => {
+  const doc = getUploadedFileInfo(id, label, "clinical");
+  if (doc) docs.push(doc);
+});
   }
 
   if (type === "autopsy") {
@@ -579,7 +604,10 @@ function getFormData() {
     patientBht: value("patientBht"),
     patientAddress: value("patientAddress"),
     identificationStatus: value("identificationStatus"),
-
+    
+    consentStatus: value("caseConsentStatus"),
+    consentFormAvailability: value("caseConsentFormAvailability"),
+    consentGivenBy: value("caseConsentGivenBy"),
     category: isClinical ? value("caseCategory") : value("autopsyCategory"),
     confidentiality: value("confidentiality") || "Normal",
 
