@@ -244,7 +244,17 @@
       <input id="patientBht" type="text" readonly />
     </label>
   </div>
+<label>Consent Status
+  <input id="caseConsentStatus" type="text" readonly />
+</label>
 
+<label>Consent Form
+  <input id="caseConsentFormAvailability" type="text" readonly />
+</label>
+
+<label>Consent Given By
+  <input id="caseConsentGivenBy" type="text" readonly />
+</label>
   <label class="wide-label">Address
     <textarea id="patientAddress" rows="2" readonly></textarea>
   </label>
@@ -681,10 +691,10 @@
     <p class="empty-state" id="expectedReportsEmpty">No expected reports added yet.</p>
   </div>
 </fieldset>
- <fieldset>
+<fieldset>
   <legend><span>8</span>Case Documents Upload</legend>
   <p class="field-note">
-    Upload case-opening and legal documents here. Patient-level documents stay in Patient Management.
+    Upload case-opening and legal documents here. Patient-level documents such as consent form and ID documents stay in Patient Management.
   </p>
 
   <div class="form-grid four">
@@ -696,8 +706,8 @@
       <input id="hospitalReferralUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
     </label>
 
-    <label class="clinical-section active">Consent Copy, if relevant
-      <input id="caseConsentCopyUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+    <label class="clinical-section active">Additional Clinical Case Document
+      <input id="additionalClinicalCaseUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
     </label>
 
     <label class="autopsy-section">Body Receiving Document
@@ -709,7 +719,7 @@
     </label>
 
     <label>Other Case Document Type
-      <input id="otherCaseDocumentType" type="text" placeholder="Example: court letter" />
+      <input id="otherCaseDocumentType" type="text" placeholder="Example: court letter, police letter, special order" />
     </label>
 
     <label>Other Case Document
