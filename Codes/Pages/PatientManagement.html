@@ -178,9 +178,17 @@
                     <label>Date of Birth
                       <input id="dateOfBirth" type="date" />
                     </label>
-
+                    
                     <label>Age *
                       <input id="age" type="number" min="0" max="125" />
+                    </label>
+                    
+                    <label>Age Type
+                      <select id="ageType">
+                        <option>Calculated from DOB</option>
+                        <option>Estimated</option>
+                        <option>Unknown</option>
+                      </select>
                     </label>
 
                     <label>Gender *
@@ -324,9 +332,29 @@
                         <option>Consent Refused</option>
                       </select>
                     </label>
-
+                    
                     <label>Consent Form No
-                      <input id="consentFormNo" type="text" />
+                      <input id="consentFormNo" type="text" placeholder="CONS/2026/001" />
+                    </label>
+                    
+                    <label>Consent Given By
+                      <select id="consentGivenBy">
+                        <option value="">Select person / authority</option>
+                        <option>Patient</option>
+                        <option>Guardian</option>
+                        <option>Police Officer</option>
+                        <option>Court Order</option>
+                        <option>Emergency Authority</option>
+                        <option>Not Applicable</option>
+                      </select>
+                    </label>
+                    
+                    <label>Consent Date & Time
+                      <input id="consentDateTime" type="datetime-local" />
+                    </label>
+                    
+                    <label>Consent Form Upload
+                      <input id="consentFormUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
                     </label>
 
                     <label>Admitted Hospital
@@ -490,45 +518,49 @@
                   </label>
                 </fieldset>
 
-                <fieldset>
-                  <legend><span>6</span>Linked Case / Document Setup</legend>
+               <fieldset>
+                  <legend><span>6</span>Initial Documents and Access Control</legend>
+                  <p class="field-note">
+                    This section stores patient-level documents only. MLEF, PM registry, inquest, police and court references are added later in Case Management.
+                  </p>
+                
                   <div class="form-grid four">
-                    <label>Initial Linked Case No
-                      <input id="initialCaseNo" type="text" placeholder="CL-2026-000123 or PM-2026-000045" />
+                    <label>Primary ID Document
+                      <input id="idDocumentUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
                     </label>
-
-                    <label>Case Type
-                      <select id="initialCaseType">
-                        <option value="">Not linked yet</option>
-                        <option>Clinical</option>
-                        <option>Autopsy</option>
-                      </select>
+                
+                    <label>Guardian / Next of Kin Document
+                      <input id="guardianDocumentUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
                     </label>
-
-                    <label>Case Category
-                      <input id="initialCaseCategory" type="text" placeholder="Assault, Toxicology, Natural Death..." />
+                
+                    <label class="living-section active">Hospital Admission Sheet
+                      <input id="hospitalAdmissionUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
                     </label>
-
-                    <label>Main Reference No
-                      <input id="initialReferenceNo" type="text" placeholder="MLEF / PM Registry / Inquest No" />
+                
+                    <label class="deceased-section">Body Tag Photo
+                      <input id="bodyTagPhotoUpload" type="file" accept=".jpg,.jpeg,.png" />
                     </label>
-
-                    <label>Primary Document
-                      <input id="primaryDocument" type="file" />
+                
+                    <label class="deceased-section">Body Receiving Document
+                      <input id="bodyReceivingUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
                     </label>
-
+                
                     <label>Access Flag
                       <select id="accessFlag">
                         <option>Standard Access</option>
                         <option>Minor Restricted</option>
                         <option>Sexual Assault Restricted</option>
                         <option>Unidentified Body Restricted</option>
-                        <option>Court Priority</option>
+                        <option>Court Sensitive</option>
+                        <option>High Profile Case</option>
                       </select>
                     </label>
                   </div>
+                
+                  <label class="wide-label">Special Handling Notes
+                    <textarea id="specialHandlingNotes" rows="3" placeholder="Example: minor victim, unidentified body, court-sensitive case, restricted search visibility"></textarea>
+                  </label>
                 </fieldset>
-
                 <div class="form-actions" id="formActionButtonsBar">
                   <button type="button" class="btn light" id="clearFormBtn">Cancel</button>
                   <button type="button" class="btn outline" id="btnSaveAsDraft">Save as Draft</button>
@@ -655,9 +687,20 @@
                   </div>
                 </div>
 
-                <div class="details-action-bar">
+               <div class="details-action-bar">
                   <button type="button" class="btn light" id="btnEditPatientDetails">Edit Patient</button>
-                  <button type="button" class="btn primary" onclick="alert('Opening Case Management module...')">Open Linked Case</button>
+                
+                  <button type="button" class="btn primary" id="btnCreateClinicalCase">
+                    Create Clinical Case
+                  </button>
+                
+                  <button type="button" class="btn primary" id="btnCreateAutopsyCase">
+                    Create Autopsy Case
+                  </button>
+                
+                  <button type="button" class="btn outline" id="btnOpenFirstLinkedCase">
+                    Open Linked Case
+                  </button>
                 </div>
               </div>
             </section>
