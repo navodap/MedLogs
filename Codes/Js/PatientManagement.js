@@ -1,5 +1,5 @@
 const STORAGE_KEY = "fmdis_patients_v1";
-
+const CASE_STORAGE_KEY = "fmdis_cases_v2";
 const samplePatients = [
   {
     id: "PV-2026-00124",
@@ -370,6 +370,221 @@ function formatDate(input) {
 function personTypeLabel(type) {
   return type === "living" ? "Living Victim" : "Deceased Person";
 }
+function calculateAgeFromDob(dobValue) {
+  if (!dobValue) return "";
+
+  const dob = new Date(dobValue);
+  const today = new Date();
+
+  if (Number.isNaN(dob.getTime()) || dob > today) return "";
+
+  let age = today.getFullYear() - dob.getFullYear();
+  const monthDifference = today.getMonth() - dob.getMonth();
+
+  if (
+    monthDifference < 0 ||
+    (monthDifference === 0 && today.getDate() < dob.getDate())
+  ) {
+    age--;
+  }
+
+  return age >= 0 ? String(age) : "";
+}
+
+function updateMinorRules() {
+  const age = Number(value("age"));
+
+  if (!Number.isNaN(age) && age < 18) {
+    setValue("isMinor", "Yes");
+    setValue("confidentiality", "Restricted");
+    setValue("accessFlag", "Minor Restricted");
+
+    if (!value("consentStatus")) {
+      setValue("consentStatus", "Guardian Consent Given");
+    }
+
+    if (!value("consentGivenBy")) {
+      setValue("consentGivenBy", "Guardian");
+    }
+  }
+
+  if (!Number.isNaN(age) && age >= 18 && value("isMinor") === "Yes") {
+    setValue("isMinor", "No");
+  }
+}
+
+function syncAgeFromDob() {
+  const calculatedAge = calculateAgeFromDob(value("dateOfBirth"));
+
+  if (calculatedAge) {
+    setValue("age", calculatedAge);
+    setValue("ageType", "Calculated from DOB");
+    updateMinorRules();
+  }
+}
+
+function getStoredCaseRecords() {
+  try {
+    const stored = localStorage.getItem(CASE_STORAGE_KEY);
+    const parsed = stored ? JSON.parse(stored) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function caseReference(caseRecord) {
+  if (!caseRecord) return "";
+
+  return (
+    caseRecord.mlefNo ||
+    caseRecord.pmRegistryNo ||
+    caseRecord.inquestNo ||
+    caseRecord.courtOrderNo ||
+    caseRecord.policeRef ||
+    ""
+  );
+}
+
+function linkedCasesFromCaseStorage(patientId) {
+  return getStoredCaseRecords()
+    .filter(caseRecord => caseRecord.patientId === patientId)
+    .map(caseRecord => ({
+      caseId: caseRecord.id || caseRecord.caseId,
+      type: caseRecord.type === "autopsy" ? "Autopsy" : "Clinical",
+      category: caseRecord.category || caseRecord.caseCategory || "",
+      status: caseRecord.status || "Registered",
+      reference: caseReference(caseRecord),
+      registeredDateTime: caseRecord.registeredDateTime || caseRecord.createdAt || ""
+    }));
+}
+
+function getAllLinkedCases(record) {
+  const manualCases = record.linkedCases || [];
+  const storedCases = linkedCasesFromCaseStorage(record.id);
+
+  const merged = [...manualCases];
+
+  storedCases.forEach(storedCase => {
+    const alreadyExists = merged.some(item => item.caseId === storedCase.caseId);
+    if (!alreadyExists) {
+      merged.push(storedCase);
+    }
+  });
+
+  return merged;
+}
+
+function getUploadedFileInfo(inputId, label) {
+  const fileInput = document.getElementById(inputId);
+  const file = fileInput?.files?.[0];
+
+  if (!file) return null;
+
+  return {
+    label,
+    status: "Uploaded",
+    fileName: file.name,
+    fileType: file.type || "Unknown",
+    uploadedAt: localDateTimeValue()
+  };
+}
+
+function keepExistingOrDefault(existing, label, fallbackStatus = "Pending") {
+  const found = existing?.documents?.find(doc => doc.label === label);
+
+  return found || {
+    label,
+    status: fallbackStatus
+  };
+}
+
+function buildPatientDocuments(type, existing, record) {
+  const documents = [];
+
+  const idDoc =
+    getUploadedFileInfo("idDocumentUpload", "Primary ID Document") ||
+    keepExistingOrDefault(
+      existing,
+      "Primary ID Document",
+      record.nicPassportNo ? "Verified" : "Pending"
+    );
+
+  const guardianDoc =
+    getUploadedFileInfo("guardianDocumentUpload", "Guardian / Next of Kin Document") ||
+    keepExistingOrDefault(
+      existing,
+      "Guardian / Next of Kin Document",
+      record.nextOfKin?.name ? "Pending Verification" : "Pending"
+    );
+
+  documents.push(idDoc);
+  documents.push(guardianDoc);
+
+  if (type === "living") {
+    const consentDoc =
+      getUploadedFileInfo("consentFormUpload", "Consent Form") ||
+      keepExistingOrDefault(
+        existing,
+        "Consent Form",
+        record.living?.consentFormNo ? "Recorded" : "Pending"
+      );
+
+    const hospitalDoc =
+      getUploadedFileInfo("hospitalAdmissionUpload", "Hospital Admission Sheet") ||
+      keepExistingOrDefault(
+        existing,
+        "Hospital Admission Sheet",
+        record.bhtNo ? "Pending Upload" : "Not Required Yet"
+      );
+
+    documents.push(consentDoc);
+    documents.push(hospitalDoc);
+  }
+
+  if (type === "deceased") {
+    const bodyTagPhoto =
+      getUploadedFileInfo("bodyTagPhotoUpload", "Body Tag Photo") ||
+      keepExistingOrDefault(
+        existing,
+        "Body Tag Photo",
+        record.deceased?.bodyTagNo ? "Pending Upload" : "Pending"
+      );
+
+    const bodyReceivingDoc =
+      getUploadedFileInfo("bodyReceivingUpload", "Body Receiving Document") ||
+      keepExistingOrDefault(
+        existing,
+        "Body Receiving Document",
+        record.deceased?.bodyReceivedDateTime ? "Pending Upload" : "Pending"
+      );
+
+    documents.push(bodyTagPhoto);
+    documents.push(bodyReceivingDoc);
+  }
+
+  return documents;
+}
+
+function openCaseManagementForPatient(caseType) {
+  if (!selectedPatientId) {
+    alert("Please select a patient first.");
+    return;
+  }
+
+  window.location.href =
+    `CaseManagement.html?patientId=${encodeURIComponent(selectedPatientId)}&type=${encodeURIComponent(caseType)}`;
+}
+
+function openLinkedCase(caseId) {
+  if (!caseId) {
+    alert("No linked case found for this patient.");
+    return;
+  }
+
+  window.location.href =
+    `CaseManagement.html?caseId=${encodeURIComponent(caseId)}`;
+}
 
 function statusClass(status) {
   if (["Active"].includes(status)) return "success";
@@ -459,26 +674,9 @@ function activatePersonType(context, type) {
     document.getElementById("fullPatientDetailsContainer").style.display = "none";
   }
 }
-
 function getFormData() {
   const type = value("personStatus") || currentRegistrationType;
   const existing = records.find(record => record.id === value("patientId"));
-  const linkedCases = [];
-
-  if (value("initialCaseNo")) {
-    linkedCases.push({
-      caseId: value("initialCaseNo"),
-      type: value("initialCaseType") || (type === "living" ? "Clinical" : "Autopsy"),
-      category: value("initialCaseCategory"),
-      status: "Registered",
-      reference: value("initialReferenceNo"),
-      registeredDateTime: localDateTimeValue()
-    });
-  }
-
-  if (existing && !linkedCases.length) {
-    linkedCases.push(...(existing.linkedCases || []));
-  }
 
   const record = {
     id: value("patientId") || generatePatientId(),
@@ -494,6 +692,7 @@ function getFormData() {
     nicPassportNo: value("nicPassportNo"),
     dateOfBirth: value("dateOfBirth"),
     age: value("age"),
+    ageType: value("ageType"),
     gender: value("gender"),
     nationality: value("nationality"),
     ethnicity: value("ethnicity"),
@@ -504,6 +703,7 @@ function getFormData() {
     contactNo: value("contactNo"),
     hospitalNo: value("hospitalNo"),
     bhtNo: value("bhtNo"),
+    specialHandlingNotes: value("specialHandlingNotes"),
     living: {},
     deceased: {},
     nextOfKin: {
@@ -513,8 +713,8 @@ function getFormData() {
       nic: value("nokNic"),
       address: value("nokAddress")
     },
-    linkedCases,
-    documents: existing?.documents || [],
+    linkedCases: existing?.linkedCases || [],
+    documents: [],
     auditReason: existing
       ? "Patient / victim record updated from management page."
       : "Initial patient / victim registration."
@@ -527,6 +727,8 @@ function getFormData() {
       consciousnessLevel: value("consciousnessLevel"),
       consentStatus: value("consentStatus"),
       consentFormNo: value("consentFormNo"),
+      consentGivenBy: value("consentGivenBy"),
+      consentDateTime: value("consentDateTime"),
       admittedHospital: value("admittedHospital"),
       ward: value("ward"),
       bedNo: value("bedNo"),
@@ -554,37 +756,7 @@ function getFormData() {
     };
   }
 
-  if (!record.documents.length) {
-    record.documents = type === "living"
-      ? [
-          {
-            label: "Consent Form",
-            status: record.living.consentFormNo ? "Uploaded" : "Pending"
-          },
-          {
-            label: "Identity Document",
-            status: record.nicPassportNo ? "Verified" : "Pending"
-          },
-          {
-            label: "Hospital Admission Record",
-            status: record.bhtNo ? "Uploaded" : "Pending"
-          }
-        ]
-      : [
-          {
-            label: "Body Receiving Form",
-            status: record.deceased.bodyTagNo ? "Uploaded" : "Pending"
-          },
-          {
-            label: "Inquest / Court Order",
-            status: "Pending"
-          },
-          {
-            label: "Identification Confirmation",
-            status: record.identificationStatus === "Identified" ? "Verified" : "Pending"
-          }
-        ];
-  }
+  record.documents = buildPatientDocuments(type, existing, record);
 
   return record;
 }
@@ -813,6 +985,8 @@ function populateFullPatientDetails(patientId) {
       infoRow("Consciousness Level", living.consciousnessLevel),
       infoRow("Consent Status", living.consentStatus),
       infoRow("Consent Form No", living.consentFormNo),
+      infoRow("Consent Given By", living.consentGivenBy),
+      infoRow("Consent Date & Time", formatDate(living.consentDateTime)),
       infoRow("Hospital / Ward / Bed", `${display(living.admittedHospital)} / ${display(living.ward)} / ${display(living.bedNo)}`),
       infoRow("Admitted Date & Time", formatDate(living.admittedDateTime)),
       infoRow("Discharged Date & Time", formatDate(living.dischargedDateTime)),
@@ -847,27 +1021,52 @@ function populateFullPatientDetails(patientId) {
   document.getElementById("detNokNic").textContent = display(nok.nic);
   document.getElementById("detNokAddress").textContent = display(nok.address);
 
-  const cases = record.linkedCases || [];
+  const cases = getAllLinkedCases(record);
 
-  document.getElementById("detLinkedCases").innerHTML = cases.length
-    ? cases.map(item => `
-        <div class="linked-case-item">
-          <strong>
-            ${display(item.caseId)}
-            <span class="badge ${item.type === "Clinical" ? "success" : "warn"}">${display(item.type)}</span>
-          </strong>
-          <small>${display(item.category)} • ${display(item.status)} • Ref: ${display(item.reference)}</small>
-          <small>Registered: ${formatDate(item.registeredDateTime)}</small>
+document.getElementById("detLinkedCases").innerHTML = cases.length
+  ? cases.map(item => `
+      <div class="linked-case-item">
+        <strong>
+          ${display(item.caseId)}
+          <span class="badge ${item.type === "Clinical" ? "success" : "warn"}">${display(item.type)}</span>
+        </strong>
+        <small>${display(item.category)} • ${display(item.status)} • Ref: ${display(item.reference)}</small>
+        <small>Registered: ${formatDate(item.registeredDateTime)}</small>
+
+        <div class="linked-case-actions">
+          <button type="button" data-open-linked-case="${item.caseId}">
+            Open Case
+          </button>
         </div>
-      `).join("")
-    : `<p class="empty-state" style="padding: 12px;">No linked forensic cases yet.</p>`;
+      </div>
+    `).join("")
+  : `
+      <div class="empty-state" style="padding: 12px;">
+        No linked forensic cases yet.
+        <div class="linked-case-actions">
+          ${
+            record.personStatus === "living"
+              ? `<button type="button" data-create-case="clinical">Create Clinical Case</button>`
+              : `<button type="button" data-create-case="autopsy">Create Autopsy Case</button>`
+          }
+        </div>
+      </div>
+    `;
+
+document.getElementById("btnCreateClinicalCase").hidden = record.personStatus !== "living";
+document.getElementById("btnCreateAutopsyCase").hidden = record.personStatus !== "deceased";
+document.getElementById("btnOpenFirstLinkedCase").hidden = cases.length === 0;
+document.getElementById("btnOpenFirstLinkedCase").dataset.caseId = cases[0]?.caseId || "";
 
   document.getElementById("detDocumentsList").innerHTML = (record.documents || []).map(doc => `
     <div style="display:flex; justify-content:space-between; padding:7px 9px; background:var(--page-bg); border-radius:6px;">
-      <span>${display(doc.label)}</span>
-      <span style="color:${["Uploaded", "Verified", "Final"].includes(doc.status) ? "var(--success)" : "var(--warning)"}; font-weight:bold;">
-        ${display(doc.status)}
-      </span>
+     <span>
+  ${display(doc.label)}
+  ${doc.fileName ? `<br><small>${display(doc.fileName)}</small>` : ""}
+</span>
+<span style="color:${["Uploaded", "Verified", "Final", "Recorded"].includes(doc.status) ? "var(--success)" : "var(--warning)"}; font-weight:bold;">
+  ${display(doc.status)}
+</span>
     </div>
   `).join("");
 
@@ -898,6 +1097,7 @@ function populateFormForEditing(patientId) {
   setValue("nicPassportNo", record.nicPassportNo);
   setValue("dateOfBirth", record.dateOfBirth);
   setValue("age", record.age);
+  setValue("ageType", record.ageType || (record.dateOfBirth ? "Calculated from DOB" : "Estimated"));
   setValue("gender", record.gender);
   setValue("nationality", record.nationality);
   setValue("ethnicity", record.ethnicity);
@@ -926,6 +1126,8 @@ function populateFormForEditing(patientId) {
     setValue("consciousnessLevel", living.consciousnessLevel);
     setValue("consentStatus", living.consentStatus);
     setValue("consentFormNo", living.consentFormNo);
+    setValue("consentGivenBy", living.consentGivenBy);
+    setValue("consentDateTime", living.consentDateTime);
     setValue("admittedHospital", living.admittedHospital);
     setValue("ward", living.ward);
     setValue("bedNo", living.bedNo);
@@ -952,12 +1154,7 @@ function populateFormForEditing(patientId) {
     setValue("deceasedRemarks", deceased.remarks);
   }
 
-  const firstCase = record.linkedCases?.[0];
-
-  setValue("initialCaseNo", firstCase?.caseId || "");
-  setValue("initialCaseType", firstCase?.type || "");
-  setValue("initialCaseCategory", firstCase?.category || "");
-  setValue("initialReferenceNo", firstCase?.reference || "");
+  setValue("specialHandlingNotes", record.specialHandlingNotes || "");
 
   dom.formHeader.textContent = `Update Patient / Victim Record: ${record.id}`;
   dom.submitBtn.textContent =
@@ -990,12 +1187,23 @@ function bindEvents() {
     renderPatientTable();
   });
 
-  document.getElementById("isMinor")?.addEventListener("change", () => {
-    if (value("isMinor") === "Yes") {
-      setValue("confidentiality", "Restricted");
-      setValue("accessFlag", "Minor Restricted");
+ document.getElementById("dateOfBirth")?.addEventListener("change", syncAgeFromDob);
+document.getElementById("age")?.addEventListener("input", updateMinorRules);
+
+document.getElementById("isMinor")?.addEventListener("change", () => {
+  if (value("isMinor") === "Yes") {
+    setValue("confidentiality", "Restricted");
+    setValue("accessFlag", "Minor Restricted");
+
+    if (!value("consentStatus")) {
+      setValue("consentStatus", "Guardian Consent Given");
     }
-  });
+
+    if (!value("consentGivenBy")) {
+      setValue("consentGivenBy", "Guardian");
+    }
+  }
+});
 
   dom.patientTableBody.addEventListener("click", event => {
     const button = event.target.closest("button[data-patient-id]");
@@ -1040,13 +1248,30 @@ function bindEvents() {
     document.getElementById("successModal").style.display = "none";
   });
 
-  document.getElementById("btnEditPatientDetails")?.addEventListener("click", () => {
-    if (selectedPatientId) {
-      populateFormForEditing(selectedPatientId);
-    } else {
-      alert("Please select a patient/victim record from the table first.");
-    }
-  });
+ document.getElementById("btnCreateClinicalCase")?.addEventListener("click", () => {
+  openCaseManagementForPatient("clinical");
+});
+
+document.getElementById("btnCreateAutopsyCase")?.addEventListener("click", () => {
+  openCaseManagementForPatient("autopsy");
+});
+
+document.getElementById("btnOpenFirstLinkedCase")?.addEventListener("click", event => {
+  openLinkedCase(event.currentTarget.dataset.caseId);
+});
+
+document.getElementById("detLinkedCases")?.addEventListener("click", event => {
+  const openBtn = event.target.closest("[data-open-linked-case]");
+  const createBtn = event.target.closest("[data-create-case]");
+
+  if (openBtn) {
+    openLinkedCase(openBtn.dataset.openLinkedCase);
+  }
+
+  if (createBtn) {
+    openCaseManagementForPatient(createBtn.dataset.createCase);
+  }
+});
 }
 
 function init() {
