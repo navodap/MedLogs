@@ -169,6 +169,9 @@
           <option value="System Administrator">System Administrator</option>
         </select>
       </label>
+      <label>Registered Date & Time
+        <input id="registeredDateTime" type="datetime-local" readonly />
+      </label>
 
       <label>Priority Level
         <select id="casePriority">
@@ -181,112 +184,148 @@
       </label>
     </div>
   </fieldset>
+<fieldset>
+  <legend><span>2</span>Linked Patient / Victim Details</legend>
+  <p class="field-note">
+    Patient details are loaded from Patient Management and kept read-only here. Edit personal details only from Patient Management.
+  </p>
 
-  <fieldset>
-    <legend><span>2</span>Person Details</legend>
-    <div class="form-grid four">
-      <label id="personSearchLabel">Search Existing Patient
-        <input id="personSearch" type="search" placeholder="Search by ID, name, NIC, hospital no..." />
-      </label>
-
-      <label id="personIdLabel">Patient ID *
-        <input id="patientId" type="text" placeholder="PV-2026-00001" />
-      </label>
-
-      <label>Identification Status
-        <select id="identificationStatus">
-          <option>Identified</option>
-          <option>Unidentified</option>
-          <option>Partially Identified</option>
-        </select>
-      </label>
-
-      <label>Full Name *
-        <input id="patientName" type="text" placeholder="Full name or Unknown Male 01 - 2026" />
-      </label>
-
-      <label>NIC / Passport No
-        <input id="patientNic" type="text" />
-      </label>
-
-      <label>Date of Birth
-        <input id="patientDob" type="date" />
-      </label>
-
-      <label>Age
-        <input id="patientAge" type="number" min="0" />
-      </label>
-
-      <label>Gender
-        <select id="patientGender">
-          <option>Male</option>
-          <option>Female</option>
-          <option>Other</option>
-          <option>Unknown</option>
-        </select>
-      </label>
-
-      <label>Contact / Next of Kin Contact
-        <input id="patientContact" type="text" />
-      </label>
-
-      <label>Hospital / BHT No
-        <input id="patientBht" type="text" />
-      </label>
-    </div>
-
-    <label class="wide-label">Address
-      <textarea id="patientAddress" rows="2"></textarea>
+  <div class="form-grid four">
+    <label id="personSearchLabel">Search Existing Patient
+      <input id="personSearch" type="search" placeholder="Search by ID, name, NIC, hospital no..." />
     </label>
-  </fieldset>
+
+    <label id="personIdLabel">Patient ID *
+      <input id="patientId" type="text" placeholder="PV-2026-00001" readonly />
+    </label>
+
+    <label>Person Status
+      <input id="personStatus" type="text" readonly />
+    </label>
+
+    <label>Identification Status
+      <select id="identificationStatus" disabled>
+        <option>Identified</option>
+        <option>Unidentified</option>
+        <option>Partially Identified</option>
+      </select>
+    </label>
+
+    <label>Full Name *
+      <input id="patientName" type="text" placeholder="Full name or Unknown Male 01 - 2026" readonly />
+    </label>
+
+    <label>NIC / Passport No
+      <input id="patientNic" type="text" readonly />
+    </label>
+
+    <label>Date of Birth
+      <input id="patientDob" type="date" readonly />
+    </label>
+
+    <label>Age
+      <input id="patientAge" type="number" min="0" readonly />
+    </label>
+
+    <label>Gender
+      <select id="patientGender" disabled>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+        <option>Unknown</option>
+      </select>
+    </label>
+
+    <label>Contact / Next of Kin Contact
+      <input id="patientContact" type="text" readonly />
+    </label>
+
+    <label>Hospital / BHT No
+      <input id="patientBht" type="text" readonly />
+    </label>
+  </div>
+
+  <label class="wide-label">Address
+    <textarea id="patientAddress" rows="2" readonly></textarea>
+  </label>
+</fieldset>
 
   <fieldset class="case-section clinical-section active">
-    <legend><span>3</span>MLEF / Referral Details</legend>
-    <div class="form-grid four">
-      <label>MLEF No *
-        <input id="mlefNo" type="text" />
-      </label>
+  <legend><span>3</span>Clinical Referral / MLEF Details</legend>
+  <p class="field-note">
+    MLEF is a case-opening referral document. Enter the structured details here and upload the scanned/manual MLEF document.
+  </p>
 
-      <label>MLEF Form No
-        <input id="mlefFormNo" type="text" />
-      </label>
-
-      <label>MLEF Issue Date *
-        <input id="mlefDate" type="date" />
-      </label>
-
-      <label>Issued By
-        <select id="mlefIssuedBy">
-          <option>Police Officer</option>
-          <option>Hospital Police</option>
-          <option>Court</option>
-          <option>AG Office</option>
-          <option>Human Rights Commission</option>
-          <option>Other</option>
-        </select>
-      </label>
-
-      <label>Police Station *
-        <input id="policeStation" type="text" />
-      </label>
-
-      <label>Police Division
-        <input id="policeDivision" type="text" />
-      </label>
-
-      <label>Officer Name
-        <input id="policeOfficer" type="text" />
-      </label>
-
-      <label>Officer Contact
-        <input id="policeOfficerContact" type="text" />
-      </label>
-    </div>
-
-    <label class="wide-label">Reason for Referral *
-      <textarea id="clinicalReason" rows="2"></textarea>
+  <div class="form-grid four">
+    <label>MLEF No *
+      <input id="mlefNo" type="text" placeholder="MLEF/2026/145" />
     </label>
-  </fieldset>
+
+    <label>MLEF Form No
+      <input id="mlefFormNo" type="text" placeholder="Optional form serial no" />
+    </label>
+
+    <label>MLEF Issue Date *
+      <input id="mlefDate" type="date" />
+    </label>
+
+    <label>MLEF Received Date & Time
+      <input id="mlefReceivedDateTime" type="datetime-local" />
+    </label>
+
+    <label>Issued / Requested By
+      <select id="mlefIssuedBy">
+        <option>Police Officer</option>
+        <option>Hospital Police</option>
+        <option>Court</option>
+        <option>Magistrate</option>
+        <option>AG Office</option>
+        <option>Human Rights Commission</option>
+        <option>Other</option>
+      </select>
+    </label>
+
+    <label>Police Station *
+      <input id="policeStation" type="text" />
+    </label>
+
+    <label>Police Division
+      <input id="policeDivision" type="text" />
+    </label>
+
+    <label>Police Reference No
+      <input id="policeRef" type="text" placeholder="BOR/CR/2026/321" />
+    </label>
+
+    <label>Officer Name
+      <input id="policeOfficer" type="text" />
+    </label>
+
+    <label>Officer Rank
+      <input id="policeOfficerRank" type="text" placeholder="PC / PS / IP" />
+    </label>
+
+    <label>Officer Reg No
+      <input id="policeOfficerRegNo" type="text" />
+    </label>
+
+    <label>Officer Contact
+      <input id="policeOfficerContact" type="text" />
+    </label>
+
+    <label>Upload MLEF Document
+      <input id="mlefDocumentUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+    </label>
+  </div>
+
+  <label class="wide-label">Reason for Examination *
+    <textarea id="clinicalReason" rows="2" placeholder="Reason mentioned in the referral / MLEF"></textarea>
+  </label>
+
+  <label class="wide-label">Brief Allegation / Incident Summary
+    <textarea id="briefAllegation" rows="3" placeholder="Short case-opening summary based on police/referral information"></textarea>
+  </label>
+</fieldset>
 
   <fieldset class="case-section clinical-section active">
     <legend><span>4</span>Clinical Case Details</legend>
@@ -306,13 +345,10 @@
       <label>Incident Place
         <input id="placeOfIncident" type="text" />
       </label>
-
       <label>Minor Case?
-        <select id="minor">
-          <option>No</option>
-          <option>Yes</option>
-        </select>
+        <input id="minor" type="text" value="No" readonly />
       </label>
+          
 
       <label>Sexual Assault Case?
         <select id="sexualAssault">
@@ -360,105 +396,161 @@
     </label>
   </fieldset>
 
-  <fieldset class="case-section autopsy-section">
-    <legend><span>3</span>Death And Legal Order Details</legend>
-    <div class="form-grid four">
-      <label>Main Case Category *
-        <select id="autopsyCategory">
-          <option value="">Select category</option>
-          <option>Natural Death</option>
-          <option>Accidental Death</option>
-          <option>Suicidal Death</option>
-          <option>Homicidal Death</option>
-          <option>Undetermined Death</option>
-        </select>
-      </label>
+ <fieldset class="case-section autopsy-section">
+  <legend><span>3</span>PM / Inquest / Court Details</legend>
+  <p class="field-note">
+    These are autopsy case-opening details. Upload inquest, court order, death report and police request documents here.
+  </p>
 
-      <label>Date of Death
-        <input id="dateOfDeath" type="datetime-local" />
-      </label>
-
-      <label>Date & Time Found
-        <input id="dateTimeFound" type="datetime-local" />
-      </label>
-
-      <label>Death Location
-        <select id="deathLocation">
-          <option>Hospital</option>
-          <option>Home</option>
-          <option>Road</option>
-          <option>Workplace</option>
-          <option>Public Place</option>
-          <option>Other</option>
-        </select>
-      </label>
-
-      <label>Initial Manner of Death
-        <select id="mannerOfDeath">
-          <option>Pending</option>
-          <option>Natural</option>
-          <option>Accidental</option>
-          <option>Suicide</option>
-          <option>Homicide</option>
-          <option>Undetermined</option>
-        </select>
-      </label>
-
-      <label>Order Type *
-        <select id="orderType">
-          <option>Inquest Order</option>
-          <option>Court Order</option>
-          <option>Magistrate Order</option>
-        </select>
-      </label>
-
-      <label>Inquest No / Order No *
-        <input id="inquestNo" type="text" />
-      </label>
-
-      <label>Order Date *
-        <input id="orderDate" type="date" />
-      </label>
-
-      <label>Ordered By *
-        <select id="orderedBy">
-          <option>ISD</option>
-          <option>Magistrate</option>
-          <option>Court</option>
-        </select>
-      </label>
-
-      <label>PM Registry No
-        <input id="pmRegistryNo" type="text" />
-      </label>
-
-      <label>Body Tag No *
-        <input id="bodyTagNumber" type="text" />
-      </label>
-
-      <label>Body Received Date & Time
-        <input id="bodyReceivedDateTime" type="datetime-local" />
-      </label>
-
-      <label>Place of Postmortem
-        <input id="placeOfPM" type="text" />
-      </label>
-
-      <label>Body Condition
-        <select id="bodyCondition">
-          <option>Fresh</option>
-          <option>Decomposed</option>
-          <option>Burnt</option>
-          <option>Skeletal</option>
-          <option>Unknown</option>
-        </select>
-      </label>
-    </div>
-
-    <label class="wide-label">Brief Circumstances of Death
-      <textarea id="causeSummary" rows="3"></textarea>
+  <div class="form-grid four">
+    <label>Main Case Category *
+      <select id="autopsyCategory">
+        <option value="">Select category</option>
+        <option>Natural Death</option>
+        <option>Accidental Death</option>
+        <option>Suicidal Death</option>
+        <option>Homicidal Death</option>
+        <option>Undetermined Death</option>
+      </select>
     </label>
-  </fieldset>
+
+    <label>PM Registry No
+      <input id="pmRegistryNo" type="text" placeholder="PM-REG-2026-045" />
+    </label>
+
+    <label>Inquest No
+      <input id="inquestNo" type="text" />
+    </label>
+
+    <label>Court Order No
+      <input id="courtOrderNo" type="text" />
+    </label>
+
+    <label>Death Report No
+      <input id="deathReportNo" type="text" />
+    </label>
+
+    <label>Order Type *
+      <select id="orderType">
+        <option>Inquest Order</option>
+        <option>Court Order</option>
+        <option>Magistrate Order</option>
+      </select>
+    </label>
+
+    <label>Order Date *
+      <input id="orderDate" type="date" />
+    </label>
+
+    <label>Ordered By *
+      <select id="orderedBy">
+        <option>ISD</option>
+        <option>Magistrate</option>
+        <option>Court</option>
+      </select>
+    </label>
+
+    <label>Date of Inquest
+      <input id="dateOfInquest" type="date" />
+    </label>
+
+    <label>Date of Death
+      <input id="dateOfDeath" type="datetime-local" />
+    </label>
+
+    <label>Date & Time Found
+      <input id="dateTimeFound" type="datetime-local" />
+    </label>
+
+    <label>Death Location
+      <select id="deathLocation">
+        <option>Hospital</option>
+        <option>Home</option>
+        <option>Road</option>
+        <option>Workplace</option>
+        <option>Public Place</option>
+        <option>Other</option>
+      </select>
+    </label>
+
+    <label>Place of Death
+      <input id="placeOfDeath" type="text" />
+    </label>
+
+    <label>Initial Manner of Death
+      <select id="mannerOfDeath">
+        <option>Pending</option>
+        <option>Natural</option>
+        <option>Accidental</option>
+        <option>Suicide</option>
+        <option>Homicide</option>
+        <option>Undetermined</option>
+      </select>
+    </label>
+
+    <label>Body Tag No *
+      <input id="bodyTagNumber" type="text" />
+    </label>
+
+    <label>Body Received Date & Time
+      <input id="bodyReceivedDateTime" type="datetime-local" />
+    </label>
+
+    <label>Body Received From
+      <input id="bodyReceivedFrom" type="text" />
+    </label>
+
+    <label>Place of Postmortem
+      <input id="placeOfPM" type="text" />
+    </label>
+
+    <label>Body Condition
+      <select id="bodyCondition">
+        <option>Fresh</option>
+        <option>Decomposed</option>
+        <option>Burnt</option>
+        <option>Skeletal</option>
+        <option>Unknown</option>
+      </select>
+    </label>
+
+    <label>Police Station
+      <input id="autopsyPoliceStation" type="text" />
+    </label>
+
+    <label>Investigating Officer
+      <input id="autopsyPoliceOfficer" type="text" />
+    </label>
+
+    <label>Police Reference No
+      <input id="autopsyPoliceRef" type="text" />
+    </label>
+
+    <label>Officer Contact
+      <input id="autopsyPoliceContact" type="text" />
+    </label>
+
+    <label>Upload Inquest Order
+      <input id="inquestOrderUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+    </label>
+
+    <label>Upload Court Order
+      <input id="courtOrderUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+    </label>
+
+    <label>Upload Death Report
+      <input id="deathReportUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+    </label>
+
+    <label>Upload Police Request
+      <input id="autopsyPoliceRequestUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+    </label>
+  </div>
+
+  <label class="wide-label">Brief Circumstances of Death
+    <textarea id="causeSummary" rows="3"></textarea>
+  </label>
+</fieldset>
 
   <fieldset>
     <legend><span>5</span>Doctor / Examination Scheduling</legend>
@@ -513,40 +605,118 @@
   </fieldset>
 
   <fieldset>
-    <legend><span>7</span>Court / Report / Documents</legend>
+  <legend><span>7</span>Court Details and Expected Reports</legend>
+  <div class="form-grid four">
+    <label>Court Name
+      <input id="courtName" type="text" />
+    </label>
+
+    <label>Court Case No
+      <input id="courtRef" type="text" />
+    </label>
+
+    <label>Date of Trial
+      <input id="trialDate" type="date" />
+    </label>
+  </div>
+
+  <div class="sub-form-card">
+    <h4>Add Expected Report</h4>
+    <p class="field-note">
+      A case can require more than one report. Add each report separately with its own due date.
+    </p>
+
     <div class="form-grid four">
-      <label>Court Name
-        <input id="courtName" type="text" />
-      </label>
-
-      <label>Court Case No
-        <input id="courtRef" type="text" />
-      </label>
-
-      <label>Date of Trial
-        <input id="trialDate" type="date" />
-      </label>
-
-      <label>Expected Report Type
-        <select id="expectedReportType">
+      <label>Report Type
+        <select id="expectedReportSelect">
           <option>Medico-Legal Report</option>
           <option>Postmortem Report</option>
           <option>Cause of Death Form</option>
-          <option>Toxicology Report</option>
+          <option>Toxicology Opinion Report</option>
+          <option>Histology Supplementary Report</option>
+          <option>Sexual Assault Report</option>
+          <option>Age Estimation Report</option>
+          <option>DNA Sampling Report</option>
           <option>Supplementary Report</option>
         </select>
       </label>
 
-      <label>Report Due Date
-        <input id="expectedSubmissionDate" type="date" />
+      <label>Due Date
+        <input id="expectedReportDueDate" type="date" />
       </label>
 
-      <label>Upload Main Document
-        <input id="mainDocument" type="file" />
+      <label>Priority
+        <select id="expectedReportPriority">
+          <option>Normal</option>
+          <option>Urgent</option>
+          <option>Court Priority</option>
+          <option>Pending Lab Results</option>
+        </select>
+      </label>
+
+      <label>Remarks
+        <input id="expectedReportRemarks" type="text" placeholder="Example: wait for toxicology" />
       </label>
     </div>
-  </fieldset>
 
+    <button type="button" class="btn outline" id="btnAddExpectedReport">
+      Add Expected Report
+    </button>
+  </div>
+
+  <div class="mini-table-wrap">
+    <table class="mini-table">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Report Type</th>
+          <th>Due Date</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="expectedReportsTableBody"></tbody>
+    </table>
+    <p class="empty-state" id="expectedReportsEmpty">No expected reports added yet.</p>
+  </div>
+</fieldset>
+ <fieldset>
+  <legend><span>8</span>Case Documents Upload</legend>
+  <p class="field-note">
+    Upload case-opening and legal documents here. Patient-level documents stay in Patient Management.
+  </p>
+
+  <div class="form-grid four">
+    <label class="clinical-section active">Police Request / Letter
+      <input id="clinicalPoliceRequestUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+    </label>
+
+    <label class="clinical-section active">Hospital Referral Note
+      <input id="hospitalReferralUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+    </label>
+
+    <label class="clinical-section active">Consent Copy, if relevant
+      <input id="caseConsentCopyUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+    </label>
+
+    <label class="autopsy-section">Body Receiving Document
+      <input id="bodyReceivingCaseUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+    </label>
+
+    <label class="autopsy-section">Mortuary / Body Tag Document
+      <input id="mortuaryDocumentUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+    </label>
+
+    <label>Other Case Document Type
+      <input id="otherCaseDocumentType" type="text" placeholder="Example: court letter" />
+    </label>
+
+    <label>Other Case Document
+      <input id="otherCaseDocumentUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+    </label>
+  </div>
+</fieldset>
   <div class="form-actions" id="formActionButtonsBar">
     <button type="button" class="btn light" id="clearFormBtn">Cancel</button>
     <button type="button" class="btn outline" id="btnSaveAsDraft">Save as Draft</button>
@@ -714,26 +884,38 @@
         <div class="card-info-row"><small>Remarks:</small><span id="detCourtRemarks"></span></div>
       </div>
 
-      <div class="detail-block-card">
-        <h4>Uploaded Documents</h4>
-        <div id="detDocumentsList" style="display:flex; flex-direction:column; gap:6px; font-size:0.8rem;">
-          </div>
-      </div>
+    <div class="detail-block-card">
+  <h4>Case Documents</h4>
+  <div id="detCaseDocumentsList" class="case-mini-list"></div>
+</div>
 
-      <div class="detail-block-card">
-        <h4>Report Tracking Initial Setup</h4>
-        <div class="card-info-row"><small>Expected Report Type:</small><span id="detRepType"></span></div>
-        <div class="card-info-row"><small>Report Status:</small><span id="detRepStatus"></span></div>
-        <div class="card-info-row"><small>Expected Submission Date:</small><span id="detRepDate"></span></div>
-        <div class="card-info-row"><small>Report Remarks:</small><span id="detRepRemarks"></span></div>
-      </div>
+<div class="detail-block-card">
+  <h4>Expected Reports</h4>
+  <div id="detExpectedReportsList" class="case-mini-list"></div>
+</div>
+
+<div class="detail-block-card">
+  <h4>Linked Examinations</h4>
+  <div id="detLinkedExamList" class="case-mini-list"></div>
+</div>
+
+<div class="detail-block-card">
+  <h4>Evidence & Samples Summary</h4>
+  <div id="detEvidenceSummary" class="case-mini-list"></div>
+</div>
+
+<div class="detail-block-card">
+  <h4>Generated Reports</h4>
+  <div id="detGeneratedReportsList" class="case-mini-list"></div>
+</div>
     </div>
 
-    <div class="details-action-bar">
-      <button type="button" class="btn light" id="btnEditCaseDetails">Edit Case</button>
-      <button type="button" class="btn primary" onclick="alert('Opening Reports Module Interface...')">Open Reports</button>
-    </div>
-
+        <div class="details-action-bar">
+          <button type="button" class="btn light" id="btnEditCaseDetails">Edit Case</button>
+          <button type="button" class="btn primary" id="btnStartExaminationFromCase">Start Examination</button>
+          <button type="button" class="btn outline" id="btnOpenEvidenceFromCase">Open Evidence & Samples</button>
+          <button type="button" class="btn dark" id="btnGenerateReportFromCase">Generate Report</button>
+        </div>
   </div>
 </section>
           </section>
