@@ -1,435 +1,613 @@
-const STORAGE_KEY = "medlogs_lab_toxicology_v1";
+const labRequests = [];
 
-const sampleResults = [
-  {
-    id: "LAB-2026-0003",
-    caseType: "Autopsy",
-    caseId: "PM-2026-000045",
-    personName: "Saman Kumara",
-    legalRef: "INQ-2026-337",
-    requestedBy: "Dr. K. Rajapaksha",
-    requestDate: "2026-06-29",
-    priority: "Court Priority",
-    specimenType: "Blood",
-    sampleId: "SMP-2026-0142",
-    collectedAt: "2026-06-29T11:20",
-    collectedBy: "Dr. K. Rajapaksha",
-    sealNo: "SEAL-88421",
-    custodyStatus: "Complete",
-    sentAt: "2026-06-29T14:30",
-    receivedAt: "2026-06-30T09:15",
-    custodyNotes: "Blood sample sealed and handed over through police escort to Government Analyst.",
-    testCategory: "Toxicology - Poison",
-    resultStatus: "Pending",
-    resultDate: "",
-    labName: "Government Analyst Department",
-    analyst: "Pending assignment",
-    findings: "Result not received yet.",
-    interpretation: "Cause of death opinion pending toxicology result.",
-    reportType: "Postmortem Report",
-    reviewStatus: "Needs JMO Review",
-    reviewedBy: "",
-    reviewedDate: ""
+let currentPage = 1;
+const ROWS_PER_PAGE = 10;
+
+const tableBody = document.getElementById("requestTableBody");
+const emptyState = document.getElementById("emptyState");
+const searchInput = document.getElementById("searchInput");
+const caseTypeFilter = document.getElementById("caseTypeFilter");
+const testTypeFilter = document.getElementById("testTypeFilter");
+const statusFilter = document.getElementById("statusFilter");
+const resetFiltersButton = document.getElementById("resetFiltersButton");
+const resultCountText = document.getElementById("resultCountText");
+const tabs = document.querySelectorAll(".tab");
+const tableTitle = document.getElementById("tableTitle");
+const tableSubtitle = document.getElementById("tableSubtitle");
+const exportButton = document.getElementById("exportButton");
+const newRequestModal = document.getElementById("newRequestModal");
+const detailsModal = document.getElementById("detailsModal");
+const newRequestForm = document.getElementById("newRequestForm");
+const openNewRequestButton = document.getElementById("openNewRequestButton");
+const saveDraftButton = document.getElementById("saveDraftButton");
+const mobileMenuButton = document.getElementById("mobileMenuButton");
+const sidebar = document.getElementById("sidebar");
+const toast = document.getElementById("toast");
+
+let activeTab = "all";
+let selectedRequest = null;
+let toastTimer = null;
+
+const tabConfig = {
+  all: {
+    title: "Laboratory Test Requests",
+    subtitle: "All requests linked to clinical and postmortem cases."
   },
-  {
-    id: "LAB-2026-0002",
-    caseType: "Clinical",
-    caseId: "CL-2026-000122",
-    personName: "Kasun Silva",
-    legalRef: "MLEF/KDW/2026/219",
-    requestedBy: "Dr. T. Wijesinghe",
-    requestDate: "2026-06-27",
-    priority: "Normal",
-    specimenType: "Urine",
-    sampleId: "SMP-2026-0138",
-    collectedAt: "2026-06-27T12:15",
-    collectedBy: "MO Medico-Legal",
-    sealNo: "SEAL-88396",
-    custodyStatus: "Complete",
-    sentAt: "2026-06-27T15:00",
-    receivedAt: "2026-06-28T08:40",
-    custodyNotes: "Urine sample sent with signed custody form.",
-    testCategory: "Toxicology - Alcohol",
-    resultStatus: "Received - Positive",
-    resultDate: "2026-07-02",
-    labName: "Hospital Toxicology Laboratory",
-    analyst: "Dr. L. Fernando",
-    findings: "Ethanol detected above screening threshold. Other tested drugs not detected.",
-    interpretation: "Finding should be reviewed against alleged road traffic accident history.",
-    reportType: "Medico-Legal Report",
-    reviewStatus: "Reviewed",
-    reviewedBy: "Dr. T. Wijesinghe",
-    reviewedDate: "2026-07-03"
+  samples: {
+    title: "Samples Received",
+    subtitle: "Requests with specimens received by the laboratory."
   },
-  {
-    id: "LAB-2026-0001",
-    caseType: "Clinical",
-    caseId: "CL-2026-000121",
-    personName: "Restricted record",
-    legalRef: "MLEF/KLN/2026/176",
-    requestedBy: "Dr. A. Peris",
-    requestDate: "2026-06-24",
-    priority: "Restricted Case",
-    specimenType: "Swab",
-    sampleId: "SMP-2026-0129",
-    collectedAt: "2026-06-24T16:10",
-    collectedBy: "Dr. A. Peris",
-    sealNo: "",
-    custodyStatus: "Seal Number Missing",
-    sentAt: "2026-06-24T17:30",
-    receivedAt: "2026-06-25T10:00",
-    custodyNotes: "Restricted sexual assault record. Seal number must be verified before final report approval.",
-    testCategory: "DNA / Serology",
-    resultStatus: "Received - Negative",
-    resultDate: "2026-07-01",
-    labName: "Forensic DNA Laboratory",
-    analyst: "Dr. M. Silva",
-    findings: "No reportable foreign DNA profile detected in submitted swab.",
-    interpretation: "Result reviewed with examination findings. Access remains restricted.",
-    reportType: "Medico-Legal Report",
-    reviewStatus: "Approved For Final Report",
-    reviewedBy: "Dr. A. Peris",
-    reviewedDate: "2026-07-02"
+  results: {
+    title: "Laboratory Results",
+    subtitle: "Requests with results entered or verified."
+  },
+  approval: {
+    title: "Pending Approval",
+    subtitle: "Results waiting for laboratory verification or JMO review."
+  },
+  completed: {
+    title: "Completed Tests",
+    subtitle: "Completed and reviewed laboratory investigations."
   }
-];
-
-const dom = {
-  tabButtons: document.querySelectorAll(".tab-btn"),
-  entryPanel: document.getElementById("entryPanel"),
-  recordsPanel: document.getElementById("recordsPanel"),
-  modeButtons: document.querySelectorAll(".case-switch-btn"),
-  form: document.getElementById("resultForm"),
-  resultId: document.getElementById("resultId"),
-  resultTableBody: document.getElementById("resultTableBody"),
-  recentBody: document.getElementById("recentBody"),
-  resultDetailCard: document.getElementById("resultDetailCard"),
-  resultSearch: document.getElementById("resultSearch"),
-  statusFilter: document.getElementById("statusFilter"),
-  emptyMessage: document.getElementById("emptyMessage"),
-  clearFormBtn: document.getElementById("clearFormBtn"),
-  saveDraftBtn: document.getElementById("saveDraftBtn"),
-  viewRecentBtn: document.getElementById("viewRecentBtn"),
-  menuBtn: document.querySelector(".menu-btn"),
-  sidebar: document.querySelector(".sidebar"),
-  sidebarOverlay: document.getElementById("sidebarOverlay"),
-  dateDisplay: document.getElementById("currentDateDisplay"),
-  dayDisplay: document.getElementById("currentDayDisplay"),
-  toast: document.getElementById("toast"),
-  pendingResultsCount: document.getElementById("pendingResultsCount"),
-  positiveResultsCount: document.getElementById("positiveResultsCount"),
-  readyResultsCount: document.getElementById("readyResultsCount"),
-  pendingResultsNote: document.getElementById("pendingResultsNote"),
-  positiveResultsNote: document.getElementById("positiveResultsNote"),
-  readyResultsNote: document.getElementById("readyResultsNote")
 };
 
-let records = loadRecords();
-let selectedResultId = records[0]?.id || null;
+const mandatoryRequestFields = [
+  "caseIdInput",
+  "caseTypeInput",
+  "personNameInput",
+  "testTypeInput",
+  "specificTestInput",
+  "reasonInput",
+  "sampleTypeInput",
+  "priorityInput",
+  "laboratoryInput",
+  "requestingJmoInput"
+];
 
-function loadRecords() {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    const parsed = stored ? JSON.parse(stored) : null;
-    return Array.isArray(parsed) && parsed.length ? parsed : [...sampleResults];
-  } catch (error) {
-    console.warn("Saved lab results could not be read. Sample results were loaded.", error);
-    return [...sampleResults];
-  }
+function getMissingMandatoryField() {
+  return mandatoryRequestFields
+    .map((fieldId) => document.getElementById(fieldId))
+    .find((field) => !field.value.trim());
 }
 
-function saveRecords() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+function normalizeClassName(value) {
+  return value.toLowerCase().replace(/\s+/g, "-");
 }
 
-function pad(number, size = 4) {
-  return String(number).padStart(size, "0");
-}
-
-function currentYear() {
-  return new Date().getFullYear();
-}
-
-function generateResultId() {
-  const year = currentYear();
-  const highest = records.reduce((max, record) => {
-    const parts = record.id.split("-");
-    if (parts[1] !== String(year)) return max;
-    const number = Number(parts[2]);
-    return Number.isFinite(number) && number > max ? number : max;
-  }, 0);
-  return `LAB-${year}-${pad(highest + 1)}`;
-}
-
-function showToast(message) {
-  if (!dom.toast) return;
-  dom.toast.textContent = message;
-  dom.toast.classList.add("show");
-  window.clearTimeout(showToast.timer);
-  showToast.timer = window.setTimeout(() => dom.toast.classList.remove("show"), 2600);
-}
-
-function setActiveTab(tab) {
-  dom.tabButtons.forEach(button => button.classList.toggle("active", button.dataset.tab === tab));
-  dom.entryPanel.classList.toggle("active", tab === "entry");
-  dom.recordsPanel.classList.toggle("active", tab === "records");
-  dom.modeButtons.forEach(button => button.classList.toggle("active", button.dataset.mode === tab));
-}
-
-function isCustodyAlert(record) {
-  return record.custodyStatus !== "Complete" || !record.sealNo;
-}
-
-function isReady(record) {
-  return record.reviewStatus === "Approved For Final Report";
-}
-
-function statusClass(status) {
-  if (status === "Pending") return "pending";
-  if (status === "Received - Positive" || status === "Rejected Sample") return "positive";
-  if (status === "Received - Negative") return "negative";
-  return "";
-}
-
-function formatDateTime(value) {
-  return value ? value.replace("T", " ") : "Not recorded";
-}
-
-function field(label, value) {
-  return `
-    <div class="field-row">
-      <dt>${label}</dt>
-      <dd>${value || "Not recorded"}</dd>
-    </div>
-  `;
-}
-
-function formValue(id) {
-  return document.getElementById(id)?.value.trim() || "";
-}
-
-function renderStats() {
-  const pending = records.filter(record => record.resultStatus === "Pending").length;
-  const positive = records.filter(record => record.resultStatus === "Received - Positive").length;
-  const ready = records.filter(isReady).length;
-
-  dom.pendingResultsCount.textContent = pending;
-  dom.positiveResultsCount.textContent = positive;
-  dom.readyResultsCount.textContent = ready;
-  dom.pendingResultsNote.textContent = pending ? `${pending} result${pending === 1 ? "" : "s"} awaiting lab` : "No pending lab reports";
-  dom.positiveResultsNote.textContent = positive ? `${positive} positive finding${positive === 1 ? "" : "s"}` : "No positive toxicology alerts";
-  dom.readyResultsNote.textContent = ready ? `${ready} approved for reports` : "No approved result links yet";
-}
-
-function matchesFilters(record) {
-  const query = dom.resultSearch.value.trim().toLowerCase();
-  const status = dom.statusFilter.value;
-  const queryMatch = !query || Object.values(record).join(" ").toLowerCase().includes(query);
-  const statusMatch = status === "all" || record.resultStatus === status;
-  return queryMatch && statusMatch;
-}
-
-function renderTable() {
-  const visible = records.filter(matchesFilters);
-  dom.resultTableBody.innerHTML = "";
-  dom.emptyMessage.hidden = visible.length > 0;
-
-  visible.forEach(record => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td><strong>${record.id}</strong><br><small>${record.testCategory}</small></td>
-      <td>${record.caseId}<br><small>${record.personName}</small></td>
-      <td>${record.specimenType}<br><small>${record.sampleId}</small></td>
-      <td><span class="status-pill ${statusClass(record.resultStatus)}">${record.resultStatus}</span></td>
-      <td><span class="status-pill ${isReady(record) ? "ready" : "pending"}">${record.reviewStatus}</span></td>
-      <td><button type="button" class="text-btn" data-view-result="${record.id}">View</button></td>
-    `;
-    dom.resultTableBody.appendChild(row);
-  });
-}
-
-function renderRecent() {
-  dom.recentBody.innerHTML = "";
-  records.slice(0, 5).forEach(record => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${record.id}</td>
-      <td>${record.caseId}</td>
-      <td>${record.specimenType}</td>
-      <td>${record.resultStatus}</td>
-      <td>${record.reviewStatus}</td>
-    `;
-    dom.recentBody.appendChild(row);
-  });
-}
-
-function renderDetail() {
-  const record = records.find(item => item.id === selectedResultId) || records[0];
-  if (!record) {
-    dom.resultDetailCard.innerHTML = `<p class="empty-state">Select a result to preview details.</p>`;
-    return;
-  }
-
-  dom.resultDetailCard.innerHTML = `
-    <h3>${record.id}</h3>
-    <div class="detail-meta">
-      <span class="status-pill ${statusClass(record.resultStatus)}">${record.resultStatus}</span>
-      <span class="status-pill ${isCustodyAlert(record) ? "alert" : "ready"}">${isCustodyAlert(record) ? "Custody alert" : "Custody complete"}</span>
-      <span class="status-pill ${isReady(record) ? "ready" : "pending"}">${record.reviewStatus}</span>
-    </div>
-    <section class="detail-section">
-      <h4>Case Link</h4>
-      <dl class="field-list">
-        ${field("Case Type", record.caseType)}
-        ${field("Case ID", record.caseId)}
-        ${field("Name", record.personName)}
-        ${field("Legal Ref", record.legalRef)}
-        ${field("Requested By", record.requestedBy)}
-        ${field("Request Date", record.requestDate)}
-      </dl>
-    </section>
-    <section class="detail-section">
-      <h4>Specimen Custody</h4>
-      <dl class="field-list">
-        ${field("Specimen", record.specimenType)}
-        ${field("Sample ID", record.sampleId)}
-        ${field("Collected", formatDateTime(record.collectedAt))}
-        ${field("Collected By", record.collectedBy)}
-        ${field("Seal No", record.sealNo)}
-        ${field("Custody", record.custodyStatus)}
-        ${field("Notes", record.custodyNotes)}
-      </dl>
-    </section>
-    <section class="detail-section">
-      <h4>Findings</h4>
-      <dl class="field-list">
-        ${field("Category", record.testCategory)}
-        ${field("Lab", record.labName)}
-        ${field("Analyst", record.analyst)}
-        ${field("Result Date", record.resultDate)}
-        ${field("Findings", record.findings)}
-        ${field("Interpretation", record.interpretation)}
-      </dl>
-    </section>
-    <section class="detail-section">
-      <h4>Report Linkage</h4>
-      <dl class="field-list">
-        ${field("Report Type", record.reportType)}
-        ${field("Reviewed By", record.reviewedBy)}
-        ${field("Reviewed Date", record.reviewedDate)}
-      </dl>
-    </section>
-  `;
-}
-
-function renderAll() {
-  dom.resultId.value = generateResultId();
-  renderStats();
-  renderTable();
-  renderRecent();
-  renderDetail();
-}
-
-function buildRecordFromForm() {
-  return {
-    id: dom.resultId.value || generateResultId(),
-    caseType: formValue("caseType"),
-    caseId: formValue("caseId"),
-    personName: formValue("personName"),
-    legalRef: formValue("legalRef"),
-    requestedBy: formValue("requestedBy"),
-    requestDate: formValue("requestDate"),
-    priority: formValue("priority"),
-    specimenType: formValue("specimenType"),
-    sampleId: formValue("sampleId"),
-    collectedAt: formValue("collectedAt"),
-    collectedBy: formValue("collectedBy"),
-    sealNo: formValue("sealNo"),
-    custodyStatus: formValue("custodyStatus"),
-    sentAt: formValue("sentAt"),
-    receivedAt: formValue("receivedAt"),
-    custodyNotes: formValue("custodyNotes"),
-    testCategory: formValue("testCategory"),
-    resultStatus: formValue("resultStatus"),
-    resultDate: formValue("resultDate"),
-    labName: formValue("labName"),
-    analyst: formValue("analyst"),
-    findings: formValue("findings"),
-    interpretation: formValue("interpretation"),
-    reportType: formValue("reportType"),
-    reviewStatus: formValue("reviewStatus"),
-    reviewedBy: formValue("reviewedBy"),
-    reviewedDate: formValue("reviewedDate")
-  };
-}
-
-function resetForm() {
-  dom.form.reset();
-  dom.resultId.value = generateResultId();
-}
-
-function updateDateBox() {
-  const now = new Date();
-  dom.dateDisplay.textContent = now.toLocaleDateString("en-GB", {
+function formatDate(dateString) {
+  if (!dateString || dateString === "Not received") return dateString || "—";
+  const date = new Date(`${dateString}T00:00:00`);
+  return new Intl.DateTimeFormat("en-GB", {
     day: "2-digit",
     month: "short",
     year: "numeric"
-  });
-  dom.dayDisplay.textContent = now.toLocaleDateString("en-GB", { weekday: "long" });
+  }).format(date);
 }
 
-dom.form.addEventListener("submit", event => {
+function getFilteredRequests() {
+  const searchTerm = searchInput.value.trim().toLowerCase();
+
+  return labRequests.filter((request) => {
+    const matchesSearch = [
+      request.requestId,
+      request.caseId,
+      request.personName,
+      request.sampleId,
+      request.testType,
+      request.specificTest
+    ].some((value) => String(value).toLowerCase().includes(searchTerm));
+
+    const matchesCaseType =
+      caseTypeFilter.value === "all" || request.caseType === caseTypeFilter.value;
+
+    const matchesTestType =
+      testTypeFilter.value === "all" || request.testType === testTypeFilter.value;
+
+    const matchesStatus =
+      statusFilter.value === "all" || request.status === statusFilter.value;
+
+    const matchesTab = (() => {
+      switch (activeTab) {
+        case "samples":
+          return !["Pending"].includes(request.status);
+        case "results":
+          return ["Awaiting Review", "Completed"].includes(request.status);
+        case "approval":
+          return request.status === "Awaiting Review";
+        case "completed":
+          return request.status === "Completed";
+        default:
+          return true;
+      }
+    })();
+
+    return matchesSearch && matchesCaseType && matchesTestType && matchesStatus && matchesTab;
+  });
+}
+
+function renderPagination(totalPages) {
+  const container = document.getElementById("paginationButtons");
+  container.innerHTML = "";
+
+  const prevBtn = document.createElement("button");
+  prevBtn.type = "button";
+  prevBtn.textContent = "Previous";
+  prevBtn.disabled = currentPage === 1;
+  prevBtn.addEventListener("click", () => {
+    currentPage--;
+    renderTable();
+  });
+  container.appendChild(prevBtn);
+
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = i;
+    if (i === currentPage) btn.classList.add("current-page");
+    btn.addEventListener("click", () => {
+      currentPage = i;
+      renderTable();
+    });
+    container.appendChild(btn);
+  }
+
+  const nextBtn = document.createElement("button");
+  nextBtn.type = "button";
+  nextBtn.textContent = "Next";
+  nextBtn.disabled = currentPage === totalPages;
+  nextBtn.addEventListener("click", () => {
+    currentPage++;
+    renderTable();
+  });
+  container.appendChild(nextBtn);
+}
+
+function renderTable() {
+  const requests = getFilteredRequests();
+  tableBody.innerHTML = "";
+
+  const totalPages = Math.max(1, Math.ceil(requests.length / ROWS_PER_PAGE));
+  if (currentPage > totalPages) currentPage = totalPages;
+  const start = (currentPage - 1) * ROWS_PER_PAGE;
+  const pageRequests = requests.slice(start, start + ROWS_PER_PAGE);
+
+  pageRequests.forEach((request) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>
+        <span class="mono">${request.requestId}</span>
+      </td>
+      <td>
+        <span class="cell-primary">${request.caseId}</span>
+        <span class="cell-secondary">${request.personName} · ${request.caseType}</span>
+      </td>
+      <td>
+        <span class="cell-primary">${request.testType}</span>
+        <span class="cell-secondary">${request.specificTest}</span>
+      </td>
+      <td>
+        <span class="cell-primary">${request.sampleType}</span>
+        <span class="cell-secondary">${request.sampleId}</span>
+      </td>
+      <td>${formatDate(request.requestedDate)}</td>
+      <td>
+        <span class="badge priority-${normalizeClassName(request.priority)}">${request.priority}</span>
+      </td>
+      <td>
+        <span class="badge ${normalizeClassName(request.status)}">${request.status}</span>
+      </td>
+      <td class="actions-column">
+        <button class="action-button" type="button" data-view-request="${request.requestId}">
+          View
+        </button>
+      </td>
+    `;
+    tableBody.appendChild(row);
+  });
+
+  emptyState.hidden = requests.length !== 0;
+  tableBody.closest("table").style.display = requests.length ? "table" : "none";
+  const from = requests.length ? start + 1 : 0;
+  const to = Math.min(start + ROWS_PER_PAGE, requests.length);
+  resultCountText.textContent = `Showing ${from}–${to} of ${requests.length} request${requests.length === 1 ? "" : "s"}`;
+
+  document.querySelectorAll("[data-view-request]").forEach((button) => {
+    button.addEventListener("click", () => {
+      openRequestDetails(button.dataset.viewRequest);
+    });
+  });
+
+  updateSummaryCounts();
+  renderPagination(totalPages);
+}
+
+function updateSummaryCounts() {
+  const count = (status) => labRequests.filter((item) => item.status === status).length;
+
+  document.getElementById("pendingCount").textContent = count("Pending");
+  document.getElementById("progressCount").textContent =
+    count("In Progress") + count("Sample Received");
+  document.getElementById("reviewCount").textContent = count("Awaiting Review");
+  document.getElementById("completedCount").textContent = count("Completed");
+  document.getElementById("urgentCount").textContent = labRequests.filter((item) =>
+    ["Urgent", "Court Urgent", "Emergency"].includes(item.priority)
+  ).length;
+}
+
+function setActiveTab(tabName) {
+  activeTab = tabName;
+  tabs.forEach((tab) => {
+    tab.classList.toggle("active", tab.dataset.tab === tabName);
+  });
+
+  tableTitle.textContent = tabConfig[tabName].title;
+  tableSubtitle.textContent = tabConfig[tabName].subtitle;
+  renderTable();
+}
+
+function openModal(modal) {
+  modal.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal(modal) {
+  modal.hidden = true;
+  document.body.style.overflow = "";
+}
+
+function showToast(message) {
+  clearTimeout(toastTimer);
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
+}
+
+function openRequestDetails(requestId) {
+  selectedRequest = labRequests.find((request) => request.requestId === requestId);
+  if (!selectedRequest) return;
+
+  document.getElementById("detailsModalTitle").textContent =
+    `${selectedRequest.testType} Request`;
+  document.getElementById("detailsModalSubtitle").textContent =
+    `${selectedRequest.personName} · ${selectedRequest.caseId}`;
+
+  document.getElementById("detailRequestId").textContent = selectedRequest.requestId;
+  document.getElementById("detailCaseId").textContent = selectedRequest.caseId;
+  document.getElementById("detailPriority").textContent = selectedRequest.priority;
+  document.getElementById("detailStatus").textContent = selectedRequest.status;
+
+  document.getElementById("detailPerson").textContent = selectedRequest.personName;
+  document.getElementById("detailCaseType").textContent = selectedRequest.caseType;
+  document.getElementById("detailReference").textContent = selectedRequest.referenceNumber;
+  document.getElementById("detailJmo").textContent = selectedRequest.requestingJmo;
+  document.getElementById("detailTestType").textContent = selectedRequest.testType;
+  document.getElementById("detailSpecificTest").textContent = selectedRequest.specificTest;
+  document.getElementById("detailLaboratory").textContent = selectedRequest.laboratory;
+  document.getElementById("detailRequestedDate").textContent =
+    formatDate(selectedRequest.requestedDate);
+
+  document.getElementById("detailSampleId").textContent = selectedRequest.sampleId;
+  document.getElementById("detailSampleType").textContent = selectedRequest.sampleType;
+  document.getElementById("detailSeal").textContent = selectedRequest.sealNumber;
+  document.getElementById("detailSampleCondition").textContent =
+    selectedRequest.sampleCondition;
+  document.getElementById("detailStorage").textContent =
+    selectedRequest.storageCondition;
+
+  document.getElementById("detailLabRef").textContent = selectedRequest.labReference;
+  document.getElementById("detailReceivedDate").textContent =
+    formatDate(selectedRequest.receivedDate);
+  document.getElementById("detailAnalyst").textContent = selectedRequest.analyst;
+  document.getElementById("detailMethod").textContent = selectedRequest.method;
+  document.getElementById("detailQuality").textContent = selectedRequest.qualityControl;
+
+  document.getElementById("detailResultSummary").innerHTML =
+    selectedRequest.resultSummary;
+
+  document.getElementById("approvalEntered").textContent =
+    selectedRequest.approval.entered;
+  document.getElementById("approvalVerified").textContent =
+    selectedRequest.approval.verified;
+  document.getElementById("approvalJmo").textContent =
+    selectedRequest.approval.jmo;
+
+  const verificationIcon = document.getElementById("verificationIcon");
+  const jmoReviewIcon = document.getElementById("jmoReviewIcon");
+
+  verificationIcon.classList.toggle(
+    "complete",
+    !selectedRequest.approval.verified.toLowerCase().includes("pending") &&
+      !selectedRequest.approval.verified.toLowerCase().includes("not")
+  );
+
+  jmoReviewIcon.classList.toggle(
+    "complete",
+    selectedRequest.status === "Completed"
+  );
+
+  renderProgressTimeline(selectedRequest.status);
+  renderHistory(selectedRequest.history);
+  setDetailTab("overview");
+  openModal(detailsModal);
+}
+
+function renderProgressTimeline(status) {
+  const stages = [
+    "Request Created",
+    "Sample Collected",
+    "Received by Lab",
+    "Testing",
+    "Result Entered",
+    "JMO Reviewed"
+  ];
+
+  const completionMap = {
+    Pending: 1,
+    "Sample Received": 3,
+    "In Progress": 4,
+    "Awaiting Review": 5,
+    Completed: 6,
+    Rejected: 3
+  };
+
+  const completedStages = completionMap[status] || 1;
+  const timeline = document.getElementById("progressTimeline");
+
+  timeline.innerHTML = stages
+    .map((stage, index) => {
+      const complete = index < completedStages;
+      return `
+        <div class="progress-node ${complete ? "complete" : ""}">
+          <div class="progress-dot">${complete ? "✓" : index + 1}</div>
+          <strong>${stage}</strong>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function renderHistory(history) {
+  const historyContainer = document.getElementById("detailHistory");
+  historyContainer.innerHTML = history
+    .map(
+      ([date, action]) => `
+        <div class="history-item">
+          <strong>${action}</strong>
+          <span>${date}</span>
+        </div>
+      `
+    )
+    .join("");
+}
+
+function setDetailTab(tabName) {
+  document.querySelectorAll(".detail-tab").forEach((tab) => {
+    tab.classList.toggle("active", tab.dataset.detailTab === tabName);
+  });
+
+  document.querySelectorAll(".detail-panel").forEach((panel) => {
+    panel.classList.toggle("active", panel.dataset.detailPanel === tabName);
+  });
+}
+
+function generateRequestId() {
+  const lastNumbers = labRequests.map((request) =>
+    Number(request.requestId.split("-").pop())
+  );
+  const nextNumber = Math.max(...lastNumbers) + 1;
+  return `LR-2026-${String(nextNumber).padStart(4, "0")}`;
+}
+
+function createRequestFromForm(status) {
+  const formData = new FormData(newRequestForm);
+  const newRequest = {
+    requestId: generateRequestId(),
+    caseId: formData.get("caseId"),
+    caseType: formData.get("caseType"),
+    personName: formData.get("personName"),
+    referenceNumber: formData.get("referenceNumber") || "Not provided",
+    testType: formData.get("testType"),
+    specificTest: formData.get("specificTest"),
+    sampleType: formData.get("sampleType"),
+    sampleId: "Pending allocation",
+    sealNumber: "Pending",
+    sampleCondition: "Not collected",
+    storageCondition: formData.get("storage") || "Not specified",
+    requestedDate: new Date().toISOString().slice(0, 10),
+    priority: formData.get("priority"),
+    status,
+    laboratory: formData.get("laboratory"),
+    requestingJmo: formData.get("requestingJmo"),
+    labReference: "Not assigned",
+    receivedDate: "Not received",
+    analyst: formData.get("labOfficer") || "Not assigned",
+    method: "Pending",
+    qualityControl: "Pending",
+    resultSummary:
+      status === "Pending"
+        ? "The request has been submitted. Sample collection and laboratory processing are pending."
+        : "This request is saved as a draft and has not been submitted.",
+    approval: {
+      entered: "Not entered",
+      verified: "Not started",
+      jmo: "Not started"
+    },
+    history: [
+      [
+        new Intl.DateTimeFormat("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        }).format(new Date()),
+        status === "Pending"
+          ? `Laboratory request created by ${formData.get("requestingJmo")}`
+          : `Draft request saved by ${formData.get("requestingJmo")}`
+      ]
+    ]
+  };
+
+  labRequests.unshift(newRequest);
+  closeModal(newRequestModal);
+  newRequestForm.reset();
+  document.getElementById("requestingJmoInput").value = "Dr. A. Perera";
+  document.getElementById("containerCountInput").value = 1;
+  setActiveTab("all");
+  showToast(
+    status === "Pending"
+      ? `${newRequest.requestId} was created successfully.`
+      : `${newRequest.requestId} was saved as a draft.`
+  );
+}
+
+function exportToCsv() {
+  const requests = getFilteredRequests();
+
+  const headers = [
+    "Request ID",
+    "Case ID",
+    "Case Type",
+    "Person",
+    "Test Type",
+    "Specific Test",
+    "Sample Type",
+    "Requested Date",
+    "Priority",
+    "Status",
+    "Laboratory"
+  ];
+
+  const rows = requests.map((request) => [
+    request.requestId,
+    request.caseId,
+    request.caseType,
+    request.personName,
+    request.testType,
+    request.specificTest,
+    request.sampleType,
+    request.requestedDate,
+    request.priority,
+    request.status,
+    request.laboratory
+  ]);
+
+  const csv = [headers, ...rows]
+    .map((row) =>
+      row
+        .map((cell) => `"${String(cell).replace(/"/g, '""')}"`)
+        .join(",")
+    )
+    .join("\n");
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "MedLogs_Lab_Requests.csv";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+
+  showToast("The current request list was exported.");
+}
+
+/* Event listeners */
+[searchInput, caseTypeFilter, testTypeFilter, statusFilter].forEach((control) => {
+  control.addEventListener("input", () => { currentPage = 1; renderTable(); });
+  control.addEventListener("change", () => { currentPage = 1; renderTable(); });
+});
+
+resetFiltersButton.addEventListener("click", () => {
+  currentPage = 1;
+  searchInput.value = "";
+  caseTypeFilter.value = "all";
+  testTypeFilter.value = "all";
+  statusFilter.value = "all";
+  setActiveTab("all");
+});
+
+tabs.forEach((tab) => {
+  tab.addEventListener("click", () => setActiveTab(tab.dataset.tab));
+});
+
+document.querySelectorAll(".detail-tab").forEach((tab) => {
+  tab.addEventListener("click", () => setDetailTab(tab.dataset.detailTab));
+});
+
+openNewRequestButton.addEventListener("click", () => {
+  openModal(newRequestModal);
+});
+
+document.querySelectorAll("[data-close-modal]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const modal = document.getElementById(button.dataset.closeModal);
+    closeModal(modal);
+  });
+});
+
+[newRequestModal, detailsModal].forEach((modal) => {
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) closeModal(modal);
+  });
+});
+
+newRequestForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  if (!dom.form.reportValidity()) return;
-  const record = buildRecordFromForm();
-  records.unshift(record);
-  selectedResultId = record.id;
-  saveRecords();
-  resetForm();
-  setActiveTab("records");
-  renderAll();
-  showToast(`${record.id} saved successfully.`);
+  const missingField = getMissingMandatoryField();
+  if (missingField) {
+    missingField.focus();
+    newRequestForm.reportValidity();
+    showToast("Complete all mandatory laboratory request fields before submitting.");
+    return;
+  }
+  createRequestFromForm("Pending");
 });
 
-dom.tabButtons.forEach(button => {
-  button.addEventListener("click", () => setActiveTab(button.dataset.tab));
+saveDraftButton.addEventListener("click", () => {
+  const invalidField = getMissingMandatoryField();
+  if (invalidField) {
+    invalidField.focus();
+    showToast("Complete the required fields before saving the draft.");
+    return;
+  }
+
+  createRequestFromForm("Pending");
 });
 
-dom.modeButtons.forEach(button => {
-  button.addEventListener("click", () => setActiveTab(button.dataset.mode));
+exportButton.addEventListener("click", exportToCsv);
+
+document.getElementById("printRequestButton").addEventListener("click", () => {
+  if (!selectedRequest) return;
+  showToast(`Print view prepared for ${selectedRequest.requestId}.`);
+  window.print();
 });
 
-dom.resultSearch.addEventListener("input", renderTable);
-dom.statusFilter.addEventListener("change", renderTable);
-
-dom.clearFormBtn.addEventListener("click", () => {
-  resetForm();
-  showToast("Form cleared.");
+mobileMenuButton.addEventListener("click", () => {
+  sidebar.classList.toggle("open");
 });
 
-dom.saveDraftBtn.addEventListener("click", () => {
-  showToast("Draft saved in this template session.");
-});
-
-dom.viewRecentBtn.addEventListener("click", () => setActiveTab("records"));
-
-document.addEventListener("click", event => {
-  const viewButton = event.target.closest("[data-view-result]");
-  if (viewButton) {
-    selectedResultId = viewButton.dataset.viewResult;
-    renderDetail();
+document.addEventListener("click", (event) => {
+  if (
+    window.innerWidth <= 980 &&
+    sidebar.classList.contains("open") &&
+    !sidebar.contains(event.target) &&
+    !mobileMenuButton.contains(event.target)
+  ) {
+    sidebar.classList.remove("open");
   }
 });
 
-dom.menuBtn.addEventListener("click", () => {
-  dom.sidebar.classList.add("open");
-  dom.sidebarOverlay.classList.add("show");
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+
+  if (!newRequestModal.hidden) closeModal(newRequestModal);
+  if (!detailsModal.hidden) closeModal(detailsModal);
+  sidebar.classList.remove("open");
 });
 
-dom.sidebarOverlay.addEventListener("click", () => {
-  dom.sidebar.classList.remove("open");
-  dom.sidebarOverlay.classList.remove("show");
-});
-
-updateDateBox();
-renderAll();
-
+renderTable();
