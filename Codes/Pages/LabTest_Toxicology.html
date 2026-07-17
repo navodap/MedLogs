@@ -1,1 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedLogs | Lab / Toxicology</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/LabTest_Toxicology.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-text">
+          <h1>MedLogs</h1>
+          <p>FORENSIC MEDICO-LEGAL<br>INFORMATION MANAGEMENT</p>
+        </div>
+      </div>
+
+      <nav class="nav-menu" aria-label="Main navigation">
+        <a class="nav-item" href="#">
+          <span class="nav-icon">⌂</span>
+          <span>Dashboard</span>
+        </a>
+
+        <a class="nav-item" href="#">
+          <span class="nav-icon">◫</span>
+          <span>Patient Management</span>
+        </a>
+
+        <a class="nav-item" href="#">
+          <span class="nav-icon">▣</span>
+          <span>Case Management</span>
+        </a>
+
+        <a class="nav-item" href="#">
+          <span class="nav-icon">☷</span>
+          <span>Examination Forms</span>
+        </a>
+
+        <a class="nav-item" href="#">
+          <span class="nav-icon">⚗</span>
+          <span>Evidence &amp; Samples</span>
+        </a>
+
+        <a class="nav-item active" href="LabTest_Toxicology.html" aria-current="page">
+          <span class="active-bar"></span>
+          <span class="nav-icon">⌬</span>
+          <span>Lab / Toxicology</span>
+        </a>
+
+        <a class="nav-item" href="#">
+          <span class="nav-icon">⚖</span>
+          <span>Police &amp; Court</span>
+        </a>
+
+        <a class="nav-item" href="#">
+          <span class="nav-icon">▤</span>
+          <span>Documents</span>
+        </a>
+
+        <a class="nav-item" href="#">
+          <span class="nav-icon">▥</span>
+          <span>Reports</span>
+        </a>
+
+        <a class="nav-item" href="#">
+          <span class="nav-icon">⌕</span>
+          <span>Search</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="avatar">AP</div>
+          <div class="user-details">
+            <strong>Dr. A. Perera</strong>
+            <span>Consultant JMO</span>
+          </div>
+        </div>
+
+        <button class="sidebar-action" type="button">
+          <span>⚙</span>
+          <span>Settings</span>
+        </button>
+
+        <button class="sidebar-action danger" type="button">
+          <span>↪</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main area -->
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu-button" id="mobileMenuButton" type="button" aria-label="Open menu">
+          ☰
+        </button>
+
+        <div class="page-heading">
+          <p class="eyebrow">FORENSIC INVESTIGATIONS</p>
+          <h2>Lab / Toxicology</h2>
+          <p>
+            Manage laboratory requests, specimens, toxicology findings
+            and linked reports.
+          </p>
+        </div>
+
+        <div class="header-actions">
+          <button class="notify-btn" type="button" aria-label="Notifications">
+            🔔
+          </button>
+
+          <button class="primary-button" id="openNewRequestButton" type="button">
+            <span>＋</span>
+            New Lab Request
+          </button>
+        </div>
+      </header>
+
+      <!-- Summary cards -->
+      <section class="summary-grid" aria-label="Laboratory request summary">
+        <article class="summary-card">
+          <div class="summary-icon pending">◷</div>
+          <div>
+            <span>Pending Tests</span>
+            <strong id="pendingCount">0</strong>
+          </div>
+        </article>
+
+        <article class="summary-card">
+          <div class="summary-icon progress">◌</div>
+          <div>
+            <span>In Progress</span>
+            <strong id="progressCount">0</strong>
+          </div>
+        </article>
+
+        <article class="summary-card">
+          <div class="summary-icon review">✓</div>
+          <div>
+            <span>Awaiting Review</span>
+            <strong id="reviewCount">0</strong>
+          </div>
+        </article>
+
+        <article class="summary-card">
+          <div class="summary-icon completed">✔</div>
+          <div>
+            <span>Completed</span>
+            <strong id="completedCount">0</strong>
+          </div>
+        </article>
+
+        <article class="summary-card urgent-card">
+          <div class="summary-icon urgent">!</div>
+          <div>
+            <span>Urgent</span>
+            <strong id="urgentCount">0</strong>
+          </div>
+        </article>
+      </section>
+
+      <!-- Toolbar -->
+      <section class="panel controls-panel">
+        <div class="search-box">
+          <span class="search-icon">⌕</span>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="Search by Case ID, Request ID, person or sample..."
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="filters">
+          <select id="caseTypeFilter" aria-label="Filter by case type">
+            <option value="all">All case types</option>
+            <option value="Clinical">Clinical</option>
+            <option value="Postmortem">Postmortem</option>
+          </select>
+
+          <select id="testTypeFilter" aria-label="Filter by test type">
+            <option value="all">All test types</option>
+            <option value="Toxicology">Toxicology</option>
+            <option value="Alcohol Test">Alcohol Test</option>
+            <option value="Histopathology">Histopathology</option>
+            <option value="DNA Analysis">DNA Analysis</option>
+            <option value="Blood Investigation">Blood Investigation</option>
+            <option value="Urine Investigation">Urine Investigation</option>
+          </select>
+
+          <select id="statusFilter" aria-label="Filter by status">
+            <option value="all">All statuses</option>
+            <option value="Pending">Pending</option>
+            <option value="Sample Received">Sample Received</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Awaiting Review">Awaiting Review</option>
+            <option value="Completed">Completed</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+
+          <button class="secondary-button" id="resetFiltersButton" type="button">
+            Reset
+          </button>
+        </div>
+      </section>
+
+      <!-- Tabs -->
+      <section class="panel content-panel">
+        <div class="tabs" role="tablist" aria-label="Lab and toxicology sections">
+          <button class="tab active" type="button" data-tab="all">
+            Test Requests
+          </button>
+          <button class="tab" type="button" data-tab="samples">
+            Samples Received
+          </button>
+          <button class="tab" type="button" data-tab="results">
+            Results
+          </button>
+          <button class="tab" type="button" data-tab="approval">
+            Pending Approval
+          </button>
+          <button class="tab" type="button" data-tab="completed">
+            Completed Tests
+          </button>
+        </div>
+
+        <div class="table-header">
+          <div>
+            <h3 id="tableTitle">Laboratory Test Requests</h3>
+            <p id="tableSubtitle">All requests linked to clinical and postmortem cases.</p>
+          </div>
+
+          <div class="table-actions">
+            <button class="secondary-button" id="exportButton" type="button">
+              Export CSV
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Request ID</th>
+                <th>Case / Person</th>
+                <th>Test Type</th>
+                <th>Sample</th>
+                <th>Requested</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th class="actions-column">Action</th>
+              </tr>
+            </thead>
+            <tbody id="requestTableBody"></tbody>
+          </table>
+
+          <div class="empty-state" id="emptyState" hidden>
+            <div class="empty-icon">⌕</div>
+            <h4>No matching requests found</h4>
+            <p>Try changing the search text or filters.</p>
+          </div>
+        </div>
+
+        <div class="pagination">
+          <span id="resultCountText">Showing 0 requests</span>
+          <div class="pagination-buttons" id="paginationButtons">
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- New request modal -->
+  <div class="modal-overlay" id="newRequestModal" hidden>
+    <section class="modal large-modal" role="dialog" aria-modal="true" aria-labelledby="newRequestTitle">
+      <div class="modal-header">
+        <div>
+          <span class="modal-kicker">NEW INVESTIGATION</span>
+          <h3 id="newRequestTitle">Create Laboratory Request</h3>
+          <p>Link the investigation to a registered forensic case.</p>
+        </div>
+
+        <button class="close-button" type="button" data-close-modal="newRequestModal" aria-label="Close">
+          ×
+        </button>
+      </div>
+
+      <form id="newRequestForm">
+        <div class="form-section">
+          <div class="section-title">
+            <span>1</span>
+            <div>
+              <h4>Case Information</h4>
+              <p>Select the clinical or postmortem case.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <label class="form-field">
+              <span>Case ID *</span>
+              <input id="caseIdInput" name="caseId" type="text" placeholder="CL-2026-000123" required />
+            </label>
+
+            <label class="form-field">
+              <span>Case Type *</span>
+              <select id="caseTypeInput" name="caseType" required>
+                <option value="">Select case type</option>
+                <option value="Clinical">Clinical</option>
+                <option value="Postmortem">Postmortem</option>
+              </select>
+            </label>
+
+            <label class="form-field">
+              <span>Patient / Deceased Name *</span>
+              <input id="personNameInput" name="personName" type="text" required />
+            </label>
+
+            <label class="form-field">
+              <span>Patient / Victim ID</span>
+              <input id="patientIdInput" name="patientId" type="text" placeholder="PV-2026-000345" />
+            </label>
+
+            <label class="form-field">
+              <span>MLEF / PM Registry Number</span>
+              <input id="referenceNumberInput" name="referenceNumber" type="text" />
+            </label>
+
+            <label class="form-field">
+              <span>Requesting Doctor *</span>
+              <input id="requestingJmoInput" name="requestingJmo" type="text" value="Dr. A. Perera" required />
+            </label>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-title">
+            <span>2</span>
+            <div>
+              <h4>Test Request</h4>
+              <p>Provide the investigation and priority information.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <label class="form-field">
+              <span>Test Category *</span>
+              <select id="testTypeInput" name="testType" required>
+                <option value="">Select test category</option>
+                <option value="Toxicology">Toxicology</option>
+                <option value="Alcohol Test">Alcohol Test</option>
+                <option value="Histopathology">Histopathology</option>
+                <option value="DNA Analysis">DNA Analysis</option>
+                <option value="Blood Investigation">Blood investigation</option>
+                <option value="Urine Investigation">Urine investigation</option>
+                <option value="Swab Analysis">Swab analysis</option>
+                <option value="Microbiology">Microbiology</option>
+                <option value="Biochemistry">Biochemistry</option>
+                <option value="Drug Screening">Drug screening</option>
+                <option value="Poison Screening">Poison screening</option>
+                <option value="Other Laboratory Test">Other laboratory test</option>
+              </select>
+            </label>
+
+            <label class="form-field">
+              <span>Specific Test Name *</span>
+              <input id="specificTestInput" name="specificTest" type="text" placeholder="e.g. Blood alcohol concentration" required />
+            </label>
+
+            <label class="form-field">
+              <span>Priority *</span>
+              <select id="priorityInput" name="priority" required>
+                <option value="">Select priority</option>
+                <option value="Routine">Routine</option>
+                <option value="Urgent">Urgent</option>
+                <option value="Court Urgent">Court Urgent</option>
+                <option value="Emergency">Emergency</option>
+              </select>
+            </label>
+
+            <label class="form-field">
+              <span>Requested Laboratory *</span>
+              <select id="laboratoryInput" name="laboratory" required>
+                <option value="">Select requested laboratory</option>
+                <option>Hospital Laboratory</option>
+                <option>Forensic Toxicology Laboratory</option>
+                <option>Government Analyst Department</option>
+                <option>Histopathology Department</option>
+                <option>DNA Laboratory</option>
+                <option>External Approved Laboratory</option>
+                <option>Other</option>
+              </select>
+            </label>
+
+            <label class="form-field">
+              <span>Assigned Laboratory Officer</span>
+              <input id="labOfficerInput" name="labOfficer" type="text" />
+            </label>
+
+            <label class="form-field">
+              <span>Expected Completion Date</span>
+              <input id="expectedDateInput" name="expectedDate" type="date" />
+            </label>
+
+            <label class="form-field full-width">
+              <span>Reason for Request *</span>
+              <textarea id="reasonInput" name="reason" rows="3" required></textarea>
+            </label>
+
+            <label class="form-field full-width">
+              <span>Clinical History / Special Instructions</span>
+              <textarea id="historyInput" name="history" rows="3"></textarea>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-title">
+            <span>3</span>
+            <div>
+              <h4>Required Specimen</h4>
+              <p>Describe the specimen required for testing.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <label class="form-field">
+              <span>Sample Type *</span>
+              <select id="sampleTypeInput" name="sampleType" required>
+                <option value="">Select sample type</option>
+                <option value="Blood">Blood</option>
+                <option value="Urine">Urine</option>
+                <option value="Stomach Contents">Stomach Contents</option>
+                <option value="Vitreous Humour">Vitreous Humour</option>
+                <option value="Tissue">Tissue</option>
+                <option value="Hair">Hair</option>
+                <option value="Nail Clipping">Nail Clipping</option>
+                <option value="Swab">Swab</option>
+                <option value="Saliva">Saliva</option>
+                <option value="DNA Sample">DNA Sample</option>
+                <option value="Clothing or Foreign Material">Clothing or foreign material</option>
+                <option value="Other Specimen">Other specimen</option>
+              </select>
+            </label>
+
+            <label class="form-field">
+              <span>Number of Containers</span>
+              <input id="containerCountInput" name="containerCount" type="number" min="1" value="1" />
+            </label>
+
+            <label class="form-field">
+              <span>Required Quantity</span>
+              <input id="quantityInput" name="quantity" type="text" placeholder="e.g. 10 mL" />
+            </label>
+
+            <label class="form-field">
+              <span>Preservative</span>
+              <input id="preservativeInput" name="preservative" type="text" placeholder="e.g. Sodium fluoride" />
+            </label>
+
+            <label class="form-field">
+              <span>Storage Condition</span>
+              <select id="storageInput" name="storage">
+                <option value="Room Temperature">Room Temperature</option>
+                <option value="Refrigerated">Refrigerated</option>
+                <option value="Frozen">Frozen</option>
+                <option value="Dry Storage">Dry Storage</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="secondary-button" type="button" data-close-modal="newRequestModal">
+            Cancel
+          </button>
+          <button class="secondary-button" id="saveDraftButton" type="button">
+            Save as Draft
+          </button>
+          <button class="primary-button" type="submit">
+            Submit Request
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- Request details modal -->
+  <div class="modal-overlay" id="detailsModal" hidden>
+    <section class="modal details-modal" role="dialog" aria-modal="true" aria-labelledby="detailsModalTitle">
+      <div class="modal-header">
+        <div>
+          <span class="modal-kicker">LABORATORY REQUEST</span>
+          <h3 id="detailsModalTitle">Request Details</h3>
+          <p id="detailsModalSubtitle"></p>
+        </div>
+
+        <button class="close-button" type="button" data-close-modal="detailsModal" aria-label="Close">
+          ×
+        </button>
+      </div>
+
+      <div class="detail-banner">
+        <div>
+          <span>Request ID</span>
+          <strong id="detailRequestId"></strong>
+        </div>
+        <div>
+          <span>Case ID</span>
+          <strong id="detailCaseId"></strong>
+        </div>
+        <div>
+          <span>Priority</span>
+          <strong id="detailPriority"></strong>
+        </div>
+        <div>
+          <span>Status</span>
+          <strong id="detailStatus"></strong>
+        </div>
+      </div>
+
+      <div class="detail-tabs">
+        <button class="detail-tab active" type="button" data-detail-tab="overview">Overview</button>
+        <button class="detail-tab" type="button" data-detail-tab="sample">Sample</button>
+        <button class="detail-tab" type="button" data-detail-tab="processing">Processing</button>
+        <button class="detail-tab" type="button" data-detail-tab="results">Results</button>
+        <button class="detail-tab" type="button" data-detail-tab="approval">Approval</button>
+        <button class="detail-tab" type="button" data-detail-tab="history">History</button>
+      </div>
+
+      <div class="detail-content">
+        <section class="detail-panel active" data-detail-panel="overview">
+          <div class="detail-grid">
+            <article class="info-card">
+              <h4>Case Information</h4>
+              <dl>
+                <div><dt>Person</dt><dd id="detailPerson"></dd></div>
+                <div><dt>Case Type</dt><dd id="detailCaseType"></dd></div>
+                <div><dt>Reference</dt><dd id="detailReference"></dd></div>
+                <div><dt>Requesting JMO</dt><dd id="detailJmo"></dd></div>
+              </dl>
+            </article>
+
+            <article class="info-card">
+              <h4>Test Request</h4>
+              <dl>
+                <div><dt>Test Type</dt><dd id="detailTestType"></dd></div>
+                <div><dt>Specific Test</dt><dd id="detailSpecificTest"></dd></div>
+                <div><dt>Laboratory</dt><dd id="detailLaboratory"></dd></div>
+                <div><dt>Requested Date</dt><dd id="detailRequestedDate"></dd></div>
+              </dl>
+            </article>
+          </div>
+
+          <article class="info-card progress-card">
+            <h4>Investigation Progress</h4>
+            <div class="progress-timeline" id="progressTimeline"></div>
+          </article>
+        </section>
+
+        <section class="detail-panel" data-detail-panel="sample">
+          <article class="info-card">
+            <h4>Linked Sample</h4>
+            <dl>
+              <div><dt>Sample ID</dt><dd id="detailSampleId"></dd></div>
+              <div><dt>Sample Type</dt><dd id="detailSampleType"></dd></div>
+              <div><dt>Seal Number</dt><dd id="detailSeal"></dd></div>
+              <div><dt>Condition</dt><dd id="detailSampleCondition"></dd></div>
+              <div><dt>Storage</dt><dd id="detailStorage"></dd></div>
+            </dl>
+          </article>
+        </section>
+
+        <section class="detail-panel" data-detail-panel="processing">
+          <article class="info-card">
+            <h4>Laboratory Processing</h4>
+            <dl>
+              <div><dt>Laboratory Ref.</dt><dd id="detailLabRef"></dd></div>
+              <div><dt>Received Date</dt><dd id="detailReceivedDate"></dd></div>
+              <div><dt>Analyst</dt><dd id="detailAnalyst"></dd></div>
+              <div><dt>Method</dt><dd id="detailMethod"></dd></div>
+              <div><dt>Quality Control</dt><dd id="detailQuality"></dd></div>
+            </dl>
+          </article>
+        </section>
+
+        <section class="detail-panel" data-detail-panel="results">
+          <article class="info-card">
+            <h4>Current Result</h4>
+            <div class="result-summary" id="detailResultSummary"></div>
+          </article>
+        </section>
+
+        <section class="detail-panel" data-detail-panel="approval">
+          <article class="approval-card">
+            <div>
+              <span class="approval-step complete">✓</span>
+              <div>
+                <strong>Result Entered</strong>
+                <span id="approvalEntered"></span>
+              </div>
+            </div>
+
+            <div>
+              <span class="approval-step" id="verificationIcon">2</span>
+              <div>
+                <strong>Laboratory Verification</strong>
+                <span id="approvalVerified"></span>
+              </div>
+            </div>
+
+            <div>
+              <span class="approval-step" id="jmoReviewIcon">3</span>
+              <div>
+                <strong>JMO Review</strong>
+                <span id="approvalJmo"></span>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="detail-panel" data-detail-panel="history">
+          <div class="history-list" id="detailHistory"></div>
+        </section>
+      </div>
+
+      <div class="modal-footer">
+        <button class="secondary-button" type="button" data-close-modal="detailsModal">
+          Close
+        </button>
+        <button class="primary-button" type="button" id="printRequestButton">
+          Print Request
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="../Js/LabTest_Toxicology.js"></script>
+</body>
+</html>
 
