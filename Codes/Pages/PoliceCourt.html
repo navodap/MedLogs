@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Police & Court | MedLogs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/PoliceCourt.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-block"><div class="brand-mark"><i data-lucide="shield-plus"></i></div><div><h1>MedLogs</h1><p>Forensic Medico-Legal<br>Information Management</p></div></div>
+      <nav class="side-nav">
+        <a href="index.html"><i data-lucide="layout-dashboard"></i>Dashboard</a>
+        <a href="PatientManagement.html"><i data-lucide="users"></i>Patient Management</a>
+        <a href="CaseManagement.html"><i data-lucide="briefcase-medical"></i>Case Management</a>
+        <a href="ExaminationForms.html"><i data-lucide="clipboard-pen"></i>Examination Forms</a>
+        <a href="EvidenceSamples.html"><i data-lucide="flask-conical"></i>Evidence & Samples</a>
+        <a href="LabTest_Toxicology.html"><i data-lucide="microscope"></i>Lab / Toxicology</a>
+        <a class="active" href="PoliceCourt.html"><i data-lucide="landmark"></i>Police & Court</a>
+        <a href="Documents.html"><i data-lucide="files"></i>Documents</a>
+        <a href="ReportGeneration.html"><i data-lucide="file-chart-column"></i>Reports</a>
+      </nav>
+      <div class="secure-panel"><i data-lucide="lock-keyhole"></i><p>SECURE. ACCURATE. ACCOUNTABLE.</p><strong>Trusted forensic care.<br>Reliable medico-legal records.</strong></div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="menu-btn" id="menuBtn" aria-label="Open navigation"><i data-lucide="menu"></i></button>
+        <div><h2>Police & Court</h2><p>Referral, correspondence and hearing management</p></div>
+        <label class="global-search"><i data-lucide="search"></i><input id="globalSearch" type="search" placeholder="Search case, reference, station or court..."><kbd>Ctrl K</kbd></label>
+        <button class="notification" aria-label="Notifications"><i data-lucide="bell"></i><span>3</span></button>
+        <div class="profile"><span>NP</span><div><strong>Dr. N. Perera</strong><small>JMO</small></div></div>
+      </header>
+
+      <section class="workspace">
+        <div class="page-heading"><div><span class="eyebrow">MEDICO-LEGAL COORDINATION</span><h3>Police & Court Management</h3><p>Track police communications, court orders, submissions and appearances from one secure workspace.</p></div><button class="primary-btn" id="newRecordBtn"><i data-lucide="plus"></i>New Record</button></div>
+
+        <section class="stats-grid">
+          <article><span class="stat-icon blue"><i data-lucide="radio-tower"></i></span><div><small>Police Referrals</small><strong id="policeCount">0</strong><p>Active records</p></div></article>
+          <article><span class="stat-icon violet"><i data-lucide="scale"></i></span><div><small>Court Matters</small><strong id="courtCount">0</strong><p>Linked to cases</p></div></article>
+          <article><span class="stat-icon amber"><i data-lucide="calendar-clock"></i></span><div><small>Upcoming Hearings</small><strong id="hearingCount">0</strong><p>Next 30 days</p></div></article>
+          <article><span class="stat-icon green"><i data-lucide="circle-check-big"></i></span><div><small>Completed</small><strong id="completedCount">0</strong><p>Submitted / attended</p></div></article>
+        </section>
+
+        <section class="content-grid">
+          <div class="main-column">
+            <article class="panel">
+              <div class="panel-head"><div><h4>Police & Court Register</h4><p>All linked external authority records</p></div><div class="filters"><select id="typeFilter"><option value="all">All types</option><option>Police Referral</option><option>Court Matter</option></select><select id="statusFilter"><option value="all">All statuses</option><option>Pending</option><option>Scheduled</option><option>Submitted</option><option>Completed</option></select></div></div>
+              <div class="table-wrap"><table><thead><tr><th>Reference</th><th>Case / Authority</th><th>Type</th><th>Next Action</th><th>Status</th><th></th></tr></thead><tbody id="recordsBody"></tbody></table><div class="empty" id="emptyState" hidden><i data-lucide="inbox"></i><strong>No matching records</strong><p>Adjust the filters or add a new police or court record.</p></div></div>
+            </article>
+          </div>
+          <aside class="right-column">
+            <article class="panel schedule"><div class="panel-head"><div><h4>Upcoming Schedule</h4><p>Court appearances and deadlines</p></div><i data-lucide="calendar-days"></i></div><div id="scheduleList"></div></article>
+            <article class="panel quick"><div class="panel-head"><div><h4>Quick Actions</h4><p>Common coordination tasks</p></div></div><button data-new-type="Police Referral"><i data-lucide="file-input"></i><span><strong>Log police referral</strong><small>Add station and officer details</small></span><i data-lucide="chevron-right"></i></button><button data-new-type="Court Matter"><i data-lucide="calendar-plus"></i><span><strong>Schedule court matter</strong><small>Record an order or hearing</small></span><i data-lucide="chevron-right"></i></button></article>
+          </aside>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal" id="recordModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-head"><div><span class="eyebrow">NEW COORDINATION ENTRY</span><h3 id="modalTitle">Add Police / Court Record</h3></div><button id="closeModalBtn" aria-label="Close"><i data-lucide="x"></i></button></div><form id="recordForm"><div class="form-grid"><label>Record Type *<select id="recordType" required><option>Police Referral</option><option>Court Matter</option></select></label><label>Case ID *<input id="caseId" required placeholder="e.g. CL-2026-00124"></label><label>Reference No. *<input id="referenceNo" required placeholder="Police or court reference"></label><label>Authority / Institution *<input id="authority" required placeholder="Station or court name"></label><label>Contact Officer / Registrar<input id="contactPerson" placeholder="Name and rank / designation"></label><label>Next Action Date<input id="actionDate" type="date"></label><label>Status<select id="recordStatus"><option>Pending</option><option>Scheduled</option><option>Submitted</option><option>Completed</option></select></label><label>Priority<select id="priority"><option>Normal</option><option>Urgent</option><option>Court Priority</option></select></label></div><label>Notes<textarea id="notes" rows="3" placeholder="Order details, requested documents, appearance instructions..."></textarea></label><div class="form-actions"><button type="button" class="secondary-btn" id="cancelBtn">Cancel</button><button type="submit" class="primary-btn"><i data-lucide="save"></i>Save Record</button></div></form></div></div>
+  <div class="toast" id="toast"><i data-lucide="circle-check"></i><span>Record saved successfully.</span></div>
+  <script src="../Js/PoliceCourt.js"></script>
+</body>
+</html>
