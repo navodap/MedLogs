@@ -1,1 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedLogs — Document Upload &amp; Viewer</title>
+  <!-- Codes/Pages/Documents.html → Codes/css/Documents.css -->
+  <link rel="stylesheet" href="../css/Documents.css" />
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ================================================================
+       LEFT SIDEBAR
+       ================================================================ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand-block">
+      <div class="brand-text">
+        <h1 class="brand-title">MedLogs</h1>
+        <p class="brand-subtitle">Judicial Medical Office<br />Forensic Case Management</p>
+      </div>
+    </div>
+
+    <nav class="side-nav">
+      <a href="#" class="nav-item"><span>📊</span> Dashboard</a>
+      <a href="#" class="nav-item"><span>🧑‍⚕️</span> Patient Management</a>
+      <a href="#" class="nav-item"><span>📁</span> Case Management</a>
+      <a href="#" class="nav-item"><span>📝</span> Examination Forms</a>
+      <a href="#" class="nav-item"><span>🔬</span> Evidence &amp; Samples</a>
+      <a href="#" class="nav-item"><span>🧪</span> Lab / Toxicology</a>
+      <a href="#" class="nav-item"><span>⚖️</span> Police &amp; Court</a>
+      <a href="#" class="nav-item active"><span>📄</span> Documents</a>
+      <a href="#" class="nav-item"><span>📑</span> Reports</a>
+      <a href="#" class="nav-item"><span>🔍</span> Search</a>
+
+      <div class="nav-divider"></div>
+
+      <a href="#" class="nav-item"><span>👥</span> Staff Management</a>
+      <a href="#" class="nav-item"><span>🔐</span> User &amp; Role Mgmt</a>
+      <a href="#" class="nav-item"><span>📋</span> Audit Logs</a>
+      <a href="#" class="nav-item"><span>📈</span> Statistics</a>
+      <a href="#" class="nav-item"><span>⚙️</span> Backup / Settings</a>
+    </nav>
+
+    <div class="secure-panel">
+      <div class="secure-icon">🛡️</div>
+      <p>FORENSIC DOCUMENT SECURITY</p>
+      <strong>All access logged &amp; audited.<br />Court-admissible integrity.</strong>
+    </div>
+  </aside>
+
+  <!-- Sidebar mobile overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ================================================================
+       MAIN AREA
+       ================================================================ -->
+  <div class="main-area">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <button class="menu-btn" id="menuBtn" title="Toggle sidebar">☰</button>
+      <h2>Document Management</h2>
+
+      <div class="global-search">
+        <span>🔍</span>
+        <input type="text" placeholder="Search documents, cases, files..." />
+        <kbd>Ctrl K</kbd>
+      </div>
+
+      <div class="top-actions">
+        <button class="notify-btn" title="Notifications">🔔<small>3</small></button>
+        <div class="profile-box">
+          <div class="avatar">AS</div>
+          <div>
+            <strong>Dr. A. Silva</strong>
+            <span>Consultant JMO</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- WORKSPACE -->
+    <main class="workspace">
+
+      <!-- PAGE HERO -->
+      <div class="page-hero">
+        <div class="page-hero-left">
+          <div class="page-hero-icon">📄</div>
+          <div>
+            <h1>Document Upload &amp; Viewer</h1>
+            <p>Upload, organize and view documents related to forensic cases.</p>
+          </div>
+        </div>
+        <div class="page-hero-actions">
+          <button class="btn primary" id="openUploadModal">+ Upload Document</button>
+          <button class="btn light" id="openBulkUpload">⬆ Bulk Upload</button>
+        </div>
+      </div>
+
+      <!-- CASE SEARCH SECTION -->
+      <div class="card case-search-section">
+        <h3>Select Forensic Case</h3>
+        <div class="case-search-row">
+          <input type="text" id="caseSearchInput" placeholder="Search by Case ID, patient name, NIC, MLEF number, PM number, police reference..." />
+          <button class="btn primary" id="caseSearchBtn">Search</button>
+        </div>
+        <div class="case-filter-row">
+          <select id="filterCaseType">
+            <option value="">All Case Types</option>
+            <option value="clinical">Clinical</option>
+            <option value="postmortem">Postmortem</option>
+          </select>
+          <select id="filterCaseStatus">
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+            <option value="archived">Archived</option>
+          </select>
+          <select id="filterCaseYear">
+            <option value="">All Years</option>
+            <option value="2026">2026</option>
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- CASE SUMMARY CARD -->
+      <div class="case-summary" id="caseSummary">
+        <div class="case-summary-top">
+          <h4 id="summCaseId">CL-2026-000123</h4>
+          <div>
+            <span class="badge info" id="summCaseType">Clinical</span>
+            <span class="badge success" id="summStatus">Active</span>
+          </div>
+        </div>
+        <div class="case-summary-grid">
+          <div class="info-pair"><small>Patient</small><span id="summPatient">Nimal Perera</span></div>
+          <div class="info-pair"><small>Patient ID</small><span id="summPatientId">PT-2026-0451</span></div>
+          <div class="info-pair"><small>MLEF No</small><span id="summMLEF">MLEF-2045</span></div>
+          <div class="info-pair"><small>Police Station</small><span id="summPolice">Kandy Police Station</span></div>
+          <div class="info-pair"><small>Examining JMO</small><span id="summJMO">Dr. A. Silva</span></div>
+          <div class="info-pair"><small>Court Case</small><span id="summCourt">MC-KDY-2026-1102</span></div>
+        </div>
+      </div>
+
+      <!-- DOCUMENT MANAGEMENT — TWO COLUMNS -->
+      <div class="doc-management" id="docManagement">
+
+        <!-- LEFT: DOCUMENT LIST -->
+        <div class="card doc-list-panel">
+          <div class="doc-list-header">
+            <h3>Case Documents</h3>
+            <span class="doc-count" id="docCount">0 Documents</span>
+          </div>
+
+          <div class="doc-list-filters">
+            <div class="doc-search-wrap">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="docSearchInput" placeholder="Search documents..." />
+            </div>
+            <div class="doc-filter-row">
+              <select id="filterDocType">
+                <option value="">All Types</option>
+                <optgroup label="Clinical Documents">
+                  <option value="mlef">MLEF</option>
+                  <option value="medical-note">Medical Officer's Note</option>
+                  <option value="mlr">Medico-Legal Report</option>
+                  <option value="clinical-notes">Clinical Examination Notes</option>
+                  <option value="injury-diagram">Injury Diagram</option>
+                  <option value="consent">Consent Form</option>
+                  <option value="referral">Referral Letter</option>
+                </optgroup>
+                <optgroup label="Postmortem Documents">
+                  <option value="inquest-order">Inquest Order</option>
+                  <option value="court-order">Court Order</option>
+                  <option value="pmr">Postmortem Report</option>
+                  <option value="cod-form">Cause of Death Form</option>
+                  <option value="pm-notes">Postmortem Notes</option>
+                  <option value="histopathology">Histopathology Report</option>
+                </optgroup>
+                <optgroup label="Investigation Documents">
+                  <option value="toxicology">Toxicology Report</option>
+                  <option value="dna">DNA Report</option>
+                  <option value="xray">X-ray Report</option>
+                  <option value="ct">CT Report</option>
+                  <option value="lab">Laboratory Report</option>
+                  <option value="specialist">Specialist Report</option>
+                </optgroup>
+                <optgroup label="Evidence &amp; Legal">
+                  <option value="exam-photo">Examination Photograph</option>
+                  <option value="crime-photo">Crime Scene Photograph</option>
+                  <option value="chain-custody">Chain of Custody Form</option>
+                  <option value="police-statement">Police Statement</option>
+                  <option value="police-request">Police Request Letter</option>
+                  <option value="court-submission">Court Submission</option>
+                  <option value="cert-receipt">Certificate of Receipt</option>
+                </optgroup>
+              </select>
+              <select id="filterDocStatus">
+                <option value="">All Statuses</option>
+                <option value="draft">Draft</option>
+                <option value="pending">Pending Approval</option>
+                <option value="verified">Verified</option>
+                <option value="approved">Approved</option>
+                <option value="submitted">Submitted</option>
+                <option value="archived">Archived</option>
+              </select>
+              <select id="filterDocDate">
+                <option value="">Any Date</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+                <option value="year">This Year</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="doc-list-scroll" id="docListScroll">
+            <!-- Document items rendered by JS -->
+            <p class="empty-state" id="docEmptyState">Select a case to view its documents.</p>
+          </div>
+        </div>
+
+        <!-- RIGHT: DOCUMENT VIEWER -->
+        <div class="card doc-viewer-panel">
+          <div class="doc-viewer-header">
+            <div class="doc-viewer-title">
+              <h3 id="viewerDocTitle">No Document Selected</h3>
+              <p id="viewerDocFile">Select a document from the list to preview it here.</p>
+            </div>
+            <div class="doc-viewer-actions" id="viewerActions" style="display:none;">
+              <button class="btn sm light" id="btnDownload">⬇ Download</button>
+              <button class="btn sm light" id="btnPrint">🖨 Print</button>
+              <button class="btn sm light" id="btnFullscreen">⛶ Full Screen</button>
+              <button class="btn sm light doc-more-trigger" id="btnViewerMore">⋮</button>
+            </div>
+          </div>
+
+          <!-- Toolbar -->
+          <div class="viewer-toolbar" id="viewerToolbar" style="display:none;">
+            <div class="toolbar-group">
+              <button class="toolbar-btn" id="btnPrevPage" title="Previous page">◀</button>
+              <span class="page-indicator">
+                Page <input type="number" id="pageInput" value="1" min="1" /> of <span id="totalPages">1</span>
+              </span>
+              <button class="toolbar-btn" id="btnNextPage" title="Next page">▶</button>
+            </div>
+            <span class="toolbar-sep"></span>
+            <div class="toolbar-group">
+              <button class="toolbar-btn" id="btnZoomOut" title="Zoom out">−</button>
+              <span class="zoom-level" id="zoomLevel">100%</span>
+              <button class="toolbar-btn" id="btnZoomIn" title="Zoom in">+</button>
+            </div>
+            <span class="toolbar-sep"></span>
+            <div class="toolbar-group">
+              <button class="toolbar-btn" id="btnRotate" title="Rotate">↻</button>
+              <button class="toolbar-btn" id="btnFitPage" title="Fit to page">⊡</button>
+            </div>
+          </div>
+
+          <!-- Viewer content -->
+          <div class="viewer-content" id="viewerContent">
+            <div class="viewer-empty" id="viewerEmpty">
+              <div class="viewer-empty-icon">📄</div>
+              <h4>No document selected</h4>
+              <p>Select a document from the list to preview it here.</p>
+            </div>
+            <div class="viewer-document" id="viewerDocument">
+              <div class="viewer-page" id="viewerPage">
+                <!-- Document rendered here -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Document details bar -->
+          <div class="doc-details-bar" id="docDetailsBar">
+            <div class="doc-details-grid" id="docDetailsGrid">
+              <!-- Filled by JS -->
+            </div>
+            <div class="detail-actions">
+              <button class="btn sm outline" id="btnEditDetails">✏ Edit Details</button>
+              <button class="btn sm outline" id="btnUploadVersion">⬆ Upload New Version</button>
+              <button class="btn sm light" id="btnArchive">📦 Archive</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM TABS -->
+      <div class="card bottom-tabs-panel" id="bottomTabs">
+        <div class="bottom-tabs-nav">
+          <button class="btab-btn active" data-tab="docInfo">Document Information</button>
+          <button class="btab-btn" data-tab="versionHistory">Version History</button>
+          <button class="btab-btn" data-tab="activityLog">Activity Log</button>
+        </div>
+
+        <!-- Document Information Tab -->
+        <div class="btab-content active" id="tab-docInfo">
+          <div class="doc-details-grid" id="docInfoGrid">
+            <p class="empty-state">Select a document to view its information.</p>
+          </div>
+        </div>
+
+        <!-- Version History Tab -->
+        <div class="btab-content" id="tab-versionHistory">
+          <div id="versionHistoryList">
+            <p class="empty-state">Select a document to view its version history.</p>
+          </div>
+        </div>
+
+        <!-- Activity Log Tab -->
+        <div class="btab-content" id="tab-activityLog">
+          <div id="activityLogList">
+            <p class="empty-state">Select a document to view its activity log.</p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ================================================================
+     UPLOAD DOCUMENT MODAL
+     ================================================================ -->
+<div class="modal-overlay" id="uploadModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>Upload Document</h2>
+      <button class="modal-close" id="closeUploadModal">&times;</button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Auto-filled case info banner -->
+      <div class="auto-case-banner" id="autoCaseBanner">
+        <div class="auto-case-icon">📁</div>
+        <div class="auto-case-info">
+          <strong id="uploadCaseId">CL-2026-000123</strong>
+          <span id="uploadPatientName">Nimal Perera</span>
+          <span class="badge info" id="uploadCaseType" style="font-size:0.65rem;padding:2px 8px;">Clinical</span>
+        </div>
+      </div>
+
+      <!-- Step 1: Document Details -->
+      <fieldset>
+        <legend><span>1</span> Document Details</legend>
+        <div class="modal-form-grid two">
+          <label>
+            Document Type *
+            <select id="uploadDocType" required>
+              <option value="">Select type...</option>
+              <optgroup label="Clinical Documents">
+                <option value="mlef">MLEF</option>
+                <option value="medical-note">Medical Officer's Note</option>
+                <option value="mlr">Medico-Legal Report</option>
+                <option value="clinical-notes">Clinical Examination Notes</option>
+                <option value="injury-diagram">Injury Diagram</option>
+                <option value="consent">Consent Form</option>
+                <option value="referral">Referral Letter</option>
+              </optgroup>
+              <optgroup label="Postmortem Documents">
+                <option value="inquest-order">Inquest Order</option>
+                <option value="court-order">Court Order</option>
+                <option value="pmr">Postmortem Report</option>
+                <option value="cod-form">Cause of Death Form</option>
+                <option value="pm-notes">Postmortem Notes</option>
+                <option value="histopathology">Histopathology Report</option>
+              </optgroup>
+              <optgroup label="Investigation Documents">
+                <option value="toxicology">Toxicology Report</option>
+                <option value="dna">DNA Report</option>
+                <option value="xray">X-ray Report</option>
+                <option value="ct">CT Report</option>
+                <option value="lab">Laboratory Report</option>
+                <option value="specialist">Specialist Report</option>
+              </optgroup>
+              <optgroup label="Evidence &amp; Legal Documents">
+                <option value="exam-photo">Examination Photograph</option>
+                <option value="crime-photo">Crime Scene Photograph</option>
+                <option value="chain-custody">Chain of Custody Form</option>
+                <option value="police-statement">Police Statement</option>
+                <option value="police-request">Police Request Letter</option>
+                <option value="court-submission">Court Submission</option>
+                <option value="cert-receipt">Certificate of Receipt</option>
+              </optgroup>
+              <optgroup label="General Documents">
+                <option value="affidavit">Affidavit</option>
+                <option value="amendment">Amendment Report</option>
+                <option value="supplementary">Supplementary Report</option>
+                <option value="correspondence">Correspondence</option>
+                <option value="scanned-legacy">Scanned Legacy Document</option>
+                <option value="other">Other Supporting Document</option>
+              </optgroup>
+            </select>
+          </label>
+          <label>
+            Document Title *
+            <input type="text" id="uploadDocTitle" placeholder="Enter document title" required />
+          </label>
+          <label>
+            Document Date
+            <input type="date" id="uploadDocDate" />
+          </label>
+          <label>
+            Confidentiality Level
+            <select id="uploadConfidentiality">
+              <option value="normal" selected>Normal</option>
+              <option value="restricted">Restricted</option>
+              <option value="highly-restricted">Highly Restricted</option>
+            </select>
+          </label>
+        </div>
+        <div class="modal-form-grid" style="margin-top:14px;">
+          <label>
+            Description / Notes <small style="color:var(--text-muted);font-weight:400;">(optional)</small>
+            <textarea id="uploadDescription" rows="2" placeholder="Add a description or notes about this document..."></textarea>
+          </label>
+        </div>
+
+        <!-- Collapsible Additional Details -->
+        <div class="additional-details-toggle" id="toggleAdditional">
+          <span class="toggle-arrow" id="toggleArrow">&#9654;</span> Additional Details
+        </div>
+        <div class="additional-details" id="additionalDetails">
+          <div class="modal-form-grid two">
+            <label>
+              Related Examination <small style="color:var(--text-muted);font-weight:400;">(optional)</small>
+              <select id="uploadExamination">
+                <option value="">None</option>
+                <option value="EX-2026-0045">EX-2026-0045</option>
+                <option value="EX-2026-0046">EX-2026-0046</option>
+              </select>
+            </label>
+            <label>
+              Related Evidence / Sample <small style="color:var(--text-muted);font-weight:400;">(optional)</small>
+              <input type="text" id="uploadEvidence" placeholder="Enter evidence or sample reference" />
+            </label>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Step 2: Choose File -->
+      <fieldset>
+        <legend><span>2</span> Choose File</legend>
+        <div class="drop-zone" id="dropZone">
+          <div class="drop-zone-icon">📂</div>
+          <h4>Drag and drop files here</h4>
+          <p>or</p>
+          <button class="btn outline" id="browseBtn">Browse Files</button>
+          <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.tiff,.tif,.doc,.docx" hidden />
+          <p class="file-types">Supported: PDF, JPG, JPEG, PNG, TIFF, DOC, DOCX &nbsp;|&nbsp; Max 50 MB per file</p>
+        </div>
+        <div class="selected-files" id="selectedFiles"></div>
+        <div class="upload-progress" id="uploadProgress">
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <p class="progress-text" id="progressText">Uploading...</p>
+        </div>
+      </fieldset>
+
+      <!-- Auto-filled system fields (shown as read-only info) -->
+      <div class="system-fields-note">
+        <span>&#9432;</span>
+        File ID, version (1.0), upload date, uploaded by, file size, format, status (Draft) and checksum will be assigned automatically by the system.
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn light" id="cancelUpload">Cancel</button>
+      <button class="btn primary" id="submitUpload">Upload Document</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     BULK UPLOAD MODAL
+     ================================================================ -->
+<div class="modal-overlay" id="bulkUploadModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>Bulk Upload</h2>
+      <button class="modal-close" id="closeBulkModal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <fieldset>
+        <legend><span>1</span> Case Information</legend>
+        <div class="modal-form-grid three">
+          <label>
+            Case ID
+            <input type="text" id="bulkCaseId" readonly />
+          </label>
+          <label>
+            Document Type
+            <select id="bulkDocType">
+              <option value="exam-photo">Examination Photographs</option>
+              <option value="crime-photo">Crime Scene Photographs</option>
+              <option value="scanned-legacy">Scanned Legacy Documents</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+          <label>
+            Confidentiality
+            <select id="bulkConfidentiality">
+              <option value="normal">Normal</option>
+              <option value="restricted">Restricted</option>
+              <option value="highly-restricted">Highly Restricted</option>
+            </select>
+          </label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend><span>2</span> Select Files</legend>
+        <div class="drop-zone" id="bulkDropZone">
+          <div class="drop-zone-icon">📂</div>
+          <h4>Drag and drop multiple files here</h4>
+          <p>or</p>
+          <button class="btn outline" id="bulkBrowseBtn">Browse Files</button>
+          <input type="file" id="bulkFileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.tiff,.tif,.doc,.docx" hidden />
+          <p class="file-types">Supported: PDF, JPG, JPEG, PNG, TIFF, DOC, DOCX</p>
+        </div>
+        <div class="selected-files" id="bulkSelectedFiles"></div>
+      </fieldset>
+    </div>
+    <div class="modal-footer">
+      <button class="btn light" id="cancelBulk">Cancel</button>
+      <button class="btn primary" id="submitBulk">Upload All</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU -->
+<div class="context-menu" id="contextMenu">
+  <button data-action="view">👁 View</button>
+  <button data-action="download">⬇ Download</button>
+  <button data-action="print">🖨 Print</button>
+  <div class="context-menu-sep"></div>
+  <button data-action="edit-meta">✏ Edit Metadata</button>
+  <button data-action="new-version">⬆ Upload New Version</button>
+  <button data-action="send-approval">📨 Send for Approval</button>
+  <button data-action="link-exam">🔗 Link to Examination</button>
+  <button data-action="link-evidence">🔗 Link to Evidence</button>
+  <div class="context-menu-sep"></div>
+  <button data-action="audit">📋 View Audit History</button>
+  <button data-action="copy-ref">📎 Copy File Reference</button>
+  <div class="context-menu-sep"></div>
+  <button data-action="archive" class="danger-action">📦 Archive Document</button>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="../Js/Documents.js"></script>
+</body>
+</html>
 
