@@ -3,208 +3,242 @@ document.addEventListener(
 ()=>{
 
 
-lucide.createIcons();
+    lucide.createIcons();
 
 
 
-// Load logged user
+    // ==========================
+    // LOAD CURRENT USER
+    // ==========================
 
-const user =
-JSON.parse(
-localStorage.getItem("currentUser")
-);
 
+    const currentUser =
+    JSON.parse(
+        localStorage.getItem("currentUser")
+    );
 
 
-if(user){
 
+    if(!currentUser){
 
-document.getElementById("userName")
-.textContent =
-user.name;
+        window.location.href="auth.html";
 
+        return;
 
+    }
 
-document.getElementById("userRole")
-.textContent =
-user.role;
 
 
 
-document.getElementById("welcomeName")
-.textContent =
-user.name;
+    document.getElementById("userName")
+    .textContent =
+    currentUser.name;
 
 
 
-document.getElementById("userAvatar")
-.textContent =
-user.name.charAt(0).toUpperCase();
+    document.getElementById("userRole")
+    .textContent =
+    currentUser.role;
 
 
-}
 
+    document.getElementById("welcomeName")
+    .textContent =
+    currentUser.name;
 
 
 
+    document.getElementById("userAvatar")
+    .textContent =
+    currentUser.name
+    .charAt(0)
+    .toUpperCase();
 
-// Temporary data
-// Later replaced with database
 
 
-const cases=[
 
-{
-id:"PM-2026-001",
-type:"Autopsy",
-doctor:"Dr. Fernando",
-status:"Pending Review"
-},
 
 
-{
-id:"CL-2026-021",
-type:"Clinical",
-doctor:"Dr. Silva",
-status:"Examination Complete"
-}
 
-];
+    // ==========================
+    // TEMPORARY CASE DATA
+    // Replace with database later
+    // ==========================
 
 
+    const cases=[
 
+        {
+            id:"PM-2026-001",
+            type:"Autopsy",
+            doctor:"Dr. Fernando",
+            status:"Pending Review"
+        },
 
 
-const caseTable =
-document.getElementById("caseTable");
+        {
+            id:"CL-2026-021",
+            type:"Clinical",
+            doctor:"Dr. Silva",
+            status:"Completed"
+        }
 
+    ];
 
 
-cases.forEach(c=>{
 
 
-caseTable.innerHTML += `
 
-<tr>
+    const caseTable =
+    document.getElementById("caseTable");
 
-<td>${c.id}</td>
 
-<td>${c.type}</td>
 
-<td>${c.doctor}</td>
+    cases.forEach(caseItem=>{
 
-<td>
 
-<span class="badge info">
-${c.status}
-</span>
+        caseTable.innerHTML +=`
 
-</td>
+        <tr>
 
+        <td>${caseItem.id}</td>
 
-<td>
+        <td>${caseItem.type}</td>
 
-<button class="table-action">
-Open
-</button>
+        <td>${caseItem.doctor}</td>
 
-</td>
+        <td>
+        <span class="${caseItem.status==="Completed"
+        ?"status-complete"
+        :"status-review"}">
 
+        ${caseItem.status}
 
-</tr>
+        </span>
+        </td>
 
-`;
 
-});
+        <td>
 
+        <button class="table-action">
+        Open
+        </button>
 
+        </td>
 
 
+        </tr>
 
-const reports=[
+        `;
 
 
-{
-id:"RPT-001",
-case:"PM-2026-001",
-by:"Assistant JMO",
-status:"Pending"
-}
+    });
 
 
 
-];
 
 
 
 
-const reportTable =
-document.getElementById("reportTable");
+    // ==========================
+    // REPORT DATA
+    // ==========================
 
 
+    const reports=[
 
-reports.forEach(r=>{
 
+        {
+            id:"RPT-001",
+            caseId:"PM-2026-001",
+            prepared:"Assistant JMO",
+            status:"Pending"
+        },
 
-reportTable.innerHTML += `
 
-<tr>
+        {
+            id:"RPT-002",
+            caseId:"CL-2026-021",
+            prepared:"Doctor",
+            status:"Pending"
+        }
 
-<td>${r.id}</td>
 
-<td>${r.case}</td>
+    ];
 
-<td>${r.by}</td>
 
-<td>
 
-<span class="badge warn">
-${r.status}
-</span>
 
-</td>
+    const reportTable =
+    document.getElementById("reportTable");
 
 
-<td>
 
-<button class="table-action">
-Review
-</button>
+    reports.forEach(report=>{
 
-</td>
 
-</tr>
+        reportTable.innerHTML +=`
 
-`;
+        <tr>
 
-});
+        <td>${report.id}</td>
 
+        <td>${report.caseId}</td>
 
+        <td>${report.prepared}</td>
 
+        <td>
+        <span class="status-review">
 
+        ${report.status}
 
+        </span>
+        </td>
 
-// Logout
 
+        <td>
 
-document
-.getElementById("logoutBtn")
-.addEventListener(
-"click",
-()=>{
+        <button class="table-action">
+        Review
+        </button>
 
+        </td>
 
-localStorage.removeItem(
-"currentUser"
-);
 
+        </tr>
 
+        `;
 
-window.location.href =
-"auth.html";
 
+    });
 
-});
+
+
+
+
+
+    // ==========================
+    // LOGOUT
+    // ==========================
+
+
+    document
+    .getElementById("logoutBtn")
+    .addEventListener(
+    "click",
+    ()=>{
+
+
+        localStorage.removeItem(
+            "currentUser"
+        );
+
+
+        window.location.href =
+        "auth.html";
+
+
+    });
 
 
 
