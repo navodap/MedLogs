@@ -15,7 +15,6 @@
 
 <script src="https://unpkg.com/lucide@latest"></script>
 
-
 </head>
 
 
@@ -25,114 +24,162 @@
 <div class="app-layout">
 
 
-
 <!-- ================= SIDEBAR ================= -->
 
 <aside class="sidebar">
 
 
-<div class="brand-block">
+<div class="brand">
 
 
-<div class="brand-text">
+<div class="brand-icon">
+<i data-lucide="shield-plus"></i>
+</div>
 
-<h1 class="brand-title">
+
+<div>
+
+<h1>
 MedLogs
 </h1>
 
 
-<p class="brand-subtitle">
+<p>
 FORENSIC MEDICO-LEGAL<br>
 INFORMATION MANAGEMENT
 </p>
 
-</div>
-
 
 </div>
 
 
+</div>
 
 
 
-<nav class="side-nav">
+
+
+<nav class="navigation">
 
 
 <a class="nav-item active">
 
-<span>⌂</span>
+<i data-lucide="layout-dashboard"></i>
+
+<span>
 Dashboard
+</span>
 
 </a>
 
 
+
+
 <a class="nav-item">
 
-<span>👤</span>
+<i data-lucide="users"></i>
+
+<span>
 Patient Management
+</span>
 
 </a>
 
 
 
+
+
 <a class="nav-item">
 
-<span>▣</span>
+<i data-lucide="folder-open"></i>
+
+<span>
 Case Management
+</span>
 
 </a>
 
 
 
+
+
 <a class="nav-item">
 
-<span>✚</span>
+<i data-lucide="clipboard-list"></i>
+
+<span>
 Examination Forms
+</span>
 
 </a>
 
 
 
+
+
 <a class="nav-item">
 
-<span>🧬</span>
+<i data-lucide="dna"></i>
+
+<span>
 Evidence & Samples
+</span>
 
 </a>
 
 
 
+
+
 <a class="nav-item">
 
-<span>📄</span>
+<i data-lucide="file-check"></i>
+
+<span>
 Reports
+</span>
 
 </a>
 
 
 
+
+
 <a class="nav-item">
 
-<span>⚖</span>
+<i data-lucide="scale"></i>
+
+<span>
 Police & Court
+</span>
 
 </a>
 
 
 
+
+
 <a class="nav-item">
 
-<span>📁</span>
+<i data-lucide="file-text"></i>
+
+<span>
 Documents
+</span>
 
 </a>
 
 
 
+
+
 <a class="nav-item">
 
-<span>🔍</span>
+<i data-lucide="search"></i>
+
+<span>
 Search
+</span>
 
 </a>
 
@@ -144,24 +191,26 @@ Search
 
 
 
-<div class="secure-panel">
 
+<div class="security-card">
 
-<div class="secure-icon">
 
 <i data-lucide="shield-check"></i>
 
-</div>
+
+<div>
+
+<strong>
+SECURE SYSTEM
+</strong>
 
 
 <p>
-SECURE SYSTEM
+Authorized medical personnel only
 </p>
 
 
-<strong>
-Authorized medical personnel only
-</strong>
+</div>
 
 
 </div>
@@ -174,7 +223,9 @@ Authorized medical personnel only
 
 
 
-<!-- ================= MAIN ================= -->
+
+
+<!-- ================= MAIN AREA ================= -->
 
 
 <section class="main-area">
@@ -184,67 +235,74 @@ Authorized medical personnel only
 <header class="topbar">
 
 
-<button class="menu-btn">
-
-☰
-
-</button>
-
-
-
+<div>
 
 <h2>
 JMO Dashboard
 </h2>
 
 
+<p>
+Forensic case supervision and report approval
+</p>
 
 
-<div class="top-actions">
+</div>
 
 
 
-<button class="notify-btn">
+
+
+<div class="user-area">
+
+
+<button class="notification">
 
 <i data-lucide="bell"></i>
 
-<small>
+<span>
 3
-</small>
+</span>
 
 </button>
 
 
 
 
-<div class="profile-box">
+
+<div class="profile">
 
 
 <div class="avatar" id="userAvatar">
 </div>
 
 
+
 <div>
+
 
 <strong id="userName">
 Loading...
 </strong>
 
 
-<span id="userRole">
-</span>
+<small id="userRole">
+</small>
 
 
 </div>
+
 
 
 <button id="logoutBtn">
+
 Logout
+
 </button>
 
 
-</div>
 
+</div>
 
 
 </div>
@@ -258,24 +316,65 @@ Logout
 
 
 
-<main class="workspace">
+
+
+<main class="content">
 
 
 
+<!-- ================= WELCOME ================= -->
 
 
-<!-- HERO -->
+<section class="welcome-card">
 
 
-<section class="hero-card">
+<div>
 
 
-<div class="hero-left">
+<h1>
+
+Welcome,
+<span id="welcomeName">
+JMO
+</span>
+
+</h1>
 
 
-<div class="hero-icon">
+<p>
+
+Review assigned forensic cases, approve reports,
+and monitor medico-legal activities.
+
+</p>
+
+
+</div>
+
 
 <i data-lucide="stethoscope"></i>
+
+
+</section>
+
+
+
+
+
+
+
+<!-- ================= STATISTICS ================= -->
+
+
+<section class="stats">
+
+
+<div class="stat-card">
+
+
+<div class="icon blue">
+
+<i data-lucide="folder-open"></i>
 
 </div>
 
@@ -283,45 +382,9 @@ Logout
 <div>
 
 <h3>
-Welcome, <span id="welcomeName">
-JMO
-</span>
+24
 </h3>
 
-
-<p>
-Review forensic cases, examinations and reports.
-</p>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-<div class="stats-grid">
-
-
-
-<div class="stat-card">
-
-<div class="stat-icon">
-
-<i data-lucide="folder"></i>
-
-</div>
-
-
-<div>
-
-<strong>
-24
-</strong>
 
 <p>
 Assigned Cases
@@ -339,7 +402,8 @@ Assigned Cases
 
 <div class="stat-card">
 
-<div class="stat-icon">
+
+<div class="icon orange">
 
 <i data-lucide="clock"></i>
 
@@ -348,9 +412,10 @@ Assigned Cases
 
 <div>
 
-<strong>
+<h3>
 8
-</strong>
+</h3>
+
 
 <p>
 Pending Reviews
@@ -368,7 +433,8 @@ Pending Reviews
 
 <div class="stat-card">
 
-<div class="stat-icon">
+
+<div class="icon green">
 
 <i data-lucide="file-check"></i>
 
@@ -377,9 +443,10 @@ Pending Reviews
 
 <div>
 
-<strong>
+<h3>
 5
-</strong>
+</h3>
+
 
 <p>
 Reports Pending
@@ -393,6 +460,33 @@ Reports Pending
 
 
 
+
+
+<div class="stat-card">
+
+
+<div class="icon purple">
+
+<i data-lucide="calendar"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+3
+</h3>
+
+
+<p>
+Court Deadlines
+</p>
+
+
+</div>
+
+
 </div>
 
 
@@ -404,23 +498,22 @@ Reports Pending
 
 
 
-<!-- CASE QUEUE -->
 
 
-<section class="dashboard-grid">
+<!-- ================= CASE REVIEW ================= -->
 
 
-<div class="panel main-panel">
+<section class="panel">
 
 
-<div class="section-heading">
+<div class="panel-header">
 
 
 <div>
 
-<h3>
+<h2>
 Case Review Queue
-</h3>
+</h2>
 
 
 <p>
@@ -431,13 +524,16 @@ Cases requiring JMO attention
 </div>
 
 
+<button>
+View All
+</button>
+
+
 </div>
 
 
 
 
-
-<div class="table-wrap">
 
 
 <table>
@@ -458,7 +554,7 @@ Type
 
 
 <th>
-Assigned Doctor
+Doctor
 </th>
 
 
@@ -480,41 +576,43 @@ Action
 
 <tbody id="caseTable">
 
-
 </tbody>
+
 
 
 </table>
 
 
-</div>
 
-
-
-</div>
-
+</section>
 
 
 
 
-<!-- REPORTS -->
 
 
-<div class="panel main-panel">
 
 
-<div class="section-heading">
+
+
+<!-- ================= REPORT APPROVAL ================= -->
+
+
+<section class="panel">
+
+
+<div class="panel-header">
 
 
 <div>
 
-<h3>
+<h2>
 Report Approval
-</h3>
+</h2>
 
 
 <p>
-Review submitted medico-legal reports
+Review medico-legal reports
 </p>
 
 
@@ -525,7 +623,6 @@ Review submitted medico-legal reports
 
 
 
-<div class="table-wrap">
 
 
 <table>
@@ -533,23 +630,29 @@ Review submitted medico-legal reports
 
 <thead>
 
+
 <tr>
+
 
 <th>
 Report ID
 </th>
 
+
 <th>
 Case
 </th>
+
 
 <th>
 Prepared By
 </th>
 
+
 <th>
 Status
 </th>
+
 
 <th>
 Action
@@ -571,14 +674,6 @@ Action
 </table>
 
 
-</div>
-
-
-
-</div>
-
-
-
 
 </section>
 
@@ -595,8 +690,9 @@ Action
 
 
 
-
 </div>
+
+
 
 
 
@@ -612,9 +708,7 @@ protectPage("JMO");
 </script>
 
 
-
 <script src="../Js/JMODashboard.js"></script>
-
 
 
 </body>
