@@ -1,48 +1,250 @@
-/* JMO Dashboard Extensions */
+/* ===========================
+   JMO DASHBOARD ADDITIONS
+=========================== */
 
 
-.jmo-status{
 
-display:inline-flex;
+.jmo-hero{
 
-padding:4px 10px;
+margin-bottom:30px;
 
-border-radius:999px;
+}
+
+
+
+.hero-content{
+
+display:flex;
+
+align-items:center;
+
+gap:20px;
+
+margin-bottom:25px;
+
+}
+
+
+
+.hero-icon{
+
+width:55px;
+
+height:55px;
+
+border-radius:14px;
 
 background:#dbeafe;
 
-color:#1d4ed8;
+color:#2563eb;
 
-font-size:.75rem;
+display:flex;
 
-font-weight:600;
+align-items:center;
 
-}
-
-
-
-.case-alert{
-
-background:#fee2e2;
-
-color:#dc2626;
-
-padding:10px;
-
-border-radius:8px;
-
-font-weight:600;
+justify-content:center;
 
 }
 
 
 
-.approval-box{
+.hero-icon svg{
+
+width:30px;
+
+}
+
+
+
+
+
+.stats-grid{
+
+display:grid;
+
+grid-template-columns:repeat(4,1fr);
+
+gap:20px;
+
+}
+
+
+
+
+
+.stat-card{
+
+background:white;
+
+border-radius:18px;
+
+padding:20px;
 
 display:flex;
 
 gap:15px;
 
-flex-wrap:wrap;
+align-items:center;
+
+box-shadow:0 10px 25px rgba(0,0,0,.05);
+
+}
+
+
+
+
+
+.stat-icon{
+
+width:45px;
+
+height:45px;
+
+border-radius:12px;
+
+background:#eff6ff;
+
+color:#2563eb;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+}
+
+
+
+
+
+.stat-card strong{
+
+display:block;
+
+font-size:28px;
+
+color:#0f172a;
+
+}
+
+
+
+
+
+.stat-card span{
+
+color:#64748b;
+
+font-size:14px;
+
+}
+
+
+
+
+
+.panel{
+
+margin-top:25px;
+
+}
+
+
+
+
+
+.panel-header{
+
+margin-bottom:20px;
+
+}
+
+
+
+.panel-header h3{
+
+font-size:22px;
+
+}
+
+
+
+.panel-header p{
+
+color:#64748b;
+
+}
+
+
+
+
+
+
+
+.table-action{
+
+background:#2563eb;
+
+color:white;
+
+border:none;
+
+padding:8px 14px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+
+
+
+
+.status-review{
+
+background:#fef3c7;
+
+color:#92400e;
+
+padding:5px 12px;
+
+border-radius:20px;
+
+font-size:13px;
+
+}
+
+
+
+.status-approved{
+
+background:#dcfce7;
+
+color:#166534;
+
+padding:5px 12px;
+
+border-radius:20px;
+
+font-size:13px;
+
+}
+
+
+
+
+
+
+@media(max-width:900px){
+
+
+.stats-grid{
+
+grid-template-columns:1fr;
+
+}
+
 
 }
