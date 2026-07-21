@@ -1,443 +1,48 @@
-*{
+/* JMO Dashboard Extensions */
 
-box-sizing:border-box;
-margin:0;
-padding:0;
 
-}
+.jmo-status{
 
+display:inline-flex;
 
+padding:4px 10px;
 
-body{
+border-radius:999px;
 
-font-family:"Segoe UI",sans-serif;
+background:#dbeafe;
 
-background:#0b1428;
+color:#1d4ed8;
 
-color:#15264a;
-
-}
-
-
-
-
-
-.app-container{
-
-display:flex;
-
-min-height:100vh;
-
-}
-
-
-
-
-
-/* SIDEBAR */
-
-.sidebar{
-
-width:270px;
-
-background:#101b33;
-
-color:white;
-
-padding:25px;
-
-}
-
-
-
-.brand{
-
-display:flex;
-
-gap:15px;
-
-align-items:center;
-
-}
-
-
-
-.logo{
-
-background:#2563eb;
-
-padding:12px;
-
-border-radius:12px;
-
-}
-
-
-
-.brand h1{
-
-font-size:30px;
-
-}
-
-
-
-.brand p{
-
-font-size:12px;
-
-color:#94a3b8;
-
-margin-top:8px;
-
-letter-spacing:1px;
-
-}
-
-
-
-.sidebar hr{
-
-margin:30px 0;
-
-border-color:#23304d;
-
-}
-
-
-
-
-
-.menu{
-
-display:flex;
-
-flex-direction:column;
-
-gap:8px;
-
-}
-
-
-
-.menu a{
-
-display:flex;
-
-align-items:center;
-
-gap:18px;
-
-padding:15px;
-
-color:#b8c1d1;
-
-text-decoration:none;
+font-size:.75rem;
 
 font-weight:600;
 
-border-radius:12px;
-
 }
 
 
 
-.menu a.active{
-
-background:#2563eb;
-
-color:white;
-
-}
-
-
-
-
-
-/* MAIN */
-
-
-.main-content{
-
-flex:1;
-
-background:#f5f8ff;
-
-}
-
-
-
-
-.topbar{
-
-background:white;
-
-padding:25px 35px;
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-}
-
-
-
-.topbar h2{
-
-font-size:30px;
-
-}
-
-
-
-.topbar p{
-
-color:#64748b;
-
-}
-
-
-
-
-.profile{
-
-display:flex;
-
-gap:10px;
-
-align-items:center;
-
-}
-
-
-
-.profile span{
-
-display:block;
-
-color:#2563eb;
-
-}
-
-
-
-
-
-.content{
-
-padding:35px;
-
-}
-
-
-
-
-/* CARDS */
-
-
-.stats{
-
-display:grid;
-
-grid-template-columns:repeat(4,1fr);
-
-gap:20px;
-
-}
-
-
-
-.stat-card{
-
-background:white;
-
-padding:25px;
-
-border-radius:18px;
-
-display:flex;
-
-gap:20px;
-
-align-items:center;
-
-box-shadow:0 5px 15px #dce3f2;
-
-}
-
-
-
-.stat-card svg{
-
-color:#2563eb;
-
-width:35px;
-
-}
-
-
-
-.stat-card p{
-
-font-size:32px;
-
-font-weight:bold;
-
-color:#2563eb;
-
-}
-
-
-
-
-
-
-
-/* PANELS */
-
-
-.panel{
-
-background:white;
-
-margin-top:30px;
-
-padding:25px;
-
-border-radius:18px;
-
-}
-
-
-
-.panel-header{
-
-display:flex;
-
-justify-content:space-between;
-
-}
-
-
-
-button{
-
-background:#2563eb;
-
-border:none;
-
-color:white;
-
-padding:10px 18px;
-
-border-radius:10px;
-
-}
-
-
-
-
-
-table{
-
-width:100%;
-
-margin-top:20px;
-
-border-collapse:collapse;
-
-}
-
-
-
-th,td{
-
-padding:15px;
-
-border-bottom:1px solid #e5e7eb;
-
-text-align:left;
-
-}
-
-
-
-
-.pending{
-
-color:#dc2626;
-
-font-weight:bold;
-
-}
-
-
-
-.complete{
-
-color:#16a34a;
-
-font-weight:bold;
-
-}
-
-
-
-
-
-/* ACTIONS */
-
-
-.action-list{
-
-display:flex;
-
-flex-direction:column;
-
-gap:15px;
-
-margin-top:20px;
-
-}
-
-
-
-.action{
-
-padding:18px;
-
-border-radius:15px;
-
-display:flex;
-
-gap:15px;
-
-align-items:center;
-
-}
-
-
-
-.danger{
+.case-alert{
 
 background:#fee2e2;
 
+color:#dc2626;
+
+padding:10px;
+
+border-radius:8px;
+
+font-weight:600;
+
 }
 
 
 
-.warning{
+.approval-box{
 
-background:#fef3c7;
+display:flex;
 
-}
+gap:15px;
 
-
-
-.success{
-
-background:#dcfce7;
+flex-wrap:wrap;
 
 }
