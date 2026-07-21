@@ -197,21 +197,135 @@ document.addEventListener("DOMContentLoaded", () => {
              */
 
 
-            // Simulated server delay
-            await new Promise((resolve) => {
-                setTimeout(resolve, 1000);
-            });
+           // Simulated server delay
+await new Promise((resolve) => {
+    setTimeout(resolve, 1000);
+});
 
-            showStatus(
-                `Login successful. Signing in as ${role}.`,
-                "success"
-            );
 
-            console.log("Login information:", {
-                username,
-                role,
-                rememberMe
-            });
+// Check username and password from users.js
+
+const user = users.find(
+    (account) =>
+        account.username === username &&
+        account.password === password
+);
+
+
+// If user does not exist
+
+if (!user) {
+
+    throw new Error(
+        "Invalid username or password."
+    );
+
+}
+
+
+
+// Save current logged-in user
+
+localStorage.setItem(
+    "currentUser",
+    JSON.stringify(user)
+);
+
+
+
+// Show success message
+
+showStatus(
+    `Login successful. Welcome ${user.name}.`,
+    "success"
+);
+
+
+
+console.log(
+    "Logged User:",
+    user
+);
+
+
+
+// Redirect based on user role
+
+setTimeout(() => {
+
+
+    if (user.role === "ADMIN") {
+
+
+        window.location.href =
+        "AdminDashboard.html";
+
+
+    } 
+
+
+    else if (user.role === "JMO") {
+
+
+        window.location.href =
+        "JMODashboard.html";
+
+
+    } 
+
+
+    else if (user.role === "DOCTOR") {
+
+
+        window.location.href =
+        "DoctorDashboard.html";
+
+
+    } 
+
+
+    else if (user.role === "ASSISTANT_JMO") {
+
+
+        window.location.href =
+        "AssistantJMODashboard.html";
+
+
+    }
+
+
+    else if (user.role === "LAB") {
+
+
+        window.location.href =
+        "LabDashboard.html";
+
+
+    }
+
+
+    else if (user.role === "CLERK") {
+
+
+        window.location.href =
+        "ClerkDashboard.html";
+
+
+    }
+
+
+    else {
+
+
+        alert(
+            "No dashboard assigned for this role."
+        );
+
+
+    }
+
+
+}, 1000);
 
             /*
              * Example redirects based on role:
