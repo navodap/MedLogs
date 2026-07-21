@@ -1,211 +1,622 @@
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>JMO Dashboard | MedLogs</title>
 
 
-lucide.createIcons();
+<link rel="stylesheet" href="../css/JMODashboard.css">
 
 
-
-// Load logged user
-
-const user =
-JSON.parse(
-localStorage.getItem("currentUser")
-);
+<script src="https://unpkg.com/lucide@latest"></script>
 
 
-
-if(user){
-
-
-document.getElementById("userName")
-.textContent =
-user.name;
+</head>
 
 
+<body>
 
-document.getElementById("userRole")
-.textContent =
-user.role;
+
+<div class="app-layout">
 
 
 
-document.getElementById("welcomeName")
-.textContent =
-user.name;
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
 
 
-
-document.getElementById("userAvatar")
-.textContent =
-user.name.charAt(0).toUpperCase();
+<div class="brand-block">
 
 
-}
+<div class="brand-text">
+
+<h1 class="brand-title">
+MedLogs
+</h1>
 
 
+<p class="brand-subtitle">
+FORENSIC MEDICO-LEGAL<br>
+INFORMATION MANAGEMENT
+</p>
+
+</div>
 
 
-
-// Temporary data
-// Later replaced with database
-
-
-const cases=[
-
-{
-id:"PM-2026-001",
-type:"Autopsy",
-doctor:"Dr. Fernando",
-status:"Pending Review"
-},
-
-
-{
-id:"CL-2026-021",
-type:"Clinical",
-doctor:"Dr. Silva",
-status:"Examination Complete"
-}
-
-];
+</div>
 
 
 
 
 
-const caseTable =
-document.getElementById("caseTable");
+<nav class="side-nav">
+
+
+<a class="nav-item active">
+
+<span>⌂</span>
+Dashboard
+
+</a>
+
+
+<a class="nav-item">
+
+<span>👤</span>
+Patient Management
+
+</a>
 
 
 
-cases.forEach(c=>{
+<a class="nav-item">
+
+<span>▣</span>
+Case Management
+
+</a>
 
 
-caseTable.innerHTML += `
+
+<a class="nav-item">
+
+<span>✚</span>
+Examination Forms
+
+</a>
+
+
+
+<a class="nav-item">
+
+<span>🧬</span>
+Evidence & Samples
+
+</a>
+
+
+
+<a class="nav-item">
+
+<span>📄</span>
+Reports
+
+</a>
+
+
+
+<a class="nav-item">
+
+<span>⚖</span>
+Police & Court
+
+</a>
+
+
+
+<a class="nav-item">
+
+<span>📁</span>
+Documents
+
+</a>
+
+
+
+<a class="nav-item">
+
+<span>🔍</span>
+Search
+
+</a>
+
+
+
+</nav>
+
+
+
+
+
+<div class="secure-panel">
+
+
+<div class="secure-icon">
+
+<i data-lucide="shield-check"></i>
+
+</div>
+
+
+<p>
+SECURE SYSTEM
+</p>
+
+
+<strong>
+Authorized medical personnel only
+</strong>
+
+
+</div>
+
+
+
+</aside>
+
+
+
+
+
+<!-- ================= MAIN ================= -->
+
+
+<section class="main-area">
+
+
+
+<header class="topbar">
+
+
+<button class="menu-btn">
+
+☰
+
+</button>
+
+
+
+
+<h2>
+JMO Dashboard
+</h2>
+
+
+
+
+<div class="top-actions">
+
+
+
+<button class="notify-btn">
+
+<i data-lucide="bell"></i>
+
+<small>
+3
+</small>
+
+</button>
+
+
+
+
+<div class="profile-box">
+
+
+<div class="avatar" id="userAvatar">
+</div>
+
+
+<div>
+
+<strong id="userName">
+Loading...
+</strong>
+
+
+<span id="userRole">
+</span>
+
+
+</div>
+
+
+<button id="logoutBtn">
+Logout
+</button>
+
+
+</div>
+
+
+
+</div>
+
+
+
+</header>
+
+
+
+
+
+
+<main class="workspace">
+
+
+
+
+
+<!-- HERO -->
+
+
+<section class="hero-card">
+
+
+<div class="hero-left">
+
+
+<div class="hero-icon">
+
+<i data-lucide="stethoscope"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+Welcome, <span id="welcomeName">
+JMO
+</span>
+</h3>
+
+
+<p>
+Review forensic cases, examinations and reports.
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="stats-grid">
+
+
+
+<div class="stat-card">
+
+<div class="stat-icon">
+
+<i data-lucide="folder"></i>
+
+</div>
+
+
+<div>
+
+<strong>
+24
+</strong>
+
+<p>
+Assigned Cases
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="stat-card">
+
+<div class="stat-icon">
+
+<i data-lucide="clock"></i>
+
+</div>
+
+
+<div>
+
+<strong>
+8
+</strong>
+
+<p>
+Pending Reviews
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="stat-card">
+
+<div class="stat-icon">
+
+<i data-lucide="file-check"></i>
+
+</div>
+
+
+<div>
+
+<strong>
+5
+</strong>
+
+<p>
+Reports Pending
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+<!-- CASE QUEUE -->
+
+
+<section class="dashboard-grid">
+
+
+<div class="panel main-panel">
+
+
+<div class="section-heading">
+
+
+<div>
+
+<h3>
+Case Review Queue
+</h3>
+
+
+<p>
+Cases requiring JMO attention
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="table-wrap">
+
+
+<table>
+
+
+<thead>
 
 <tr>
 
-<td>${c.id}</td>
-
-<td>${c.type}</td>
-
-<td>${c.doctor}</td>
-
-<td>
-
-<span class="badge info">
-${c.status}
-</span>
-
-</td>
+<th>
+Case ID
+</th>
 
 
-<td>
+<th>
+Type
+</th>
 
-<button class="table-action">
-Open
-</button>
 
-</td>
+<th>
+Assigned Doctor
+</th>
+
+
+<th>
+Status
+</th>
+
+
+<th>
+Action
+</th>
 
 
 </tr>
 
-`;
-
-});
+</thead>
 
 
 
+<tbody id="caseTable">
 
 
-const reports=[
+</tbody>
 
 
-{
-id:"RPT-001",
-case:"PM-2026-001",
-by:"Assistant JMO",
-status:"Pending"
-}
+</table>
+
+
+</div>
 
 
 
-];
+</div>
 
 
 
 
-const reportTable =
-document.getElementById("reportTable");
+
+<!-- REPORTS -->
+
+
+<div class="panel main-panel">
+
+
+<div class="section-heading">
+
+
+<div>
+
+<h3>
+Report Approval
+</h3>
+
+
+<p>
+Review submitted medico-legal reports
+</p>
+
+
+</div>
+
+
+</div>
 
 
 
-reports.forEach(r=>{
+<div class="table-wrap">
 
 
-reportTable.innerHTML += `
+<table>
+
+
+<thead>
 
 <tr>
 
-<td>${r.id}</td>
+<th>
+Report ID
+</th>
 
-<td>${r.case}</td>
+<th>
+Case
+</th>
 
-<td>${r.by}</td>
+<th>
+Prepared By
+</th>
 
-<td>
+<th>
+Status
+</th>
 
-<span class="badge warn">
-${r.status}
-</span>
+<th>
+Action
+</th>
 
-</td>
-
-
-<td>
-
-<button class="table-action">
-Review
-</button>
-
-</td>
 
 </tr>
 
-`;
 
-});
-
+</thead>
 
 
+<tbody id="reportTable">
 
 
-
-// Logout
-
-
-document
-.getElementById("logoutBtn")
-.addEventListener(
-"click",
-()=>{
+</tbody>
 
 
-localStorage.removeItem(
-"currentUser"
-);
+</table>
+
+
+</div>
 
 
 
-window.location.href =
-"auth.html";
-
-
-});
+</div>
 
 
 
-});
+
+</section>
+
+
+
+
+
+
+
+</main>
+
+
+</section>
+
+
+
+
+</div>
+
+
+
+
+
+<script src="../Js/authGuard.js"></script>
+
+
+<script>
+
+protectPage("JMO");
+
+</script>
+
+
+
+<script src="../Js/JMODashboard.js"></script>
+
+
+
+</body>
+
+</html>
