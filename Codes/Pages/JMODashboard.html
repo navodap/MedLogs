@@ -1,541 +1,211 @@
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
 
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
+lucide.createIcons();
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>JMO Dashboard | MedLogs</title>
 
-<link rel="stylesheet" href="../css/JMODashboard.css">
+// Load logged user
 
-<script src="https://unpkg.com/lucide@latest"></script>
+const user =
+JSON.parse(
+localStorage.getItem("currentUser")
+);
 
-</head>
 
 
-<body>
+if(user){
 
 
-<div class="app-container">
+document.getElementById("userName")
+.textContent =
+user.name;
 
 
-<!-- ================= SIDEBAR ================= -->
 
-<aside class="sidebar">
+document.getElementById("userRole")
+.textContent =
+user.role;
 
 
-<div class="brand">
 
-<div class="logo">
-<i data-lucide="shield-plus"></i>
-</div>
+document.getElementById("welcomeName")
+.textContent =
+user.name;
 
 
-<div>
 
-<h1>MedLogs</h1>
+document.getElementById("userAvatar")
+.textContent =
+user.name.charAt(0).toUpperCase();
 
-<p>
-FORENSIC MEDICO-LEGAL
-<br>
-INFORMATION MANAGEMENT
-</p>
 
-</div>
+}
 
 
-</div>
 
 
 
-<hr>
+// Temporary data
+// Later replaced with database
 
 
+const cases=[
 
-<nav class="menu">
+{
+id:"PM-2026-001",
+type:"Autopsy",
+doctor:"Dr. Fernando",
+status:"Pending Review"
+},
 
 
-<a class="active">
-<i data-lucide="layout-dashboard"></i>
-Dashboard
-</a>
+{
+id:"CL-2026-021",
+type:"Clinical",
+doctor:"Dr. Silva",
+status:"Examination Complete"
+}
 
+];
 
 
-<a>
-<i data-lucide="users"></i>
-Patient Management
-</a>
 
 
 
-<a>
-<i data-lucide="folder"></i>
-Case Management
-</a>
+const caseTable =
+document.getElementById("caseTable");
 
 
 
-<a>
-<i data-lucide="clipboard-list"></i>
-Examination Forms
-</a>
+cases.forEach(c=>{
 
 
+caseTable.innerHTML += `
 
-<a>
-<i data-lucide="file-check"></i>
-Reports
-</a>
+<tr>
 
+<td>${c.id}</td>
 
+<td>${c.type}</td>
 
-<a>
-<i data-lucide="scale"></i>
-Police & Court
-</a>
+<td>${c.doctor}</td>
 
+<td>
 
-
-<a>
-<i data-lucide="file-text"></i>
-Documents
-</a>
-
-
-
-<a>
-<i data-lucide="search"></i>
-Search
-</a>
-
-
-
-<a>
-<i data-lucide="bar-chart"></i>
-Statistics
-</a>
-
-
-
-</nav>
-
-
-</aside>
-
-
-
-
-
-<!-- ================= MAIN ================= -->
-
-<main class="main-content">
-
-
-
-<header class="topbar">
-
-
-<div>
-
-<h2>
-JMO Dashboard
-</h2>
-
-
-<p>
-Welcome back, Consultant JMO
-</p>
-
-
-</div>
-
-
-
-<div class="profile">
-
-
-<i data-lucide="user-circle"></i>
-
-
-<div>
-
-<strong>
-Dr. Silva
-</strong>
-
-<span>
-JMO
+<span class="badge info">
+${c.status}
 </span>
 
+</td>
 
-</div>
 
+<td>
 
-</div>
-
-
-</header>
-
-
-
-
-
-<section class="content">
-
-
-
-<!-- STATISTICS -->
-
-
-<div class="stats">
-
-
-<div class="stat-card">
-
-<i data-lucide="folder-open"></i>
-
-<div>
-
-<h3>
-Total Cases
-</h3>
-
-<p>
-245
-</p>
-
-</div>
-
-</div>
-
-
-
-
-<div class="stat-card">
-
-<i data-lucide="clock"></i>
-
-<div>
-
-<h3>
-Pending Review
-</h3>
-
-<p>
-18
-</p>
-
-</div>
-
-</div>
-
-
-
-
-
-<div class="stat-card">
-
-<i data-lucide="file-check"></i>
-
-<div>
-
-<h3>
-Reports Approval
-</h3>
-
-<p>
-12
-</p>
-
-</div>
-
-</div>
-
-
-
-
-<div class="stat-card">
-
-<i data-lucide="calendar"></i>
-
-<div>
-
-<h3>
-Court Dates
-</h3>
-
-<p>
-5
-</p>
-
-</div>
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-
-<!-- RECENT CASES -->
-
-
-<section class="panel">
-
-
-<div class="panel-header">
-
-<h2>
-Recent Cases
-</h2>
-
-
-<button>
-View All
+<button class="table-action">
+Open
 </button>
 
-
-</div>
-
-
-
-<table>
-
-
-<thead>
-
-<tr>
-
-<th>
-Case ID
-</th>
-
-
-<th>
-Type
-</th>
-
-
-<th>
-Assigned Doctor
-</th>
-
-
-<th>
-Status
-</th>
+</td>
 
 
 </tr>
 
-</thead>
+`;
+
+});
 
 
 
-<tbody>
 
+
+const reports=[
+
+
+{
+id:"RPT-001",
+case:"PM-2026-001",
+by:"Assistant JMO",
+status:"Pending"
+}
+
+
+
+];
+
+
+
+
+const reportTable =
+document.getElementById("reportTable");
+
+
+
+reports.forEach(r=>{
+
+
+reportTable.innerHTML += `
 
 <tr>
 
-<td>
-PM-2026-001
-</td>
+<td>${r.id}</td>
+
+<td>${r.case}</td>
+
+<td>${r.by}</td>
 
 <td>
-Autopsy
+
+<span class="badge warn">
+${r.status}
+</span>
+
 </td>
+
 
 <td>
-Dr. Perera
-</td>
 
-<td class="pending">
-Reviewing
+<button class="table-action">
+Review
+</button>
+
 </td>
 
 </tr>
 
+`;
 
+});
 
-<tr>
 
-<td>
-CL-2026-034
-</td>
 
-<td>
-Clinical
-</td>
 
-<td>
-Dr. Fernando
-</td>
 
-<td class="complete">
-Completed
-</td>
 
-</tr>
+// Logout
 
 
+document
+.getElementById("logoutBtn")
+.addEventListener(
+"click",
+()=>{
 
-</tbody>
 
+localStorage.removeItem(
+"currentUser"
+);
 
-</table>
 
 
-</section>
+window.location.href =
+"auth.html";
 
 
+});
 
 
 
-
-
-
-
-<!-- ACTIONS -->
-
-
-<section class="panel">
-
-
-<h2>
-Pending Actions
-</h2>
-
-
-
-<div class="action-list">
-
-
-
-<div class="action danger">
-
-
-<i data-lucide="alert-circle"></i>
-
-
-<div>
-
-<strong>
-Report Approval Required
-</strong>
-
-<p>
-PM-2026-001
-</p>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="action warning">
-
-
-<i data-lucide="clock"></i>
-
-
-<div>
-
-<strong>
-Examination Review Needed
-</strong>
-
-<p>
-CL-2026-021
-</p>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="action success">
-
-
-<i data-lucide="check-circle"></i>
-
-
-<div>
-
-<strong>
-Court Report Submitted
-</strong>
-
-<p>
-PM-2026-015
-</p>
-
-
-</div>
-
-
-</div>
-
-
-
-</div>
-
-
-
-</section>
-
-
-
-
-
-
-
-</section>
-
-
-
-</main>
-
-
-</div>
-
-
-
-
-
-<script src="../Js/authGuard.js"></script>
-
-
-<script>
-
-protectPage("JMO");
-
-</script>
-
-
-
-<script src="../Js/JMODashboard.js"></script>
-
-
-
-</body>
-
-</html>
+});
