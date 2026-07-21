@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Assistant JMO Dashboard | MedLogs</title>
+
+
+<link rel="stylesheet" href="../css/AssistantJMODashboard.css">
+
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="app-layout">
+
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+
+<div class="brand">
+
+
+<div class="brand-icon">
+
+<i data-lucide="shield-plus"></i>
+
+</div>
+
+
+<div>
+
+<h1>
+MedLogs
+</h1>
+
+
+<p>
+FORENSIC MEDICO-LEGAL<br>
+INFORMATION MANAGEMENT
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<nav class="navigation">
+
+
+<a href="AssistantJMODashboard.html" class="nav-item active">
+
+<i data-lucide="layout-dashboard"></i>
+
+Dashboard
+
+</a>
+
+
+
+<a href="PatientManagement.html" class="nav-item">
+
+<i data-lucide="users"></i>
+
+Patient Records
+
+</a>
+
+
+
+
+<a href="CaseManagement.html" class="nav-item">
+
+<i data-lucide="folder-open"></i>
+
+Assigned Cases
+
+</a>
+
+
+
+
+<a href="ExaminationForms.html" class="nav-item">
+
+<i data-lucide="clipboard-list"></i>
+
+Examination Forms
+
+</a>
+
+
+
+
+<a href="EvidenceSamples.html" class="nav-item">
+
+<i data-lucide="dna"></i>
+
+Evidence Review
+
+</a>
+
+
+
+
+<a href="Reports.html" class="nav-item">
+
+<i data-lucide="file-check"></i>
+
+Reports
+
+</a>
+
+
+
+
+<a href="Documents.html" class="nav-item">
+
+<i data-lucide="file-text"></i>
+
+Documents
+
+</a>
+
+
+
+
+<a href="Search.html" class="nav-item">
+
+<i data-lucide="search"></i>
+
+Search
+
+</a>
+
+
+</nav>
+
+
+
+
+
+
+
+<div class="security-card">
+
+
+<i data-lucide="shield-check"></i>
+
+
+<div>
+
+<strong>
+SECURE SYSTEM
+</strong>
+
+
+<p>
+Authorized medical personnel only
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+<!-- MAIN -->
+
+
+<section class="main-area">
+
+
+<header class="topbar">
+
+
+<div>
+
+
+<h2>
+Assistant JMO Dashboard
+</h2>
+
+
+<p>
+Support case preparation and medical documentation
+</p>
+
+
+</div>
+
+
+
+
+
+
+<div class="profile-area">
+
+
+<button class="notification">
+
+<i data-lucide="bell"></i>
+
+<span>
+2
+</span>
+
+</button>
+
+
+
+
+
+<div class="profile">
+
+
+<div class="avatar" id="userAvatar">
+
+</div>
+
+
+
+<div>
+
+<strong id="userName">
+Loading...
+</strong>
+
+
+<small id="userRole">
+</small>
+
+
+</div>
+
+
+
+
+<button id="logoutBtn">
+Logout
+</button>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+</header>
+
+
+
+
+
+
+
+
+<main class="content">
+
+
+
+
+
+<section class="welcome-card">
+
+
+<div>
+
+
+<h1>
+
+Welcome,
+<span id="welcomeName">
+Assistant JMO
+</span>
+
+</h1>
+
+
+<p>
+
+Manage assigned forensic tasks, evidence reviews and report preparation.
+
+</p>
+
+
+</div>
+
+
+
+<i data-lucide="stethoscope"></i>
+
+
+
+</section>
+
+
+
+
+
+
+
+<section class="stats">
+
+
+<div class="stat-card">
+
+
+<div class="icon blue">
+
+<i data-lucide="folder"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+15
+</h3>
+
+
+<p>
+Assigned Tasks
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="stat-card">
+
+
+<div class="icon orange">
+
+<i data-lucide="clock"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+6
+</h3>
+
+
+<p>
+Pending Work
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="stat-card">
+
+
+<div class="icon green">
+
+<i data-lucide="file-edit"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+4
+</h3>
+
+
+<p>
+Draft Reports
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="stat-card">
+
+
+<div class="icon purple">
+
+<i data-lucide="dna"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+7
+</h3>
+
+
+<p>
+Evidence Reviews
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section class="panel">
+
+
+<div class="panel-header">
+
+
+<div>
+
+<h2>
+Assigned Tasks
+</h2>
+
+
+<p>
+Tasks assigned by JMO
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+Case ID
+</th>
+
+
+<th>
+Task
+</th>
+
+
+<th>
+Priority
+</th>
+
+
+<th>
+Status
+</th>
+
+
+<th>
+Action
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+<tbody id="taskTable">
+
+
+</tbody>
+
+
+</table>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section class="panel">
+
+
+<div class="panel-header">
+
+
+<div>
+
+<h2>
+Report Preparation
+</h2>
+
+
+<p>
+Reports requiring assistance
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+Report ID
+</th>
+
+
+<th>
+Case
+</th>
+
+
+<th>
+Status
+</th>
+
+
+<th>
+Action
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+<tbody id="reportTable">
+
+
+</tbody>
+
+
+</table>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+</main>
+
+
+</section>
+
+
+
+</div>
+
+
+
+
+
+
+
+<script src="../Js/authGuard.js"></script>
+
+
+<script>
+
+protectPage("ASSISTANT_JMO");
+
+</script>
+
+
+
+<script src="../Js/AssistantJMODashboard.js"></script>
+
+
+</body>
+
+</html>
