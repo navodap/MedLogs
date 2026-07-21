@@ -312,7 +312,24 @@ setTimeout(() => {
 
 
     }
+     else if (user.role === "Assistant_JMO") {
 
+
+        window.location.href =
+        "AssistantJMODashboard.html";
+
+
+    }
+    else if (user.role === "LAB") {
+
+
+        window.location.href =
+        LabDashboard.html";
+
+
+    } 
+    
+    
 
     else {
 
