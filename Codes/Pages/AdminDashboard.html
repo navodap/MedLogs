@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Dashboard | MedLogs</title>
+
+<link rel="stylesheet" href="../css/AdminDashboard.css">
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="app-shell">
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+
+<div class="brand">
+
+<div class="logo">
+<i data-lucide="shield-plus"></i>
+</div>
+
+<div>
+<h1>Forensic Medical Department</h1>
+<p>Admin Panel</p>
+</div>
+
+</div>
+
+
+
+<nav class="menu">
+
+<a class="active">
+<i data-lucide="layout-dashboard"></i>
+Dashboard
+</a>
+
+
+<a href="#users">
+<i data-lucide="users"></i>
+User Management
+</a>
+
+
+<a href="#roles">
+<i data-lucide="shield"></i>
+Roles
+</a>
+
+
+<a href="#logs">
+<i data-lucide="file-clock"></i>
+Audit Logs
+</a>
+
+
+<a href="#security">
+<i data-lucide="lock"></i>
+Security
+</a>
+
+
+</nav>
+
+
+</aside>
+
+
+
+
+
+<!-- MAIN CONTENT -->
+
+
+<main class="main-panel">
+
+
+<header class="topbar">
+
+
+<div>
+
+<h2>
+Administrator Dashboard
+</h2>
+
+<p>
+Manage system users and security
+</p>
+
+</div>
+
+
+<div class="profile">
+
+<strong>
+System Administrator
+</strong>
+
+<span>
+ADMIN
+</span>
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+<section class="content">
+
+
+
+<!-- STATISTICS -->
+
+
+<h2>System Overview</h2>
+
+
+<div class="stats">
+
+
+<div class="card">
+
+<h3>Total Users</h3>
+
+<p id="totalUsers">
+0
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>Active Staff</h3>
+
+<p id="activeUsers">
+0
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>Total Cases</h3>
+
+<p>
+1248
+</p>
+
+</div>
+
+
+
+
+<div class="card">
+
+<h3>Pending Reports</h3>
+
+<p>
+24
+</p>
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- USER MANAGEMENT -->
+
+
+<section id="users" class="panel">
+
+
+<div class="panel-header">
+
+<h2>
+User Management
+</h2>
+
+
+<button onclick="createUser()">
++ Create User
+</button>
+
+
+</div>
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+<th>Name</th>
+<th>Role</th>
+<th>Status</th>
+<th>Action</th>
+
+</tr>
+
+
+</thead>
+
+
+<tbody id="userTable">
+
+
+</tbody>
+
+
+</table>
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- ROLES -->
+
+
+<section id="roles" class="panel">
+
+
+<h2>
+Role Management
+</h2>
+
+
+<div class="role-box">
+
+
+<p>
+ADMIN
+</p>
+
+<span>
+Manage users, security and system settings
+</span>
+
+
+</div>
+
+
+
+<div class="role-box">
+
+
+<p>
+JMO
+</p>
+
+<span>
+Review cases and approve reports
+</span>
+
+
+</div>
+
+
+
+<div class="role-box">
+
+
+<p>
+DOCTOR
+</p>
+
+<span>
+Handle assigned clinical examinations
+</span>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+<!-- AUDIT -->
+
+
+<section id="logs" class="panel">
+
+
+<h2>
+Audit Logs
+</h2>
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>User</th>
+<th>Action</th>
+<th>Date</th>
+
+</tr>
+
+
+</thead>
+
+
+<tbody id="auditTable">
+
+
+</tbody>
+
+
+</table>
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- SECURITY -->
+
+
+<section id="security" class="panel">
+
+
+<h2>
+Security Monitoring
+</h2>
+
+
+<div class="security-box">
+
+<p>
+Failed Login Attempts:
+<b>2</b>
+</p>
+
+
+<p>
+Locked Accounts:
+<b>0</b>
+</p>
+
+
+<p>
+Last Backup:
+<b>Today</b>
+</p>
+
+
+</div>
+
+
+</section>
+
+
+
+</section>
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+<script src="../Js/AdminDashboard.js"></script>
+
+
+</body>
+
+</html>
