@@ -59,31 +59,13 @@
           <span>Police &amp; Court</span>
         </a>
 
-        <a class="nav-item" href="#">
+        <a class="nav-item" href="DocumentsAndReports.html">
           <span class="nav-icon">▤</span>
-          <span>Documents</span>
-        </a>
-
-        <a class="nav-item" href="#">
-          <span class="nav-icon">▥</span>
-          <span>Reports</span>
-        </a>
-
-        <a class="nav-item" href="#">
-          <span class="nav-icon">⌕</span>
-          <span>Search</span>
+          <span>Documents & Reports</span>
         </a>
       </nav>
 
       <div class="sidebar-footer">
-        <div class="user-card">
-          <div class="avatar">AP</div>
-          <div class="user-details">
-            <strong>Dr. A. Perera</strong>
-            <span>Consultant JMO</span>
-          </div>
-        </div>
-
         <button class="sidebar-action" type="button">
           <span>⚙</span>
           <span>Settings</span>
@@ -113,14 +95,39 @@
         </div>
 
         <div class="header-actions">
-          <button class="notify-btn" type="button" aria-label="Notifications">
-            🔔
-          </button>
+          <label class="role-switch" title="Simulated role until login is added">
+            <span>Acting as</span>
+            <select id="roleSelect" aria-label="Active role">
+              <option>Lab Officer</option>
+              <option>JMO</option>
+            </select>
+          </label>
+
+          <div class="notify-wrap">
+            <button class="notify-btn" id="notifyBtn" type="button" aria-label="Notifications" aria-expanded="false">
+              🔔<small id="notifyCount" hidden>0</small>
+            </button>
+            <div class="notify-dropdown" id="notifyDropdown" hidden>
+              <div class="notify-head">
+                <strong>Notifications</strong>
+                <span id="notifyHeadCount"></span>
+              </div>
+              <div class="notify-list" id="notifyList"></div>
+            </div>
+          </div>
 
           <button class="primary-button" id="openNewRequestButton" type="button">
             <span>＋</span>
             New Lab Request
           </button>
+
+          <div class="user-card topbar-user">
+            <div class="avatar">AP</div>
+            <div class="user-details">
+              <strong>Dr. A. Perera</strong>
+              <span>Consultant JMO</span>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -198,6 +205,7 @@
 
           <select id="statusFilter" aria-label="Filter by status">
             <option value="all">All statuses</option>
+            <option value="Draft">Draft</option>
             <option value="Pending">Pending</option>
             <option value="Sample Received">Sample Received</option>
             <option value="In Progress">In Progress</option>
@@ -631,9 +639,22 @@
         </section>
       </div>
 
+      <div class="workflow-bar" id="workflowBar" hidden>
+        <span class="workflow-kicker">NEXT WORKFLOW STEP</span>
+        <strong id="workflowStepLabel"></strong>
+        <p id="workflowStepNote"></p>
+        <div class="workflow-fields" id="workflowFields"></div>
+        <div class="workflow-action-row">
+          <button class="primary-button" type="button" id="workflowActionButton"></button>
+        </div>
+      </div>
+
       <div class="modal-footer">
         <button class="secondary-button" type="button" data-close-modal="detailsModal">
           Close
+        </button>
+        <button class="primary-button" type="button" id="submitDraftButton" hidden>
+          Submit Request
         </button>
         <button class="primary-button" type="button" id="printRequestButton">
           Print Request
