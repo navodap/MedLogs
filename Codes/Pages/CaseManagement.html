@@ -30,19 +30,13 @@
       <nav class="side-nav">
         <a href="index.html" class="nav-item"><span>⌂</span>Dashboard</a>
         <a href="PatientManagement.html" class="nav-item"><span>☤</span>Patient Management</a>
-        <a href="#" class="nav-item active"><span>▣</span>Case Management </a>
+        <a href="CaseManagement.html" class="nav-item active"><span>▣</span>Case Management </a>
         <a href="ExaminationForms.html" class="nav-item"><span>☷</span>Examination Forms</a>
         <a href="EvidenceSamples.html" class="nav-item"><span>⚗</span>Evidence & Samples</a>
         <a href="LabTest_Toxicology.html" class="nav-item"><span>🔬</span>Lab / Toxicology</a>
         <a href="PoliceCourt.html" class="nav-item"><span>⚖</span>Police & Court</a>
-        <a href="#" class="nav-item"><span>▤</span>Documents</a>
-        <a href="ReportGeneration.html" class="nav-item"><span>▥</span>Reports</a>
-        <a href="#" class="nav-item"><span>⌕</span>Search</a>
-        <a href="#" class="nav-item"><span>◌</span>Staff Management</a>
-        <a href="#" class="nav-item"><span>▣</span>Users & Roles</a>
-        <a href="#" class="nav-item"><span>☑</span>Audit Logs</a>
-        <a href="#" class="nav-item"><span>◷</span>Statistics</a>
-        <a href="#" class="nav-item"><span>⚙</span>Settings</a>
+        <a href="DocumentsAndReports.html" class="nav-item"><span>▤</span>Documents & Reports</a>
+        <a href="Settings.html" class="nav-item"><span>⚙</span>Settings</a>
       </nav>
 
       <div class="secure-panel">
@@ -56,13 +50,23 @@
       <header class="topbar">
         <button class="menu-btn" type="button" aria-label="Open menu">☰</button>
         <h2>Case Management</h2>
-        <label class="global-search">
+        <label class="global-search" id="globalSearchLabel">
           <span>⌕</span>
-          <input type="search" placeholder="Search cases, patients, reports, court references..." />
+          <input id="globalSearch" type="search" placeholder="Search cases, patients, reports, court references..." autocomplete="off" />
           <kbd>Ctrl + K</kbd>
+          <div class="global-search-results" id="globalSearchResults" hidden></div>
         </label>
         <div class="top-actions">
-          <button class="notify-btn" type="button" aria-label="Notifications">🔔<small>4</small></button>
+          <div class="notify-wrap">
+            <button class="notify-btn" id="notifyBtn" type="button" aria-label="Notifications" aria-expanded="false">🔔<small id="notifyCount" hidden>0</small></button>
+            <div class="notify-dropdown" id="notifyDropdown" hidden>
+              <div class="notify-head">
+                <strong>Notifications</strong>
+                <span id="notifyHeadCount"></span>
+              </div>
+              <div class="notify-list" id="notifyList"></div>
+            </div>
+          </div>
           <div class="date-box">
             <strong id="currentDateDisplay">Loading date...</strong>
             <span id="currentDayDisplay">Loading day...</span>
@@ -690,42 +694,17 @@
     </table>
     <p class="empty-state" id="expectedReportsEmpty">No expected reports added yet.</p>
   </div>
+
 </fieldset>
+
 <fieldset>
-  <legend><span>8</span>Case Documents Upload</legend>
+  <legend><span>8</span>Case Documents</legend>
   <p class="field-note">
-    Upload case-opening and legal documents here. Patient-level documents such as consent form and ID documents stay in Patient Management.
+    Police letters, referral notes, photographs and reports are uploaded in Documents &amp; Reports and linked to this case automatically. Save the case as a draft first if you have not saved it yet.
   </p>
-
-  <div class="form-grid four">
-    <label class="clinical-section active">Police Request / Letter
-      <input id="clinicalPoliceRequestUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
-    </label>
-
-    <label class="clinical-section active">Hospital Referral Note
-      <input id="hospitalReferralUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
-    </label>
-
-    <label class="clinical-section active">Additional Clinical Case Document
-      <input id="additionalClinicalCaseUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
-    </label>
-
-    <label class="autopsy-section">Body Receiving Document
-      <input id="bodyReceivingCaseUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
-    </label>
-
-    <label class="autopsy-section">Mortuary / Body Tag Document
-      <input id="mortuaryDocumentUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
-    </label>
-
-    <label>Other Case Document Type
-      <input id="otherCaseDocumentType" type="text" placeholder="Example: court letter, police letter, special order" />
-    </label>
-
-    <label>Other Case Document
-      <input id="otherCaseDocumentUpload" type="file" accept=".pdf,.jpg,.jpeg,.png" />
-    </label>
-  </div>
+  <button type="button" class="btn outline" id="btnAttachDocuments">
+    Attach Supporting Documents
+  </button>
 </fieldset>
   <div class="form-actions" id="formActionButtonsBar">
     <button type="button" class="btn light" id="clearFormBtn">Cancel</button>
@@ -923,7 +902,7 @@
         <div class="details-action-bar">
           <button type="button" class="btn light" id="btnEditCaseDetails">Edit Case</button>
           <button type="button" class="btn primary" id="btnStartExaminationFromCase">Start Examination</button>
-          <button type="button" class="btn outline" id="btnOpenEvidenceFromCase">Open Evidence & Samples</button>
+          <button type="button" class="btn primary" id="btnAddLabRequestFromCase">Add Lab Request</button>
           <button type="button" class="btn dark" id="btnGenerateReportFromCase">Generate Report</button>
         </div>
   </div>
@@ -996,6 +975,15 @@
   </div>
 
   
+
+  <div id="notifyModal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 26, 47, 0.4); backdrop-filter: blur(4px); z-index: 2100; place-items: center;">
+    <div style="background: #ffffff; padding: 24px; border-radius: 12px; box-shadow: 0 18px 45px rgba(10, 49, 86, 0.2); width: 90%; max-width: 450px; text-align: center; border-left: 5px solid #f59e0b;">
+      <div style="font-size: 2.5rem; margin-bottom: 12px;">ℹ️</div>
+      <h4 id="notifyModalTitle" style="margin: 0 0 10px; color: var(--navy-900); font-size: 1.2rem;">Notice</h4>
+      <p id="notifyModalMessage" style="margin: 0 0 20px; color: #43536c; font-size: 0.9rem; line-height: 1.5;"></p>
+      <button type="button" id="btnCloseNotifyModal" class="btn primary" style="min-width: 100px; background: #f59e0b;">OK</button>
+    </div>
+  </div>
 
   <script src="../Js/CaseManagement.js"></script>
 </body>
