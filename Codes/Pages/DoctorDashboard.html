@@ -1,1 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Doctor Dashboard | MedLogs</title>
+
+
+<link rel="stylesheet" href="../css/DoctorDashboard.css">
+
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+
+</head>
+
+
+<body>
+
+
+<div class="app-layout">
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+
+<div class="brand">
+
+
+<div class="brand-icon">
+
+<i data-lucide="shield-plus"></i>
+
+</div>
+
+
+<div>
+
+<h1>
+MedLogs
+</h1>
+
+<p>
+FORENSIC MEDICO-LEGAL<br>
+INFORMATION MANAGEMENT
+</p>
+
+</div>
+
+
+</div>
+
+
+
+
+
+<nav class="navigation">
+
+
+<a href="DoctorDashboard.html" class="nav-item active">
+
+<i data-lucide="layout-dashboard"></i>
+
+Dashboard
+
+</a>
+
+
+
+
+<a href="PatientManagement.html" class="nav-item">
+
+<i data-lucide="users"></i>
+
+Patient Management
+
+</a>
+
+
+
+
+<a href="CaseManagement.html" class="nav-item">
+
+<i data-lucide="folder-open"></i>
+
+My Cases
+
+</a>
+
+
+
+
+<a href="ExaminationForms.html" class="nav-item">
+
+<i data-lucide="clipboard-list"></i>
+
+Examination Forms
+
+</a>
+
+
+
+
+<a href="EvidenceSamples.html" class="nav-item">
+
+<i data-lucide="dna"></i>
+
+Evidence & Samples
+
+</a>
+
+
+
+
+<a href="Reports.html" class="nav-item">
+
+<i data-lucide="file-check"></i>
+
+Reports
+
+</a>
+
+
+
+
+<a href="Documents.html" class="nav-item">
+
+<i data-lucide="file-text"></i>
+
+Documents
+
+</a>
+
+
+
+
+<a href="Search.html" class="nav-item">
+
+<i data-lucide="search"></i>
+
+Search
+
+</a>
+
+
+
+</nav>
+
+
+
+
+
+
+<div class="security-card">
+
+
+<i data-lucide="shield-check"></i>
+
+
+<div>
+
+<strong>
+SECURE SYSTEM
+</strong>
+
+
+<p>
+Authorized medical personnel only
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+
+<!-- MAIN -->
+
+
+<section class="main-area">
+
+
+
+<header class="topbar">
+
+
+<div>
+
+<h2>
+Doctor Dashboard
+</h2>
+
+
+<p>
+Manage assigned cases and medical examinations
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="profile-area">
+
+
+
+<button class="notification">
+
+<i data-lucide="bell"></i>
+
+<span>
+2
+</span>
+
+</button>
+
+
+
+
+<div class="profile">
+
+
+<div class="avatar" id="userAvatar">
+
+</div>
+
+
+
+<div>
+
+<strong id="userName">
+Loading...
+</strong>
+
+
+<small id="userRole">
+</small>
+
+
+</div>
+
+
+
+<button id="logoutBtn">
+Logout
+</button>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+</header>
+
+
+
+
+
+
+
+
+<main class="content">
+
+
+
+
+
+<section class="welcome-card">
+
+
+<div>
+
+
+<h1>
+
+Welcome,
+<span id="welcomeName">
+Doctor
+</span>
+
+</h1>
+
+
+<p>
+
+View assigned forensic cases, complete examinations,
+and prepare medico-legal reports.
+
+</p>
+
+
+</div>
+
+
+
+<i data-lucide="stethoscope"></i>
+
+
+</section>
+
+
+
+
+
+
+
+<section class="stats">
+
+
+<div class="stat-card">
+
+
+<div class="icon blue">
+
+<i data-lucide="folder"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+12
+</h3>
+
+
+<p>
+Assigned Cases
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="stat-card">
+
+
+<div class="icon orange">
+
+<i data-lucide="clipboard-check"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+5
+</h3>
+
+
+<p>
+Pending Examinations
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="stat-card">
+
+
+<div class="icon green">
+
+<i data-lucide="file-edit"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+3
+</h3>
+
+
+<p>
+Draft Reports
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="stat-card">
+
+
+<div class="icon purple">
+
+<i data-lucide="check-circle"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+20
+</h3>
+
+
+<p>
+Completed Cases
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section class="panel">
+
+
+<div class="panel-header">
+
+
+<div>
+
+<h2>
+My Assigned Cases
+</h2>
+
+
+<p>
+Cases assigned by JMO
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+Case ID
+</th>
+
+
+<th>
+Patient
+</th>
+
+
+<th>
+Type
+</th>
+
+
+<th>
+Status
+</th>
+
+
+<th>
+Action
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+<tbody id="caseTable">
+
+</tbody>
+
+
+</table>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section class="panel">
+
+
+<div class="panel-header">
+
+
+<div>
+
+<h2>
+Examination Tasks
+</h2>
+
+
+<p>
+Pending medical examinations
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+Case ID
+</th>
+
+
+<th>
+Examination
+</th>
+
+
+<th>
+Priority
+</th>
+
+
+<th>
+Action
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+<tbody id="examTable">
+
+</tbody>
+
+
+</table>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section class="panel">
+
+
+<div class="panel-header">
+
+
+<div>
+
+<h2>
+My Reports
+</h2>
+
+
+<p>
+Prepared medico-legal reports
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+Report ID
+</th>
+
+
+<th>
+Case
+</th>
+
+
+<th>
+Status
+</th>
+
+
+<th>
+Action
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+<tbody id="reportTable">
+
+</tbody>
+
+
+</table>
+
+
+
+</section>
+
+
+
+
+
+
+</main>
+
+
+</section>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<script src="../Js/authGuard.js"></script>
+
+
+<script>
+
+protectPage("DOCTOR");
+
+</script>
+
+
+
+<script src="../Js/DoctorDashboard.js"></script>
+
+
+
+</body>
+
+</html>

@@ -1,1 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>JMO Dashboard | MedLogs</title>
+
+
+<link rel="stylesheet" href="../css/JMODashboard.css">
+
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="app-layout">
+
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+
+<div class="brand">
+
+
+<div class="brand-icon">
+<i data-lucide="shield-plus"></i>
+</div>
+
+
+<div>
+
+<h1>
+MedLogs
+</h1>
+
+
+<p>
+FORENSIC MEDICO-LEGAL<br>
+INFORMATION MANAGEMENT
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<nav class="navigation">
+
+
+<a href="JMODashboard.html" class="nav-item active">
+
+<span>⌂</span>
+
+Dashboard
+
+</a>
+
+
+
+<a href="PatientManagement.html" class="nav-item">
+
+<span>◉</span>
+
+Patient Management
+
+</a>
+
+
+
+
+<a href="CaseManagement.html" class="nav-item">
+
+<span>▣</span>
+
+Case Management
+
+</a>
+
+
+
+
+<a href="ExaminationForms.html" class="nav-item">
+
+<span>✚</span>
+
+Examination Forms
+
+</a>
+
+
+
+
+<a href="EvidenceSamples.html" class="nav-item">
+
+<span>◈</span>
+
+Evidence & Samples
+
+</a>
+
+
+
+
+<a href="Reports.html" class="nav-item">
+
+<span>▤</span>
+
+Reports
+
+</a>
+
+
+
+
+<a href="PoliceCourt.html" class="nav-item">
+
+<span>⚖</span>
+
+Police & Court
+
+</a>
+
+
+
+
+<a href="Documents.html" class="nav-item">
+
+<span>▧</span>
+
+Documents
+
+</a>
+
+
+
+
+<a href="Search.html" class="nav-item">
+
+<span>⌕</span>
+
+Search
+
+</a>
+
+
+</nav>
+
+
+
+
+<a class="nav-item">
+
+<i data-lucide="folder-open"></i>
+
+<span>
+Case Management
+</span>
+
+</a>
+
+
+
+
+
+<a class="nav-item">
+
+<i data-lucide="clipboard-list"></i>
+
+<span>
+Examination Forms
+</span>
+
+</a>
+
+
+
+
+
+<a class="nav-item">
+
+<i data-lucide="dna"></i>
+
+<span>
+Evidence & Samples
+</span>
+
+</a>
+
+
+
+
+
+<a class="nav-item">
+
+<i data-lucide="file-check"></i>
+
+<span>
+Reports
+</span>
+
+</a>
+
+
+
+
+
+<a class="nav-item">
+
+<i data-lucide="scale"></i>
+
+<span>
+Police & Court
+</span>
+
+</a>
+
+
+
+
+
+<a class="nav-item">
+
+<i data-lucide="file-text"></i>
+
+<span>
+Documents
+</span>
+
+</a>
+
+
+
+
+
+<a class="nav-item">
+
+<i data-lucide="search"></i>
+
+<span>
+Search
+</span>
+
+</a>
+
+
+
+</nav>
+
+
+
+
+
+
+<div class="security-card">
+
+
+<i data-lucide="shield-check"></i>
+
+
+<div>
+
+<strong>
+SECURE SYSTEM
+</strong>
+
+
+<p>
+Authorized medical personnel only
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+</aside>
+
+
+
+
+
+
+
+<!-- ================= MAIN AREA ================= -->
+
+
+<section class="main-area">
+
+
+
+<header class="topbar">
+
+
+<div>
+
+<h2>
+JMO Dashboard
+</h2>
+
+
+<p>
+Forensic case supervision and report approval
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="user-area">
+
+
+<button class="notification">
+
+<i data-lucide="bell"></i>
+
+<span>
+3
+</span>
+
+</button>
+
+
+
+
+
+<div class="profile">
+
+
+<div class="avatar" id="userAvatar">
+</div>
+
+
+
+<div>
+
+
+<strong id="userName">
+Loading...
+</strong>
+
+
+<small id="userRole">
+</small>
+
+
+</div>
+
+
+
+<button id="logoutBtn">
+
+Logout
+
+</button>
+
+
+
+</div>
+
+
+</div>
+
+
+
+</header>
+
+
+
+
+
+
+
+
+<main class="content">
+
+
+
+<!-- ================= WELCOME ================= -->
+
+
+<section class="welcome-card">
+
+
+<div>
+
+
+<h1>
+
+Welcome,
+<span id="welcomeName">
+JMO
+</span>
+
+</h1>
+
+
+<p>
+
+Review assigned forensic cases, approve reports,
+and monitor medico-legal activities.
+
+</p>
+
+
+</div>
+
+
+<i data-lucide="stethoscope"></i>
+
+
+</section>
+
+
+
+
+
+
+
+<!-- ================= STATISTICS ================= -->
+
+
+<section class="stats">
+
+
+<div class="stat-card">
+
+
+<div class="icon blue">
+
+<i data-lucide="folder-open"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+24
+</h3>
+
+
+<p>
+Assigned Cases
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="stat-card">
+
+
+<div class="icon orange">
+
+<i data-lucide="clock"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+8
+</h3>
+
+
+<p>
+Pending Reviews
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="stat-card">
+
+
+<div class="icon green">
+
+<i data-lucide="file-check"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+5
+</h3>
+
+
+<p>
+Reports Pending
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="stat-card">
+
+
+<div class="icon purple">
+
+<i data-lucide="calendar"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+3
+</h3>
+
+
+<p>
+Court Deadlines
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- ================= CASE REVIEW ================= -->
+
+
+<section class="panel">
+
+
+<div class="panel-header">
+
+
+<div>
+
+<h2>
+Case Review Queue
+</h2>
+
+
+<p>
+Cases requiring JMO attention
+</p>
+
+
+</div>
+
+
+<button>
+View All
+</button>
+
+
+</div>
+
+
+
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+Case ID
+</th>
+
+
+<th>
+Type
+</th>
+
+
+<th>
+Doctor
+</th>
+
+
+<th>
+Status
+</th>
+
+
+<th>
+Action
+</th>
+
+
+</tr>
+
+</thead>
+
+
+
+<tbody id="caseTable">
+
+</tbody>
+
+
+
+</table>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+<!-- ================= REPORT APPROVAL ================= -->
+
+
+<section class="panel">
+
+
+<div class="panel-header">
+
+
+<div>
+
+<h2>
+Report Approval
+</h2>
+
+
+<p>
+Review medico-legal reports
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+Report ID
+</th>
+
+
+<th>
+Case
+</th>
+
+
+<th>
+Prepared By
+</th>
+
+
+<th>
+Status
+</th>
+
+
+<th>
+Action
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+<tbody id="reportTable">
+
+
+</tbody>
+
+
+</table>
+
+
+
+</section>
+
+
+
+
+
+
+
+</main>
+
+
+</section>
+
+
+
+</div>
+
+
+
+
+
+
+
+<script src="../Js/authGuard.js"></script>
+
+
+<script>
+
+protectPage("JMO");
+
+</script>
+
+
+<script src="../Js/JMODashboard.js"></script>
+
+
+</body>
+
+</html>

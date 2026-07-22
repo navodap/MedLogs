@@ -1,1 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lab Dashboard | MedLogs</title>
+
+
+<link rel="stylesheet" href="../css/LabDashboard.css">
+
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="app-layout">
+
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+
+<div class="brand">
+
+
+<div class="brand-icon">
+
+<i data-lucide="shield-plus"></i>
+
+</div>
+
+
+<div>
+
+<h1>
+MedLogs
+</h1>
+
+
+<p>
+FORENSIC MEDICO-LEGAL<br>
+INFORMATION MANAGEMENT
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<nav class="navigation">
+
+
+<a href="LabDashboard.html" class="nav-item active">
+
+<i data-lucide="layout-dashboard"></i>
+
+Dashboard
+
+</a>
+
+
+
+
+<a href="EvidenceSamples.html" class="nav-item">
+
+<i data-lucide="dna"></i>
+
+Evidence & Samples
+
+</a>
+
+
+
+
+
+<a href="LabTests.html" class="nav-item">
+
+<i data-lucide="flask-conical"></i>
+
+Lab Tests
+
+</a>
+
+
+
+
+
+<a href="LabResults.html" class="nav-item">
+
+<i data-lucide="file-check"></i>
+
+Results
+
+</a>
+
+
+
+
+
+<a href="Documents.html" class="nav-item">
+
+<i data-lucide="file-text"></i>
+
+Documents
+
+</a>
+
+
+
+
+
+<a href="Search.html" class="nav-item">
+
+<i data-lucide="search"></i>
+
+Search
+
+</a>
+
+
+
+</nav>
+
+
+
+
+
+
+
+<div class="security-card">
+
+
+<i data-lucide="shield-check"></i>
+
+
+<div>
+
+<strong>
+SECURE SYSTEM
+</strong>
+
+
+<p>
+Authorized medical personnel only
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+
+<!-- MAIN AREA -->
+
+
+<section class="main-area">
+
+
+
+<header class="topbar">
+
+
+<div>
+
+<h2>
+Lab Staff Dashboard
+</h2>
+
+
+<p>
+Manage evidence testing and laboratory results
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="profile-area">
+
+
+<button class="notification">
+
+
+<i data-lucide="bell"></i>
+
+
+<span>
+4
+</span>
+
+
+</button>
+
+
+
+
+
+<div class="profile">
+
+
+<div class="avatar" id="userAvatar">
+
+</div>
+
+
+
+<div>
+
+<strong id="userName">
+Loading...
+</strong>
+
+
+<small id="userRole">
+</small>
+
+
+</div>
+
+
+
+<button id="logoutBtn">
+
+Logout
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+
+
+
+<main class="content">
+
+
+
+
+
+<section class="welcome-card">
+
+
+<div>
+
+
+<h1>
+
+Welcome,
+<span id="welcomeName">
+Lab Staff
+</span>
+
+</h1>
+
+
+<p>
+
+Monitor samples, perform tests and update forensic laboratory results.
+
+</p>
+
+
+</div>
+
+
+
+<i data-lucide="flask-conical"></i>
+
+
+</section>
+
+
+
+
+
+
+
+<section class="stats">
+
+
+<div class="stat-card">
+
+
+<div class="icon blue">
+
+<i data-lucide="package"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+18
+</h3>
+
+
+<p>
+Pending Samples
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="stat-card">
+
+
+<div class="icon orange">
+
+<i data-lucide="clock"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+7
+</h3>
+
+
+<p>
+Tests In Progress
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="stat-card">
+
+
+<div class="icon green">
+
+<i data-lucide="check-circle"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+35
+</h3>
+
+
+<p>
+Completed Tests
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="stat-card">
+
+
+<div class="icon purple">
+
+<i data-lucide="alert-triangle"></i>
+
+</div>
+
+
+<div>
+
+<h3>
+3
+</h3>
+
+
+<p>
+Urgent Requests
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section class="panel">
+
+
+<div class="panel-header">
+
+
+<div>
+
+<h2>
+Sample Queue
+</h2>
+
+
+<p>
+Evidence samples requiring laboratory processing
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+<th>
+Sample ID
+</th>
+
+
+<th>
+Case ID
+</th>
+
+
+<th>
+Test Type
+</th>
+
+
+<th>
+Status
+</th>
+
+
+<th>
+Action
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody id="sampleTable">
+
+
+</tbody>
+
+
+
+</table>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section class="panel">
+
+
+<div class="panel-header">
+
+
+<div>
+
+<h2>
+Recent Results
+</h2>
+
+
+<p>
+Completed laboratory reports
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+<th>
+Result ID
+</th>
+
+
+<th>
+Case ID
+</th>
+
+
+<th>
+Result
+</th>
+
+
+<th>
+Action
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody id="resultTable">
+
+
+</tbody>
+
+
+
+</table>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+</main>
+
+
+</section>
+
+
+
+</div>
+
+
+
+
+
+
+
+<script src="../Js/authGuard.js"></script>
+
+
+<script>
+
+protectPage("LAB");
+
+</script>
+
+
+<script src="../Js/LabDashboard.js"></script>
+
+
+</body>
+
+</html>

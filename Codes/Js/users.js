@@ -1,11 +1,13 @@
 const users = [
 
+
     {
         username: "admin",
         password: "admin123",
         name: "System Administrator",
         role: "ADMIN"
     },
+
 
 
     {
@@ -16,12 +18,32 @@ const users = [
     },
 
 
+
+    {
+        username: "ajmo001",
+        password: "ajmo123",
+        name: "Dr. Fernando",
+        role: "ASSISTANT_JMO"
+    },
+
+
+
     {
         username: "doc001",
         password: "doc123",
         name: "Dr. Perera",
         role: "DOCTOR"
     },
+
+
+
+    {
+        username: "lab001",
+        password: "lab123",
+        name: "Kamal Laboratory Officer",
+        role: "LAB"
+    },
+
 
 
     {
