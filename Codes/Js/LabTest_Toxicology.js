@@ -1,4 +1,25 @@
-const labRequests = [];
+const LAB_STORAGE_KEY = "fmdis_lab_requests_v1";
+
+function loadLabRequests() {
+  try {
+    const stored = localStorage.getItem(LAB_STORAGE_KEY);
+    const parsed = stored ? JSON.parse(stored) : null;
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    console.warn("Saved lab requests could not be read.", error);
+    return [];
+  }
+}
+
+function saveLabRequests() {
+  try {
+    localStorage.setItem(LAB_STORAGE_KEY, JSON.stringify(labRequests));
+  } catch (error) {
+    console.warn("Lab requests could not be saved.", error);
+  }
+}
+
+const labRequests = loadLabRequests();
 
 let currentPage = 1;
 const ROWS_PER_PAGE = 10;
@@ -23,6 +44,17 @@ const saveDraftButton = document.getElementById("saveDraftButton");
 const mobileMenuButton = document.getElementById("mobileMenuButton");
 const sidebar = document.getElementById("sidebar");
 const toast = document.getElementById("toast");
+
+const ROLE_KEY = "fmdis_active_role_v1";
+const roleSelect = document.getElementById("roleSelect");
+let activeRole = localStorage.getItem(ROLE_KEY) || "JMO";
+roleSelect.value = activeRole;
+
+roleSelect.addEventListener("change", () => {
+  activeRole = roleSelect.value;
+  localStorage.setItem(ROLE_KEY, activeRole);
+  if (!detailsModal.hidden && selectedRequest) renderWorkflowBar();
+});
 
 let activeTab = "all";
 let selectedRequest = null;
@@ -109,7 +141,7 @@ function getFilteredRequests() {
     const matchesTab = (() => {
       switch (activeTab) {
         case "samples":
-          return !["Pending"].includes(request.status);
+          return !["Pending", "Draft"].includes(request.status);
         case "results":
           return ["Awaiting Review", "Completed"].includes(request.status);
         case "approval":
@@ -197,6 +229,9 @@ function renderTable() {
         <span class="badge ${normalizeClassName(request.status)}">${request.status}</span>
       </td>
       <td class="actions-column">
+        ${request.status === "Draft"
+          ? `<button class="action-button submit-action" type="button" data-submit-request="${request.requestId}">Submit</button>`
+          : ""}
         <button class="action-button" type="button" data-view-request="${request.requestId}">
           View
         </button>
@@ -217,7 +252,14 @@ function renderTable() {
     });
   });
 
+  document.querySelectorAll("[data-submit-request]").forEach((button) => {
+    button.addEventListener("click", () => {
+      submitDraft(button.dataset.submitRequest);
+    });
+  });
+
   updateSummaryCounts();
+  renderNotifications();
   renderPagination(totalPages);
 }
 
@@ -328,8 +370,12 @@ function openRequestDetails(requestId) {
     selectedRequest.status === "Completed"
   );
 
+  document.getElementById("submitDraftButton").hidden =
+    selectedRequest.status !== "Draft";
+
   renderProgressTimeline(selectedRequest.status);
   renderHistory(selectedRequest.history);
+  renderWorkflowBar();
   setDetailTab("overview");
   openModal(detailsModal);
 }
@@ -393,12 +439,217 @@ function setDetailTab(tabName) {
   });
 }
 
+function stampNow() {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(new Date());
+}
+
+function isLabVerified(request) {
+  const value = String(request.approval.verified).toLowerCase();
+  return !value.includes("pending") && !value.includes("not");
+}
+
+function getNextWorkflowStep(request) {
+  switch (request.status) {
+    case "Pending":
+      return {
+        role: "Lab Officer",
+        label: "Mark Sample Received",
+        note: "Confirm the specimen arrived at the laboratory and record its seal and condition.",
+        fields: [
+          { id: "wfSampleId", label: "Sample ID *", placeholder: "S-2026-0001", required: true },
+          { id: "wfSeal", label: "Seal Number *", required: true },
+          { id: "wfCondition", label: "Sample Condition", type: "select", options: ["Intact", "Acceptable", "Damaged", "Leaking"] },
+          { id: "wfLabRef", label: "Laboratory Reference", placeholder: "LAB-2026-001" }
+        ],
+        apply(req, v) {
+          req.status = "Sample Received";
+          req.sampleId = v.wfSampleId;
+          req.sealNumber = v.wfSeal;
+          req.sampleCondition = v.wfCondition || "Intact";
+          req.labReference = v.wfLabRef || "Not assigned";
+          req.receivedDate = new Date().toISOString().slice(0, 10);
+        },
+        historyLabel: (req, v) => `Sample ${v.wfSampleId} received by the laboratory`
+      };
+
+    case "Sample Received":
+      return {
+        role: "Lab Officer",
+        label: "Start Testing",
+        note: "Assign the analyst and analysis method to begin testing.",
+        fields: [
+          { id: "wfAnalyst", label: "Analyst *", required: true },
+          { id: "wfMethod", label: "Method / Technique *", placeholder: "e.g. GC-MS, Immunoassay", required: true }
+        ],
+        apply(req, v) {
+          req.status = "In Progress";
+          req.analyst = v.wfAnalyst;
+          req.method = v.wfMethod;
+        },
+        historyLabel: (req, v) => `Testing started by ${v.wfAnalyst} (${v.wfMethod})`
+      };
+
+    case "In Progress":
+      return {
+        role: "Lab Officer",
+        label: "Enter Result",
+        note: "Record the laboratory findings. The result will go to verification and JMO review.",
+        fields: [
+          { id: "wfResult", label: "Result Summary *", type: "textarea", required: true },
+          { id: "wfQuality", label: "Quality Control", type: "select", options: ["Passed", "Repeated", "Pending"] }
+        ],
+        apply(req, v) {
+          req.status = "Awaiting Review";
+          req.resultSummary = v.wfResult;
+          req.qualityControl = v.wfQuality || "Passed";
+          req.approval.entered = `Entered by ${req.analyst} on ${stampNow()}`;
+        },
+        historyLabel: () => "Laboratory result entered"
+      };
+
+    case "Awaiting Review":
+      if (!isLabVerified(request)) {
+        return {
+          role: "Lab Officer",
+          label: "Verify Result (Laboratory)",
+          note: "Senior laboratory verification before the result goes to the JMO.",
+          fields: [
+            { id: "wfVerifier", label: "Verified By *", placeholder: "Senior analyst / lab head", required: true }
+          ],
+          apply(req, v) {
+            req.approval.verified = `Verified by ${v.wfVerifier} on ${stampNow()}`;
+          },
+          historyLabel: (req, v) => `Result verified by ${v.wfVerifier}`
+        };
+      }
+      return {
+        role: "JMO",
+        label: "Approve & Complete (JMO Review)",
+        note: "Final medico-legal review of the verified laboratory findings.",
+        fields: [
+          { id: "wfJmoRemarks", label: "JMO Remarks", placeholder: "Optional remarks" }
+        ],
+        apply(req, v) {
+          req.status = "Completed";
+          req.approval.jmo = `Reviewed by ${req.requestingJmo} on ${stampNow()}`;
+          if (v.wfJmoRemarks) {
+            req.resultSummary += `<br><strong>JMO remarks:</strong> ${v.wfJmoRemarks}`;
+          }
+        },
+        historyLabel: (req) => `JMO review completed by ${req.requestingJmo}`
+      };
+
+    default:
+      return null;
+  }
+}
+
+function renderWorkflowBar() {
+  const bar = document.getElementById("workflowBar");
+  const fieldsBox = document.getElementById("workflowFields");
+  const button = document.getElementById("workflowActionButton");
+  const label = document.getElementById("workflowStepLabel");
+  const note = document.getElementById("workflowStepNote");
+
+  const step = selectedRequest ? getNextWorkflowStep(selectedRequest) : null;
+  if (!step) {
+    bar.hidden = true;
+    return;
+  }
+
+  bar.hidden = false;
+  label.textContent = step.label;
+
+  if (step.role !== activeRole) {
+    note.textContent = `This step is performed by the ${step.role}. Switch the "Acting as" role in the top bar to continue.`;
+    fieldsBox.hidden = true;
+    fieldsBox.innerHTML = "";
+    button.hidden = true;
+    return;
+  }
+
+  note.textContent = step.note || "";
+  button.hidden = false;
+  button.textContent = step.label;
+  fieldsBox.hidden = !step.fields.length;
+  fieldsBox.innerHTML = step.fields
+    .map((field) => {
+      if (field.type === "textarea") {
+        return `<label class="workflow-field full">${field.label}<textarea id="${field.id}" rows="3" placeholder="${field.placeholder || ""}"></textarea></label>`;
+      }
+      if (field.type === "select") {
+        return `<label class="workflow-field">${field.label}<select id="${field.id}">${field.options.map((option) => `<option>${option}</option>`).join("")}</select></label>`;
+      }
+      return `<label class="workflow-field">${field.label}<input id="${field.id}" type="text" placeholder="${field.placeholder || ""}" /></label>`;
+    })
+    .join("");
+}
+
+document.getElementById("workflowActionButton").addEventListener("click", () => {
+  if (!selectedRequest) return;
+  const step = getNextWorkflowStep(selectedRequest);
+  if (!step || step.role !== activeRole) return;
+
+  const values = {};
+  let missingField = null;
+
+  (step.fields || []).forEach((field) => {
+    const element = document.getElementById(field.id);
+    values[field.id] = element ? element.value.trim() : "";
+    if (field.required && !values[field.id] && !missingField) missingField = element;
+  });
+
+  if (missingField) {
+    missingField.focus();
+    showToast("Complete the required fields for this step.");
+    return;
+  }
+
+  step.apply(selectedRequest, values);
+  selectedRequest.history.push([stampNow(), step.historyLabel(selectedRequest, values)]);
+  saveLabRequests();
+  renderTable();
+  openRequestDetails(selectedRequest.requestId);
+  showToast(`${selectedRequest.requestId}: ${step.label} done.`);
+});
+
+function submitDraft(requestId) {
+  const request = labRequests.find((item) => item.requestId === requestId);
+  if (!request || request.status !== "Draft") return;
+
+  request.status = "Pending";
+  request.requestedDate = new Date().toISOString().slice(0, 10);
+  request.resultSummary =
+    "The request has been submitted. Sample collection and laboratory processing are pending.";
+  request.history.push([
+    new Intl.DateTimeFormat("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(new Date()),
+    `Draft submitted by ${request.requestingJmo}`
+  ]);
+
+  saveLabRequests();
+  renderTable();
+  showToast(`${requestId} was submitted successfully.`);
+}
+
 function generateRequestId() {
-  const lastNumbers = labRequests.map((request) =>
-    Number(request.requestId.split("-").pop())
-  );
-  const nextNumber = Math.max(...lastNumbers) + 1;
-  return `LR-2026-${String(nextNumber).padStart(4, "0")}`;
+  const year = new Date().getFullYear();
+  const lastNumbers = labRequests
+    .map((request) => Number(request.requestId.split("-").pop()))
+    .filter((value) => Number.isFinite(value));
+  const nextNumber = lastNumbers.length ? Math.max(...lastNumbers) + 1 : 1;
+  return `LR-${year}-${String(nextNumber).padStart(4, "0")}`;
 }
 
 function createRequestFromForm(status) {
@@ -452,6 +703,7 @@ function createRequestFromForm(status) {
   };
 
   labRequests.unshift(newRequest);
+  saveLabRequests();
   closeModal(newRequestModal);
   newRequestForm.reset();
   document.getElementById("requestingJmoInput").value = "Dr. A. Perera";
@@ -576,10 +828,16 @@ saveDraftButton.addEventListener("click", () => {
     return;
   }
 
-  createRequestFromForm("Pending");
+  createRequestFromForm("Draft");
 });
 
 exportButton.addEventListener("click", exportToCsv);
+
+document.getElementById("submitDraftButton").addEventListener("click", () => {
+  if (!selectedRequest) return;
+  submitDraft(selectedRequest.requestId);
+  closeModal(detailsModal);
+});
 
 document.getElementById("printRequestButton").addEventListener("click", () => {
   if (!selectedRequest) return;
@@ -610,4 +868,136 @@ document.addEventListener("keydown", (event) => {
   sidebar.classList.remove("open");
 });
 
+/* Notifications */
+function buildLabNotifications() {
+  const items = [];
+
+  labRequests.forEach((request) => {
+    if (request.status === "Draft") {
+      items.push({
+        requestId: request.requestId,
+        icon: "\u{1F4DD}",
+        tone: "warn",
+        title: `Draft ${request.requestId} has not been submitted`,
+        meta: `${request.caseId} \u00B7 ${request.testType}`
+      });
+    }
+
+    if (
+      ["Urgent", "Court Urgent", "Emergency"].includes(request.priority) &&
+      request.status !== "Completed" &&
+      request.status !== "Draft"
+    ) {
+      items.push({
+        requestId: request.requestId,
+        icon: "\u26A0\uFE0F",
+        tone: "danger",
+        title: `${request.priority}: ${request.requestId} is still ${request.status.toLowerCase()}`,
+        meta: `${request.caseId} \u00B7 ${request.testType}`
+      });
+    }
+
+    if (request.status === "Pending") {
+      items.push({
+        requestId: request.requestId,
+        icon: "\u{1F9EA}",
+        tone: "info",
+        title: `Sample awaited by laboratory for ${request.requestId}`,
+        meta: `${request.sampleType} \u00B7 ${request.caseId}`
+      });
+    }
+
+    if (request.status === "Awaiting Review") {
+      const verified = isLabVerified(request);
+      items.push({
+        requestId: request.requestId,
+        icon: verified ? "\u2696\uFE0F" : "\u{1F50E}",
+        tone: "warn",
+        title: verified
+          ? `${request.requestId} awaits JMO review`
+          : `${request.requestId} awaits laboratory verification`,
+        meta: `${request.caseId} \u00B7 ${request.testType}`
+      });
+    }
+  });
+
+  return items;
+}
+
+function renderNotifications() {
+  const badge = document.getElementById("notifyCount");
+  const list = document.getElementById("notifyList");
+  const headCount = document.getElementById("notifyHeadCount");
+  if (!badge || !list) return;
+
+  const items = buildLabNotifications();
+
+  badge.textContent = items.length > 9 ? "9+" : items.length;
+  badge.hidden = items.length === 0;
+  if (headCount) headCount.textContent = items.length ? `${items.length} new` : "";
+
+  list.innerHTML = items.length
+    ? items
+        .map(
+          (item) => `
+        <button type="button" class="notify-item ${item.tone}" data-notify-request="${item.requestId}">
+          <span class="notify-item-icon">${item.icon}</span>
+          <span class="notify-item-text"><strong>${item.title}</strong><small>${item.meta}</small></span>
+        </button>`
+        )
+        .join("")
+    : `<div class="notify-empty">You're all caught up.</div>`;
+}
+
+function bindNotificationEvents() {
+  const btn = document.getElementById("notifyBtn");
+  const dropdown = document.getElementById("notifyDropdown");
+  if (!btn || !dropdown) return;
+
+  btn.addEventListener("click", (event) => {
+    event.stopPropagation();
+    renderNotifications();
+    const willOpen = dropdown.hidden;
+    dropdown.hidden = !willOpen;
+    btn.setAttribute("aria-expanded", String(willOpen));
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".notify-wrap")) {
+      dropdown.hidden = true;
+      btn.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  dropdown.addEventListener("click", (event) => {
+    const item = event.target.closest("[data-notify-request]");
+    if (!item) return;
+    dropdown.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+    openRequestDetails(item.dataset.notifyRequest);
+  });
+}
+
+bindNotificationEvents();
+
+/* Pre-fill the new request form when arriving from Case Management */
+function prefillFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const caseId = params.get("caseId");
+  if (!caseId) return;
+
+  const setValue = (id, value) => {
+    if (value) document.getElementById(id).value = value;
+  };
+
+  setValue("caseIdInput", caseId);
+  setValue("caseTypeInput", params.get("caseType"));
+  setValue("personNameInput", params.get("personName"));
+  setValue("patientIdInput", params.get("patientId"));
+  setValue("referenceNumberInput", params.get("ref"));
+
+  showToast(`Case ${caseId} is ready. Press "New Lab Request" to continue.`);
+}
+
 renderTable();
+prefillFromUrl();
