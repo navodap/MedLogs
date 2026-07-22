@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedLogs - Documents &amp; Reports</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  <link rel="stylesheet" href="../css/DocumentsAndReports.css" />
+</head>
+<body>
+  <div class="app">
+
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>MedLogs</h1>
+        <p>Forensic Medico-Legal<br />Information Management</p>
+      </div>
+      <nav class="nav">
+        <a href="#" class="nav-item"><i class="ti ti-home"></i><span>Dashboard</span></a>
+        <a href="PatientManagement.html" class="nav-item"><i class="ti ti-user"></i><span>Patient Management</span></a>
+        <a href="CaseManagement.html" class="nav-item"><i class="ti ti-briefcase"></i><span>Case Management</span></a>
+        <a href="ExaminationForms.html" class="nav-item"><i class="ti ti-list-details"></i><span>Examination Forms</span></a>
+        <a href="EvidenceSamples.html" class="nav-item"><i class="ti ti-flask"></i><span>Evidence &amp; Samples</span></a>
+        <a href="LabTest_Toxicology.html" class="nav-item"><i class="ti ti-microscope"></i><span>Lab / Toxicology</span></a>
+        <a href="PoliceCourt.html" class="nav-item"><i class="ti ti-gavel"></i><span>Police &amp; Court</span></a>
+        <a href="DocumentsAndReports.html" class="nav-item active"><i class="ti ti-files"></i><span>Documents & Reports</span></a>
+        <a href="Settings.html" class="nav-item"><i class="ti ti-settings"></i><span>Settings</span></a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="lock-badge"><i class="ti ti-lock"></i></div>
+        <p class="footer-title">Secure. Accurate. Accountable.</p>
+        <p class="footer-sub">Trusted Forensic Care. Reliable Medico-Legal Records.</p>
+      </div>
+    </aside>
+
+    <!-- ================= MAIN ================= -->
+    <main class="main">
+
+      <header class="page-header">
+        <div>
+          <h2>Documents &amp; Reports</h2>
+          <p class="subtitle">Upload, view and manage case documents. Generate and approve medico-legal reports.</p>
+        </div>
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-tab="documents" role="tab"><i class="ti ti-files"></i> Documents</button>
+          <button class="tab" data-tab="reports" role="tab"><i class="ti ti-file-text"></i> Reports</button>
+        </div>
+      </header>
+
+      <!-- ================= DOCUMENTS TAB ================= -->
+      <section id="tab-documents" class="tab-panel active">
+
+        <div class="grid-2">
+          <!-- Upload card -->
+          <div class="card">
+            <h3><i class="ti ti-upload"></i> Upload Document</h3>
+
+            <div class="wizard" id="uploadWizard">
+
+              <!-- STEP 1 : Select Files -->
+              <section class="wstep open" data-step="1">
+                <header class="wstep-head">
+                  <span class="wstep-num">1</span>
+                  <div class="wstep-title">
+                    <h4>Select Files</h4>
+                    <p class="wstep-sub" id="sumStep1">No files selected yet</p>
+                  </div>
+                  <i class="ti ti-chevron-down wstep-chev"></i>
+                </header>
+                <div class="wstep-body">
+                  <div class="dropzone" id="dropzone">
+                    <i class="ti ti-cloud-upload"></i>
+                    <p>Drag &amp; drop files here or <label for="fileInput" class="browse">browse</label></p>
+                    <span class="hint">PDF, JPEG, PNG, TIFF &mdash; max 25 MB per file</span>
+                    <input type="file" id="fileInput" multiple hidden accept=".pdf,.jpg,.jpeg,.png,.tif,.tiff" />
+                  </div>
+                  <ul class="file-list" id="fileList"></ul>
+                  <div class="wstep-actions">
+                    <button type="button" class="btn primary" data-goto="2">Continue <i class="ti ti-arrow-right"></i></button>
+                  </div>
+                </div>
+              </section>
+
+              <!-- STEP 2 : Link to Case -->
+              <section class="wstep" data-step="2">
+                <header class="wstep-head">
+                  <span class="wstep-num">2</span>
+                  <div class="wstep-title">
+                    <h4>Link to Case</h4>
+                    <p class="wstep-sub" id="sumStep2">No case selected</p>
+                  </div>
+                  <i class="ti ti-chevron-down wstep-chev"></i>
+                </header>
+                <div class="wstep-body">
+                  <div class="form-grid">
+                    <div class="field">
+                      <label>Case ID <span class="req">*</span></label>
+                      <input type="text" id="docCaseId" placeholder="e.g. PM-2026-0142" />
+                    </div>
+                  </div>
+                  <p class="hint" id="caseIdHint">The Case ID is filled automatically when this page is opened from Case Management.</p>
+
+                  <div class="wstep-actions">
+                    <button type="button" class="btn" data-goto="1"><i class="ti ti-arrow-left"></i> Back</button>
+                    <button type="button" class="btn primary" data-goto="3">Continue <i class="ti ti-arrow-right"></i></button>
+                  </div>
+                </div>
+              </section>
+
+              <!-- STEP 3 : Document Information -->
+              <section class="wstep" data-step="3">
+                <header class="wstep-head">
+                  <span class="wstep-num">3</span>
+                  <div class="wstep-title">
+                    <h4>Document Information</h4>
+                    <p class="wstep-sub" id="sumStep3">Title, type and source</p>
+                  </div>
+                  <i class="ti ti-chevron-down wstep-chev"></i>
+                </header>
+                <div class="wstep-body">
+                  <div class="form-grid">
+                    <div class="field">
+                      <label>Document Title <span class="req">*</span></label>
+                      <input type="text" id="docTitle" placeholder="e.g. Toxicology report - blood alcohol" />
+                    </div>
+                    <div class="field">
+                      <label>Document Type <span class="req">*</span></label>
+                      <select id="docType">
+                        <option value="">Select type&hellip;</option>
+                        <option>Scanned MLEF</option>
+                        <option>Lab / Toxicology Report</option>
+                        <option>Histopathology Report</option>
+                        <option>X-ray / CT Scan</option>
+                        <option>Photograph - Injury</option>
+                        <option>Photograph - Postmortem</option>
+                        <option>Photograph - Scene</option>
+                        <option>Court Document</option>
+                        <option>Certificate of Receipt</option>
+                        <option>Historical Scanned Report</option>
+                        <option>Other</option>
+                      </select>
+                    </div>
+                    <div class="field span-2">
+                      <label>Description</label>
+                      <input type="text" id="docDesc" placeholder="What does this document/photo depict?" />
+                    </div>
+                    <div class="field">
+                      <label>Date Created / Taken / Received</label>
+                      <input type="date" id="docDate" />
+                    </div>
+                    <div class="field">
+                      <label>Source of Document</label>
+                      <select id="docSource">
+                        <option value="">Select source&hellip;</option>
+                        <option>Internal - Forensic Unit</option>
+                        <option>Hospital / Ward</option>
+                        <option>Police</option>
+                        <option>Court</option>
+                        <option>Laboratory</option>
+                        <option>External / Other</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label>Reference Number</label>
+                      <input type="text" id="docRef" placeholder="e.g. TOX/2026/0871" />
+                    </div>
+                    <div class="field">
+                      <label>Issued By</label>
+                      <input type="text" id="docIssuedBy" placeholder="Person or authority" />
+                    </div>
+                    <div class="field span-2">
+                      <label>Department / Institution</label>
+                      <input type="text" id="docDept" placeholder="e.g. Government Analyst's Department" />
+                    </div>
+                  </div>
+
+                  <!-- Conditional: Photographs -->
+                  <div class="cond-group" id="grp-photo" hidden>
+                    <h5><i class="ti ti-camera"></i> Photograph Details</h5>
+                    <div class="form-grid">
+                      <div class="field"><label>Photographer Name</label><input type="text" id="photoBy" /></div>
+                      <div class="field"><label>Date &amp; Time Taken</label><input type="datetime-local" id="photoTakenAt" /></div>
+                      <div class="field">
+                        <label>Photograph Category</label>
+                        <select id="photoCategory">
+                          <option value="">Select&hellip;</option>
+                          <option>Injury</option><option>Postmortem</option><option>Scene</option>
+                          <option>Evidence</option><option>Other</option>
+                        </select>
+                      </div>
+                      <div class="field"><label>Location / Body Region</label><input type="text" id="photoRegion" placeholder="e.g. Left forearm" /></div>
+                      <div class="field"><label>Photograph Number</label><input type="text" id="photoNumber" placeholder="e.g. PH-04" /></div>
+                      <div class="field check-field"><label class="check"><input type="checkbox" id="photoSensitive" /> Sensitive image (graphic content)</label></div>
+                    </div>
+                  </div>
+
+                  <!-- Conditional: Laboratory reports -->
+                  <div class="cond-group" id="grp-lab" hidden>
+                    <h5><i class="ti ti-microscope"></i> Laboratory Report Details</h5>
+                    <div class="form-grid">
+                      <div class="field"><label>Laboratory Name</label><input type="text" id="labName" /></div>
+                      <div class="field"><label>Sample ID</label><input type="text" id="labSampleId" placeholder="e.g. S-0142-TOX-01" /></div>
+                      <div class="field"><label>Test Request ID</label><input type="text" id="labRequestId" /></div>
+                      <div class="field"><label>Test Type</label><input type="text" id="labTestType" placeholder="e.g. Blood alcohol" /></div>
+                      <div class="field"><label>Date Sample Collected</label><input type="date" id="labCollected" /></div>
+                      <div class="field"><label>Date Report Issued</label><input type="date" id="labIssued" /></div>
+                      <div class="field"><label>Laboratory Officer</label><input type="text" id="labOfficer" /></div>
+                      <div class="field">
+                        <label>Result Status</label>
+                        <select id="labResultStatus">
+                          <option value="">Select&hellip;</option>
+                          <option>Pending</option><option>Preliminary</option><option>Final</option><option>Amended</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Conditional: Court / police documents -->
+                  <div class="cond-group" id="grp-court" hidden>
+                    <h5><i class="ti ti-gavel"></i> Court / Police Document Details</h5>
+                    <div class="form-grid">
+                      <div class="field"><label>Police Station / Court Name</label><input type="text" id="cpOffice" /></div>
+                      <div class="field"><label>Police Reference Number</label><input type="text" id="cpPoliceRef" placeholder="e.g. CIB 123/2026" /></div>
+                      <div class="field"><label>Court Case Number</label><input type="text" id="cpCourtCase" /></div>
+                      <div class="field"><label>Inquest Number</label><input type="text" id="cpInquest" /></div>
+                      <div class="field"><label>Issuing Officer</label><input type="text" id="cpIssuedBy" /></div>
+                      <div class="field"><label>Date Issued</label><input type="date" id="cpDateIssued" /></div>
+                      <div class="field"><label>Date Received</label><input type="date" id="cpDateReceived" /></div>
+                    </div>
+                  </div>
+
+                  <!-- Conditional: Scanned historical documents -->
+                  <div class="cond-group" id="grp-hist" hidden>
+                    <h5><i class="ti ti-archive"></i> Scanned Historical Document Details</h5>
+                    <div class="form-grid">
+                      <div class="field"><label>Original Document Date</label><input type="date" id="histOriginalDate" /></div>
+                      <div class="field"><label>Scanned By</label><input type="text" id="histScannedBy" /></div>
+                      <div class="field"><label>Scanning Date</label><input type="date" id="histScanDate" /></div>
+                      <div class="field"><label>Physical File Location</label><input type="text" id="histLocation" placeholder="e.g. Archive room B, shelf 12" /></div>
+                      <div class="field check-field"><label class="check"><input type="checkbox" id="histOcr" /> OCR completed</label></div>
+                      <div class="field check-field"><label class="check"><input type="checkbox" id="histRetained" checked /> Original physical copy retained</label></div>
+                    </div>
+                  </div>
+
+                  <div class="wstep-actions">
+                    <button type="button" class="btn" data-goto="2"><i class="ti ti-arrow-left"></i> Back</button>
+                    <button type="button" class="btn primary" data-goto="4">Continue <i class="ti ti-arrow-right"></i></button>
+                  </div>
+                </div>
+              </section>
+
+              <!-- STEP 4 : Security & Version -->
+              <section class="wstep" data-step="4">
+                <header class="wstep-head">
+                  <span class="wstep-num">4</span>
+                  <div class="wstep-title">
+                    <h4>Security &amp; Version</h4>
+                    <p class="wstep-sub" id="sumStep4">Access level, sensitivity and versioning</p>
+                  </div>
+                  <i class="ti ti-chevron-down wstep-chev"></i>
+                </header>
+                <div class="wstep-body">
+                  <div class="form-grid">
+                    <div class="field">
+                      <label>Document Status <span class="req">*</span></label>
+                      <select id="docStatus">
+                        <option>Original</option><option>Draft</option><option>Final</option>
+                        <option>Amended</option><option>Certified Copy</option><option>Scanned Copy</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label>Access Level</label>
+                      <select id="docAccess">
+                        <option>Normal authorized staff</option>
+                        <option>Assigned case team only</option>
+                        <option>JMO and supervising consultant only</option>
+                        <option>Laboratory staff only</option>
+                        <option>Court submission access</option>
+                        <option>Highly restricted</option>
+                      </select>
+                    </div>
+                    <div class="field span-2" id="restrictReasonField" hidden>
+                      <label>Reason for Restriction <span class="req">*</span></label>
+                      <input type="text" id="docRestrictReason" placeholder="Why is access restricted?" />
+                    </div>
+                  </div>
+
+                  <div class="check-row">
+                    <label class="check"><input type="checkbox" id="flagSensitive" /> Sensitive case</label>
+                    <label class="check"><input type="checkbox" id="flagMinor" /> Minor involved</label>
+                    <label class="check"><input type="checkbox" id="flagAssault" /> Sexual assault-related</label>
+                    <label class="check"><input type="checkbox" id="flagPolice" /> Police-access permission</label>
+                  </div>
+
+                  <div class="version-box">
+                    <label class="check"><input type="radio" name="verMode" id="verNew" checked /> Upload as a new document</label>
+                    <label class="check"><input type="radio" name="verMode" id="verVersion" /> Upload as a new version of an existing document</label>
+                    <div class="form-grid" id="verFields" hidden>
+                      <div class="field span-2">
+                        <label>Previous Document / Version <span class="req">*</span></label>
+                        <select id="prevDoc"><option value="">Select the document this replaces&hellip;</option></select>
+                        <p class="hint" id="verAutoNote" hidden></p>
+                      </div>
+                      <div class="field"><label>Reason for Replacement / Amendment</label><input type="text" id="verReason" /></div>
+                      <div class="field"><label>Version Notes</label><input type="text" id="verNotes" /></div>
+                    </div>
+                    <p class="hint">Version numbers are generated automatically. Previous versions are kept for audit and are never overwritten.</p>
+                  </div>
+
+                  <div class="wstep-actions">
+                    <button type="button" class="btn" data-goto="3"><i class="ti ti-arrow-left"></i> Back</button>
+                    <button type="button" class="btn primary" data-goto="5">Review <i class="ti ti-arrow-right"></i></button>
+                  </div>
+                </div>
+              </section>
+
+              <!-- STEP 5 : Review & Upload -->
+              <section class="wstep" data-step="5">
+                <header class="wstep-head">
+                  <span class="wstep-num">5</span>
+                  <div class="wstep-title">
+                    <h4>Review &amp; Upload</h4>
+                    <p class="wstep-sub">Check the summary before saving</p>
+                  </div>
+                  <i class="ti ti-chevron-down wstep-chev"></i>
+                </header>
+                <div class="wstep-body">
+                  <div class="review" id="reviewSummary"></div>
+                  <p class="hint">Generated automatically on save: File ID, upload date &amp; time, uploader ID, file size &amp; format, storage location, version number, generated file name, active status and audit-log entry.</p>
+                  <div class="wstep-actions">
+                    <button type="button" class="btn" data-goto="4"><i class="ti ti-arrow-left"></i> Back</button>
+                    <button type="button" class="btn primary" id="btnUpload"><i class="ti ti-upload"></i> Upload &amp; Save</button>
+                  </div>
+                </div>
+              </section>
+
+            </div>
+          </div>
+
+          <!-- Viewer card -->
+          <div class="card">
+            <div class="card-head">
+              <h3><i class="ti ti-eye"></i> Document Viewer</h3>
+              <button class="btn ghost" id="btnDownloadDoc" disabled><i class="ti ti-download"></i> Download</button>
+            </div>
+            <div class="viewer" id="viewer">
+              <div class="viewer-empty" id="viewerEmpty">
+                <i class="ti ti-file-search"></i>
+                <p>Select a document from the list below to preview it</p>
+              </div>
+              <img id="viewerImg" alt="Document preview" hidden />
+              <iframe id="viewerPdf" title="PDF preview" hidden></iframe>
+            </div>
+            <div class="viewer-meta" id="viewerMeta" hidden>
+              <span id="metaName"></span>
+              <span id="metaInfo"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Document list card -->
+        <div class="card">
+          <div class="card-head">
+            <h3><i class="ti ti-folder"></i> Case Documents</h3>
+            <div class="filters">
+              <input type="text" id="docSearch" placeholder="Search by case no, file name…" />
+              <select id="docFilterType">
+                <option value="">All types</option>
+                <option>Scanned MLEF</option>
+                <option>Lab / Toxicology Report</option>
+                <option>Histopathology Report</option>
+                <option>X-ray / CT Scan</option>
+                <option>Photograph - Injury</option>
+                <option>Photograph - Postmortem</option>
+                <option>Photograph - Scene</option>
+                <option>Court Document</option>
+                <option>Certificate of Receipt</option>
+                <option>Historical Scanned Report</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <table class="table" id="docTable">
+            <thead>
+              <tr>
+                <th>File Name</th>
+                <th>Case ID</th>
+                <th>Type</th>
+                <th>Uploaded</th>
+                <th>By</th>
+                <th>Ver.</th>
+                <th>Access</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="docTableBody"></tbody>
+          </table>
+          <p class="empty-msg" id="docEmpty" hidden>No documents match your search.</p>
+        </div>
+      </section>
+
+      <!-- ================= REPORTS TAB ================= -->
+      <section id="tab-reports" class="tab-panel">
+
+        <!-- Report generation wizard -->
+        <div class="card">
+          <div class="card-head">
+            <h3><i class="ti ti-file-plus"></i> Report Generation</h3>
+            <div class="filters">
+              <select id="actingRole" title="Acting role (prototype for role-based access)">
+                <option>Consultant JMO</option>
+                <option>Doctor / MOML</option>
+                <option>Assistant JMO</option>
+                <option>Clerk</option>
+                <option>Lab Staff</option>
+                <option>Administrator</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="wizard" id="reportWizard">
+
+            <!-- STEP 1 : Select Case -->
+            <section class="wstep open" data-step="1">
+              <header class="wstep-head">
+                <span class="wstep-num">1</span>
+                <div class="wstep-title">
+                  <h4>Select Case</h4>
+                  <p class="wstep-sub" id="rsum1">No case selected</p>
+                </div>
+                <i class="ti ti-chevron-down wstep-chev"></i>
+              </header>
+              <div class="wstep-body">
+                <div class="field">
+                  <label>Search Case <span class="req">*</span></label>
+                  <div class="case-select" id="repCaseSelect">
+                    <input type="text" id="repCaseSearch" placeholder="Case ID, patient / deceased name, MLEF no, PM registry no, police ref, court case no&hellip;" autocomplete="off" />
+                    <div class="case-options" id="repCaseOptions" hidden></div>
+                  </div>
+                </div>
+                <div class="case-chip" id="repCaseChip" hidden>
+                  <i class="ti ti-briefcase"></i>
+                  <div>
+                    <strong id="repChipCase"></strong>
+                    <span id="repChipMeta"></span>
+                  </div>
+                  <button type="button" class="btn icon" id="repChipClear" title="Change case"><i class="ti ti-x"></i></button>
+                </div>
+                <div class="wstep-actions">
+                  <button type="button" class="btn primary" data-rgoto="2">Continue <i class="ti ti-arrow-right"></i></button>
+                </div>
+              </div>
+            </section>
+
+            <!-- STEP 2 : Check Case Data -->
+            <section class="wstep" data-step="2">
+              <header class="wstep-head">
+                <span class="wstep-num">2</span>
+                <div class="wstep-title">
+                  <h4>Check Case Data</h4>
+                  <p class="wstep-sub" id="rsum2">Stored patient, examination, laboratory, police and court details</p>
+                </div>
+                <i class="ti ti-chevron-down wstep-chev"></i>
+              </header>
+              <div class="wstep-body">
+                <div class="review" id="caseDataView"></div>
+                <p class="hint">Corrections must be made in the case, examination or laboratory records &mdash; not inside the report &mdash; then regenerate the draft.</p>
+                <div class="wstep-actions">
+                  <button type="button" class="btn" data-rgoto="1"><i class="ti ti-arrow-left"></i> Back</button>
+                  <button type="button" class="btn primary" data-rgoto="3">Continue <i class="ti ti-arrow-right"></i></button>
+                </div>
+              </div>
+            </section>
+
+            <!-- STEP 3 : Select Report -->
+            <section class="wstep" data-step="3">
+              <header class="wstep-head">
+                <span class="wstep-num">3</span>
+                <div class="wstep-title">
+                  <h4>Select Report</h4>
+                  <p class="wstep-sub" id="rsum3">Report types available for this case</p>
+                </div>
+                <i class="ti ti-chevron-down wstep-chev"></i>
+              </header>
+              <div class="wstep-body">
+                <div class="form-grid">
+                  <div class="field">
+                    <label>Report Type <span class="req">*</span></label>
+                    <select id="repTypeSel"></select>
+                  </div>
+                </div>
+                <div class="req-check" id="reqCheck" hidden></div>
+                <div class="wstep-actions">
+                  <button type="button" class="btn" data-rgoto="2"><i class="ti ti-arrow-left"></i> Back</button>
+                  <button type="button" class="btn primary" id="btnValidateGenerate"><i class="ti ti-bolt"></i> Validate &amp; Generate Draft</button>
+                </div>
+              </div>
+            </section>
+
+            <!-- STEP 4 : Preview and Review -->
+            <section class="wstep" data-step="4">
+              <header class="wstep-head">
+                <span class="wstep-num">4</span>
+                <div class="wstep-title">
+                  <h4>Preview and Review</h4>
+                  <p class="wstep-sub" id="rsum4">No draft generated yet</p>
+                </div>
+                <i class="ti ti-chevron-down wstep-chev"></i>
+              </header>
+              <div class="wstep-body">
+                <iframe id="reportPreview" class="report-preview" title="Report preview"></iframe>
+                <div class="wstep-actions">
+                  <button type="button" class="btn" data-rgoto="3"><i class="ti ti-arrow-left"></i> Back</button>
+                  <button type="button" class="btn" id="btnRegen"><i class="ti ti-refresh"></i> Regenerate</button>
+                  <button type="button" class="btn" id="btnOpenPrint"><i class="ti ti-printer"></i> Print View</button>
+                  <button type="button" class="btn primary" id="btnSubmitApproval"><i class="ti ti-send"></i> Submit for Approval</button>
+                </div>
+              </div>
+            </section>
+
+            <!-- STEP 5 : Approve and Submit -->
+            <section class="wstep" data-step="5">
+              <header class="wstep-head">
+                <span class="wstep-num">5</span>
+                <div class="wstep-title">
+                  <h4>Approve and Submit</h4>
+                  <p class="wstep-sub" id="rsum5">Approve, sign, export, print and record submission</p>
+                </div>
+                <i class="ti ti-chevron-down wstep-chev"></i>
+              </header>
+              <div class="wstep-body">
+                <div id="approvalPanel"></div>
+              </div>
+            </section>
+
+          </div>
+        </div>
+
+        <!-- Report list card -->
+        <div class="card">
+          <div class="card-head">
+            <h3><i class="ti ti-clipboard-check"></i> Reports Register</h3>
+            <div class="filters">
+              <input type="text" id="repSearch" placeholder="Report no, case no, name, type&hellip;" />
+              <select id="repFilterStatus">
+                <option value="">All statuses</option>
+                <option>Draft</option>
+                <option>Pending Approval</option>
+                <option>Approved</option>
+                <option>Rejected</option>
+                <option>Submitted</option>
+                <option>Amended</option>
+                <option>Cancelled</option>
+              </select>
+            </div>
+          </div>
+          <table class="table" id="repTable">
+            <thead>
+              <tr>
+                <th>Report No</th>
+                <th>Case ID</th>
+                <th>Type</th>
+                <th>Ver.</th>
+                <th>Created By</th>
+                <th>Approved By</th>
+                <th>Generated</th>
+                <th>Approved</th>
+                <th>Submitted</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="repTableBody"></tbody>
+          </table>
+          <p class="empty-msg" id="repEmpty" hidden>No reports match your search.</p>
+        </div>
+      </section>
+
+      <div class="toast" id="toast" hidden></div>
+    </main>
+  </div>
+
+  <script src="../Js/DocumentsAndReports.js"></script>
+</body>
+</html>
