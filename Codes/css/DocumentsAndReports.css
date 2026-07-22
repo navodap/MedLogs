@@ -216,3 +216,118 @@ body { font-family: "Segoe UI", Arial, sans-serif; background: var(--bg); color:
   .form-grid { grid-template-columns: 1fr; }
   .span-2 { grid-column: span 1; }
 }
+
+/* ============ Upload wizard ============ */
+.wizard { display: flex; flex-direction: column; gap: 10px; }
+
+.wstep {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: #fbfcfe; overflow: hidden;
+}
+.wstep-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; cursor: pointer; user-select: none;
+}
+.wstep-head:hover { background: var(--blue-bg); }
+.wstep-num {
+  width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%;
+  background: var(--gray-bg); color: var(--text-2);
+  font-size: 12.5px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.wstep.open .wstep-num { background: var(--blue); color: #fff; }
+.wstep-title { flex: 1; min-width: 0; }
+.wstep-title h4 { font-size: 13.5px; color: var(--text); }
+.wstep-sub { font-size: 11.5px; color: var(--text-3); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wstep-chev { color: var(--text-3); transition: transform 0.2s; }
+.wstep.open .wstep-chev { transform: rotate(180deg); }
+.wstep-body { display: none; padding: 4px 14px 16px; border-top: 1px solid var(--border); background: var(--card); }
+.wstep.open .wstep-body { display: block; padding-top: 14px; }
+.wstep-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+
+/* ---- Step 1: file list ---- */
+.file-list { list-style: none; margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.file-item {
+  display: flex; align-items: center; gap: 12px;
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; background: #fbfcfe;
+}
+.fthumb {
+  width: 42px; height: 42px; flex-shrink: 0; border-radius: 6px; object-fit: cover;
+  border: 1px solid var(--border); background: var(--blue-bg);
+}
+.ficon { display: flex; align-items: center; justify-content: center; }
+.ficon i { font-size: 20px; color: var(--blue); }
+.fmeta { flex: 1; min-width: 0; }
+.fmeta strong { display: block; font-size: 12.5px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fmeta span { font-size: 11.5px; color: var(--text-3); }
+.fprog { height: 4px; border-radius: 3px; background: var(--gray-bg); margin-top: 6px; overflow: hidden; display: none; }
+.fprog-bar { height: 100%; width: 0; background: var(--blue); border-radius: 3px; transition: width 0.15s; }
+.file-list.uploading .fprog { display: block; }
+.file-list.uploading .fremove { visibility: hidden; }
+
+/* ---- Step 3: conditional groups ---- */
+.cond-group {
+  margin-top: 14px; padding: 14px; border-radius: 8px;
+  border: 1px solid var(--border); border-left: 3px solid var(--blue);
+  background: #fbfcfe;
+}
+.cond-group h5 {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--text-2); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 7px;
+}
+.cond-group h5 i { color: var(--blue); font-size: 15px; }
+
+/* ---- Step 4: flags & versioning ---- */
+.check { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-2); font-weight: 600; cursor: pointer; }
+.check input { accent-color: var(--blue); width: 15px; height: 15px; }
+.check-field { display: flex; align-items: flex-end; padding-bottom: 8px; }
+.check-row { display: flex; gap: 20px; flex-wrap: wrap; margin: 14px 2px 0; }
+.version-box {
+  margin-top: 14px; padding: 14px; border-radius: 8px;
+  border: 1px dashed #c3cde3; background: #fbfcfe;
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+/* ---- Step 5: review ---- */
+.review { display: flex; flex-direction: column; gap: 12px; }
+.rev-section { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; background: #fbfcfe; }
+.rev-section h5 {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--text-3); margin-bottom: 8px;
+}
+.rev-row { display: flex; gap: 12px; font-size: 12.5px; padding: 3px 0; }
+.rev-row span { flex-shrink: 0; width: 170px; color: var(--text-2); }
+.rev-row strong { color: var(--text); font-weight: 600; word-break: break-word; }
+.rev-row em { color: var(--text-3); font-style: normal; }
+
+/* ---- superseded version badge ---- */
+.badge.superseded { background: var(--gray-bg); color: var(--gray); font-size: 10.5px; padding: 2px 8px; }
+
+@media (max-width: 700px) {
+  .rev-row { flex-direction: column; gap: 2px; }
+  .rev-row span { width: auto; }
+}
+
+/* ============ Report generation wizard ============ */
+.report-preview {
+  width: 100%; height: 480px; border: 1px solid var(--border);
+  border-radius: var(--radius); background: #fff;
+}
+.req-check {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; border-radius: 8px; padding: 12px 14px; margin-top: 12px;
+}
+.req-check i { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+.req-check.err { background: var(--red-bg); color: var(--red); border: 1px solid #f3c6c6; }
+.req-check.ok { background: var(--green-bg); color: var(--green); border: 1px solid #bfe6d0; }
+.approval-box {
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px; margin-top: 12px; background: #fbfcfe;
+}
+.approval-box h5 {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--text-3); margin-bottom: 10px;
+}
+.badge.rejected { background: var(--red-bg); color: var(--red); }
+.badge.cancelled { background: var(--gray-bg); color: var(--gray); }
