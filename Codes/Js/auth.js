@@ -1,340 +1,799 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Render Lucide icons
+
+    // Load icons
     lucide.createIcons();
+
+
 
     const loginForm = document.getElementById("loginForm");
 
     const usernameInput = document.getElementById("username");
     const passwordInput = document.getElementById("password");
+
     const rememberMeInput = document.getElementById("rememberMe");
 
     const passwordToggle = document.getElementById("passwordToggle");
+
     const forgotPassword = document.getElementById("forgotPassword");
+
     const loginButton = document.getElementById("loginButton");
 
-    const usernameError = document.getElementById("usernameError");
-    const passwordError = document.getElementById("passwordError");
-    const formStatus = document.getElementById("formStatus");
+
+    const usernameError =
+        document.getElementById("usernameError");
+
+    const passwordError =
+        document.getElementById("passwordError");
 
 
-    /* =============================
-       LOAD REMEMBERED LOGIN DETAILS
-    ============================= */
+    const formStatus =
+        document.getElementById("formStatus");
 
-    const savedUsername = localStorage.getItem("forensicUsername");
 
-    if (savedUsername) {
+
+
+
+    /*
+    =====================================
+        LOAD REMEMBERED USER
+    =====================================
+    */
+
+
+    const savedUsername =
+        localStorage.getItem("forensicUsername");
+
+
+    if(savedUsername){
+
         usernameInput.value = savedUsername;
+
         rememberMeInput.checked = true;
+
     }
 
-    /* =============================
-       PASSWORD VISIBILITY
-    ============================= */
-
-    passwordToggle.addEventListener("click", () => {
-
-        const passwordIsVisible =
-            passwordInput.type === "text";
-
-        passwordInput.type =
-            passwordIsVisible ? "password" : "text";
-
-        passwordToggle.innerHTML = passwordIsVisible
-            ? '<i data-lucide="eye"></i>'
-            : '<i data-lucide="eye-off"></i>';
-
-        passwordToggle.setAttribute(
-            "aria-label",
-            passwordIsVisible
-                ? "Show password"
-                : "Hide password"
-        );
-
-        lucide.createIcons();
-
-    });
 
 
-    /* =============================
-       CLEAR ERRORS WHILE TYPING
-    ============================= */
-
-    usernameInput.addEventListener("input", () => {
-        clearInputError(usernameInput, usernameError);
-    });
-
-    passwordInput.addEventListener("input", () => {
-        clearInputError(passwordInput, passwordError);
-    });
 
 
-    /* =============================
-       FORGOT PASSWORD
-    ============================= */
 
-    forgotPassword.addEventListener("click", (event) => {
-        event.preventDefault();
 
-        showStatus(
+    /*
+    =====================================
+        SHOW / HIDE PASSWORD
+    =====================================
+    */
+
+
+    passwordToggle.addEventListener(
+        "click",
+        ()=>{
+
+
+            if(passwordInput.type === "password"){
+
+
+                passwordInput.type="text";
+
+
+                passwordToggle.innerHTML =
+                '<i data-lucide="eye-off"></i>';
+
+
+            }
+
+            else{
+
+
+                passwordInput.type="password";
+
+
+                passwordToggle.innerHTML =
+                '<i data-lucide="eye"></i>';
+
+            }
+
+
+
+            lucide.createIcons();
+
+
+        }
+    );
+
+
+
+
+
+
+
+
+
+    /*
+    =====================================
+        CLEAR ERRORS
+    =====================================
+    */
+
+
+    usernameInput.addEventListener(
+        "input",
+        ()=>{
+
+            clearInputError(
+                usernameInput,
+                usernameError
+            );
+
+        }
+    );
+
+
+
+    passwordInput.addEventListener(
+        "input",
+        ()=>{
+
+            clearInputError(
+                passwordInput,
+                passwordError
+            );
+
+        }
+    );
+
+
+
+
+
+
+
+
+    /*
+    =====================================
+        FORGOT PASSWORD
+    =====================================
+    */
+
+
+    forgotPassword.addEventListener(
+        "click",
+        (event)=>{
+
+
+            event.preventDefault();
+
+
+            showStatus(
             "Please contact the system administrator to reset your password.",
             "success"
-        );
-    });
+            );
 
 
-    /* =============================
-       FORM SUBMISSION
-    ============================= */
+        }
+    );
 
-    loginForm.addEventListener("submit", async (event) => {
+
+
+
+
+
+
+
+
+    /*
+    =====================================
+        LOGIN
+    =====================================
+    */
+
+
+    loginForm.addEventListener(
+        "submit",
+        async(event)=>{
+
 
         event.preventDefault();
 
+
+
         clearAllErrors();
+
         hideStatus();
 
-        const username = usernameInput.value.trim();
-        const password = passwordInput.value;
-        const rememberMe = rememberMeInput.checked;
 
-        let isValid = true;
+
+
+
+        const username =
+        usernameInput.value.trim();
+
+
+
+        const password =
+        passwordInput.value;
+
+
+
+        const rememberMe =
+        rememberMeInput.checked;
+
+
+
+
+
+        let valid=true;
+
+
+
+
+
 
 
         // Username validation
-        if (!username) {
+
+        if(!username){
+
+
             showInputError(
                 usernameInput,
                 usernameError,
                 "Username is required."
             );
 
-            isValid = false;
-        } else if (username.length < 3) {
-            showInputError(
-                usernameInput,
-                usernameError,
-                "Username must contain at least 3 characters."
-            );
 
-            isValid = false;
+            valid=false;
+
+
         }
 
 
+
+
+
+
         // Password validation
-        if (!password) {
+
+        if(!password){
+
+
             showInputError(
                 passwordInput,
                 passwordError,
                 "Password is required."
             );
 
-            isValid = false;
-        } else if (password.length < 6) {
-            showInputError(
-                passwordInput,
-                passwordError,
-                "Password must contain at least 6 characters."
-            );
 
-            isValid = false;
+            valid=false;
+
+
         }
 
 
-        // Role validation
-        if (!isValid) {
+
+
+
+
+        if(!valid){
+
+
             showStatus(
-                "Please correct the highlighted fields.",
-                "error"
+            "Please correct the highlighted fields.",
+            "error"
             );
+
 
             return;
+
+
         }
 
 
-        // Save login details when Remember Me is selected
-        if (rememberMe) {
-            localStorage.setItem("forensicUsername", username);
-        } else {
-            localStorage.removeItem("forensicUsername");
+
+
+
+
+        if(rememberMe){
+
+
+            localStorage.setItem(
+                "forensicUsername",
+                username
+            );
+
+
         }
+
+        else{
+
+
+            localStorage.removeItem(
+                "forensicUsername"
+            );
+
+
+        }
+
+
+
+
+
+
 
         setLoadingState(true);
 
-        try {
-
-            /*
-             * Replace this simulated request with your backend API.
-             *
-             * Example:
-             *
-             * const response = await fetch(
-             *     "http://localhost:5000/api/auth/login",
-             *     {
-             *         method: "POST",
-             *         headers: {
-             *             "Content-Type": "application/json"
-             *         },
-             *         body: JSON.stringify({
-             *             username,
-             *             password,
-             *             role
-             *         })
-             *     }
-             * );
-             *
-             * const result = await response.json();
-             *
-             * if (!response.ok) {
-             *     throw new Error(
-             *         result.message || "Login failed."
-             *     );
-             * }
-             *
-             * localStorage.setItem("token", result.token);
-             * window.location.href = result.redirectUrl;
-             */
 
 
-           // Simulated server delay
-await new Promise((resolve) => {
-   // Redirect based on user role
-
-setTimeout(() => {
-
-    switch(user.role){
-
-        case "ADMIN":
-
-            window.location.href = "AdminDashboard.html";
-            break;
 
 
-        case "JMO":
-
-            window.location.href = "JMODashboard.html";
-            break;
 
 
-        case "ASSISTANT_JMO":
-
-            window.location.href = "AssistantJMODashboard.html";
-            break;
+        try{
 
 
-        case "DOCTOR":
 
-            window.location.href = "DoctorDashboard.html";
-            break;
+            // fake loading delay
 
-
-        case "LAB":
-
-            window.location.href = "LabDashboard.html";
-            break;
-
-
-        case "CLERK":
-
-            window.location.href = "ClerkDashboard.html";
-            break;
-
-
-        default:
-
-            alert("No dashboard assigned for this role.");
-
-    }
-
-
-},1000);
-            /*
-             * Example redirects based on role:
-             *
-             * const redirectPages = {
-             *     "Consultant JMO": "jmo-dashboard.html",
-             *     "Clerk": "clerk-dashboard.html",
-             *     "Lab Staff": "lab-dashboard.html",
-             *     "Police Officer": "police-dashboard.html",
-             *     "Admin": "admin-dashboard.html"
-             * };
-             *
-             * window.location.href = redirectPages[role];
-             */
-
-        } catch (error) {
-
-            showStatus(
-                error.message ||
-                "Unable to sign in. Please try again.",
-                "error"
+            await new Promise(
+                resolve =>
+                setTimeout(resolve,1000)
             );
 
-        } finally {
-            setLoadingState(false);
+
+
+
+
+
+
+
+            /*
+            =====================================
+                FIND USER FROM users.js
+            =====================================
+            */
+
+
+            const user =
+            users.find(
+
+                account =>
+
+                account.username === username &&
+
+                account.password === password
+
+            );
+
+
+
+
+
+
+
+            if(!user){
+
+
+                throw new Error(
+                    "Invalid username or password."
+                );
+
+
+            }
+
+
+
+
+
+
+
+
+            /*
+            =====================================
+                SAVE LOGIN USER
+            =====================================
+            */
+
+
+            localStorage.setItem(
+
+                "currentUser",
+
+                JSON.stringify(user)
+
+            );
+
+
+
+
+
+
+
+            showStatus(
+
+            `Login successful. Welcome ${user.name}.`,
+
+            "success"
+
+            );
+
+
+
+
+
+
+
+            console.log(
+                "Logged user:",
+                user
+            );
+
+
+
+
+
+
+
+
+            /*
+            =====================================
+                ROLE REDIRECT
+            =====================================
+            */
+
+
+            setTimeout(()=>{
+
+
+
+                switch(user.role){
+
+
+
+                    case "ADMIN":
+
+
+                        window.location.href =
+                        "AdminDashboard.html";
+
+
+                        break;
+
+
+
+
+
+
+
+                    case "JMO":
+
+
+                        window.location.href =
+                        "JMODashboard.html";
+
+
+                        break;
+
+
+
+
+
+
+
+                    case "ASSISTANT_JMO":
+
+
+                        window.location.href =
+                        "AssistantJMODashboard.html";
+
+
+                        break;
+
+
+
+
+
+
+
+                    case "DOCTOR":
+
+
+                        window.location.href =
+                        "DoctorDashboard.html";
+
+
+                        break;
+
+
+
+
+
+
+
+                    case "LAB":
+
+
+                        window.location.href =
+                        "LabDashboard.html";
+
+
+                        break;
+
+
+
+
+
+
+
+                    case "CLERK":
+
+
+                        window.location.href =
+                        "ClerkDashboard.html";
+
+
+                        break;
+
+
+
+
+
+
+
+                    default:
+
+
+                        alert(
+                        "No dashboard assigned."
+                        );
+
+
+
+                }
+
+
+
+
+            },1000);
+
+
+
+
+
+
+
         }
+
+
+
+        catch(error){
+
+
+
+            showStatus(
+
+                error.message ||
+
+                "Login failed."
+
+            ,
+
+            "error"
+
+            );
+
+
+
+        }
+
+
+
+
+
+
+        finally{
+
+
+            setLoadingState(false);
+
+
+        }
+
+
+
+
 
     });
 
 
-    /* =============================
-       HELPER FUNCTIONS
-    ============================= */
 
-    function showInputError(input, errorElement, message) {
 
-        input.closest(".input-container")
-            .classList.add("invalid");
 
-        errorElement.textContent = message;
+
+
+
+
+
+
+
+
+    /*
+    =====================================
+        FUNCTIONS
+    =====================================
+    */
+
+
+
+    function showInputError(
+        input,
+        errorElement,
+        message
+    ){
+
+
+        input
+        .closest(".input-container")
+        .classList
+        .add("invalid");
+
+
+
+        errorElement.textContent =
+        message;
+
+
+
     }
 
-    function clearInputError(input, errorElement) {
 
-        input.closest(".input-container")
-            .classList.remove("invalid");
 
-        errorElement.textContent = "";
+
+
+
+
+    function clearInputError(
+        input,
+        errorElement
+    ){
+
+
+        input
+        .closest(".input-container")
+        .classList
+        .remove("invalid");
+
+
+
+        errorElement.textContent="";
+
+
     }
 
-    function clearAllErrors() {
-        clearInputError(usernameInput, usernameError);
-        clearInputError(passwordInput, passwordError);
+
+
+
+
+
+
+
+    function clearAllErrors(){
+
+
+        clearInputError(
+            usernameInput,
+            usernameError
+        );
+
+
+        clearInputError(
+            passwordInput,
+            passwordError
+        );
+
+
     }
 
-    function showStatus(message, type) {
 
-        formStatus.textContent = message;
-        formStatus.className = `form-status ${type}`;
+
+
+
+
+
+
+
+    function showStatus(
+        message,
+        type
+    ){
+
+
+        formStatus.textContent =
+        message;
+
+
+
+        formStatus.className =
+        `form-status ${type}`;
+
+
     }
 
-    function hideStatus() {
 
-        formStatus.textContent = "";
-        formStatus.className = "form-status";
+
+
+
+
+
+    function hideStatus(){
+
+
+        formStatus.textContent="";
+
+
+        formStatus.className =
+        "form-status";
+
+
     }
 
-    function setLoadingState(isLoading) {
 
-        loginButton.disabled = isLoading;
 
-        if (isLoading) {
 
-            loginButton.innerHTML = `
-                <span class="loading-spinner"></span>
-                <span>Logging in...</span>
+
+
+
+
+    function setLoadingState(
+        loading
+    ){
+
+
+
+        loginButton.disabled =
+        loading;
+
+
+
+
+        if(loading){
+
+
+
+            loginButton.innerHTML =
+            `
+            <span class="loading-spinner"></span>
+            <span>Logging in...</span>
             `;
 
-        } else {
 
-            loginButton.innerHTML = `
-                <i data-lucide="log-in"></i>
-                <span>Login</span>
+
+        }
+
+        else{
+
+
+            loginButton.innerHTML =
+            `
+            <i data-lucide="log-in"></i>
+            <span>Login</span>
             `;
+
+
 
             lucide.createIcons();
+
+
+
         }
+
+
+
+
     }
+
+
+
+
 
 });
