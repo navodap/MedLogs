@@ -19,13 +19,13 @@ localStorage.getItem("currentUser")
 
 
 
-if(!user){
+//if(!user){
 
-window.location.href="auth.html";
+//window.location.href="auth.html";
 
-return;
+//return;
 
-}
+//}
 
 
 
