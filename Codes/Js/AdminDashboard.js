@@ -5,35 +5,43 @@ lucide.createIcons();
 
 
 
-let users=[
-
-{
-id:1,
-name:"System Administrator",
-role:"ADMIN",
-status:"Active"
-},
+let users=[];
 
 
-{
-id:2,
-name:"Dr Silva",
-role:"JMO",
-status:"Active"
-},
+async function loadUsers(){
 
 
-{
-id:3,
-name:"Amal Perera",
-role:"Clerk",
-status:"Active"
+const response =
+await fetch(
+"http://127.0.0.1:5000/api/admin/users"
+);
+
+
+users =
+await response.json();
+
+
+
+displayUsers();
+
+
+
+document.getElementById(
+"totalUsers"
+).innerHTML =
+users.length;
+
+
+
+document.getElementById(
+"activeUsers"
+).innerHTML =
+users.filter(
+u=>u.status==="Active"
+).length;
+
+
 }
-
-
-
-];
-
 
 
 
@@ -60,7 +68,7 @@ date:"21/07/2026"
 
 
 
-displayUsers();
+loadUsers();
 
 displayLogs();
 

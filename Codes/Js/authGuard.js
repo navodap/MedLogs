@@ -5,15 +5,15 @@
 function protectPage(requiredRole){
 
 
-    const currentUser =
+    const user =
     JSON.parse(
-        localStorage.getItem("currentUser")
+        localStorage.getItem("user")
     );
 
 
     // Check if user is logged in
 
-    if(!currentUser){
+    if(!user){
 
         alert(
             "Please login first."
@@ -30,7 +30,7 @@ function protectPage(requiredRole){
 
     // Check role permission
 
-    if(currentUser.role !== requiredRole){
+    if(user.role.toUpperCase() !== requiredRole.toUpperCase()){
 
 
         alert(
@@ -63,7 +63,7 @@ function logout(){
 
 
     localStorage.removeItem(
-        "currentUser"
+        "user"
     );
 
 

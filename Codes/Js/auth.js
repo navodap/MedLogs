@@ -416,3 +416,87 @@ setTimeout(() => {
     }
 
 });
+
+document
+.getElementById("loginForm")
+.addEventListener(
+    "submit",
+    function(event){
+
+        event.preventDefault();
+
+        loginUser();
+
+    }
+);
+
+async function loginUser(){
+
+    const username =
+    document.getElementById("username").value;
+
+
+    const password =
+    document.getElementById("password").value;
+
+
+
+    const response =
+    await fetch(
+        "http://127.0.0.1:5000/api/login",
+        {
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+
+                username:username,
+
+                password:password
+
+            })
+
+        }
+    );
+
+
+    const result =
+    await response.json();
+
+
+
+    if(result.success){
+
+        localStorage.setItem(
+            "user",
+            JSON.stringify(result.user)
+        );
+
+
+        if(result.user.role==="Admin"){
+
+            window.location.href=
+            "AdminDashboard.html";
+
+        }
+
+        else if(result.user.role==="Consultant JMO"){
+
+            window.location.href=
+            "JMODashboard.html";
+
+        }
+
+
+    }
+
+    else{
+
+        alert(result.message);
+
+    }
+
+}
