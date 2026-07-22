@@ -103,6 +103,7 @@ function loadRecords() {
 }
 
 function renderStats() {
+  renderNotifications();
   const totalCases = records.length;
   const clinicalCases = records.filter(record => record.type === "clinical").length;
   const autopsyCases = records.filter(record => record.type === "autopsy").length;
@@ -189,6 +190,30 @@ function loadStorageArray(key) {
   }
 }
 
+function miniList(items, emptyMessage) {
+  return items.length
+    ? items.join("")
+    : `<div class="case-mini-item"><small>${emptyMessage}</small></div>`;
+}
+
+function linkedExaminations(caseId) {
+  return loadStorageArray(EXAM_STORAGE_KEY)
+    .filter(exam => exam.caseId === caseId)
+    .sort((a, b) => new Date(b.examDateTime || 0) - new Date(a.examDateTime || 0));
+}
+
+function latestExamination(caseId) {
+  return linkedExaminations(caseId)[0] || null;
+}
+
+function linkedEvidence(caseId) {
+  return loadStorageArray(EVIDENCE_STORAGE_KEY).filter(item => item.caseId === caseId);
+}
+
+function linkedReports(caseId) {
+  return loadStorageArray(REPORT_STORAGE_KEY).filter(item => item.caseId === caseId);
+}
+
 function readUrlParams() {
   const params = new URLSearchParams(window.location.search);
 
@@ -202,6 +227,94 @@ function readUrlParams() {
 function findPatient(patientId) {
   const patients = loadStorageArray(PATIENT_STORAGE_KEY);
   return patients.find(patient => patient.id === patientId) || null;
+}
+
+function searchPatients(query) {
+  const q = (query || "").toLowerCase().trim();
+  if (!q) return [];
+
+  const wantedStatus = currentRegistrationType === "autopsy" ? "deceased" : "living";
+
+  return loadStorageArray(PATIENT_STORAGE_KEY)
+    .filter(patient => patient.personStatus === wantedStatus)
+    .filter(patient =>
+      [patient.id, patient.fullName, patient.nicPassportNo, patient.hospitalNo, patient.bhtNo, patient.contactNo]
+        .join(" ")
+        .toLowerCase()
+        .includes(q)
+    );
+}
+
+function ensurePersonSearchResultsBox() {
+  let box = document.getElementById("personSearchResults");
+  if (box) return box;
+
+  const label = document.getElementById("personSearchLabel");
+  if (!label) return null;
+
+  label.style.position = "relative";
+
+  box = document.createElement("div");
+  box.id = "personSearchResults";
+  Object.assign(box.style, {
+    position: "absolute",
+    top: "100%",
+    left: "0",
+    right: "0",
+    zIndex: "50",
+    background: "#fff",
+    border: "1px solid #d0d7e2",
+    borderRadius: "8px",
+    boxShadow: "0 8px 20px rgba(15, 30, 60, 0.12)",
+    maxHeight: "260px",
+    overflowY: "auto",
+    marginTop: "4px"
+  });
+
+  label.appendChild(box);
+  return box;
+}
+
+function hidePersonSearchResults() {
+  const box = document.getElementById("personSearchResults");
+  if (box) box.style.display = "none";
+}
+
+function renderPersonSearchResults(matches) {
+  const box = ensurePersonSearchResultsBox();
+  if (!box) return;
+
+  const personLabel = currentRegistrationType === "autopsy" ? "deceased person" : "patient";
+
+  box.innerHTML = matches.length
+    ? matches.slice(0, 8).map(patient => `
+        <button type="button" data-person-result="${patient.id}"
+          style="display:block; width:100%; text-align:left; padding:9px 12px; border:none; border-bottom:1px solid #eef1f6; background:none; cursor:pointer; font:inherit;">
+          <strong>${patient.id}</strong> — ${patient.fullName || "Unnamed"}<br>
+          <small style="color:#667;">
+            ${patient.nicPassportNo ? "NIC: " + patient.nicPassportNo : "NIC not recorded"}
+            ${patient.age ? " • " + patient.age + " yrs" : ""}
+            ${patient.gender ? " • " + patient.gender : ""}
+          </small>
+        </button>
+      `).join("")
+    : `<div style="padding:10px 12px; color:#889; font-size:0.9em;">
+        No matching ${personLabel} found. Register the person in Patient Management first.
+      </div>`;
+
+  box.style.display = "block";
+}
+
+function selectPatientFromSearch(patientId) {
+  const patient = findPatient(patientId);
+  if (!patient) return;
+
+  applyPatientToCaseForm(patient);
+
+  const input = document.getElementById("personSearch");
+  if (input) input.value = `${patient.id}${patient.fullName ? " - " + patient.fullName : ""}`;
+
+  hidePersonSearchResults();
 }
 
 function confidentialityRank(level) {
@@ -320,15 +433,8 @@ function buildCaseDocuments(type) {
   const docs = [];
 
   if (type === "clinical") {
-   [
-  ["mlefDocumentUpload", "MLEF Document"],
-  ["clinicalPoliceRequestUpload", "Police Request / Letter"],
-  ["hospitalReferralUpload", "Hospital Referral Note"],
-  ["additionalClinicalCaseUpload", "Additional Clinical Case Document"]
-].forEach(([id, label]) => {
-  const doc = getUploadedFileInfo(id, label, "clinical");
-  if (doc) docs.push(doc);
-});
+    const doc = getUploadedFileInfo("mlefDocumentUpload", "MLEF Document", "clinical");
+    if (doc) docs.push(doc);
   }
 
   if (type === "autopsy") {
@@ -336,22 +442,12 @@ function buildCaseDocuments(type) {
       ["inquestOrderUpload", "Inquest Order"],
       ["courtOrderUpload", "Court Order"],
       ["deathReportUpload", "Death Report"],
-      ["autopsyPoliceRequestUpload", "Police Request"],
-      ["bodyReceivingCaseUpload", "Body Receiving Document"],
-      ["mortuaryDocumentUpload", "Mortuary / Body Tag Document"]
+      ["autopsyPoliceRequestUpload", "Police Request"]
     ].forEach(([id, label]) => {
       const doc = getUploadedFileInfo(id, label, "autopsy");
       if (doc) docs.push(doc);
     });
   }
-
-  const otherDoc = getUploadedFileInfo(
-    "otherCaseDocumentUpload",
-    value("otherCaseDocumentType") || "Other Case Document",
-    "all"
-  );
-
-  if (otherDoc) docs.push(otherDoc);
 
   return docs;
 }
@@ -585,6 +681,13 @@ function getFormData() {
   const isClinical = type === "clinical";
   const caseDocuments = buildCaseDocuments(type);
 
+  // When editing, keep previously uploaded documents if no new files were chosen
+  // (browsers cannot re-populate file inputs, so an empty input must not erase history)
+  const existingRecord = records.find(item => item.id === value("caseId"));
+  const mergedDocuments = caseDocuments.length
+    ? caseDocuments
+    : (existingRecord?.caseDocuments || []);
+
   return {
     id: value("caseId") || generateCaseId(type),
     type,
@@ -680,7 +783,7 @@ function getFormData() {
       ? [...expectedReportsDraft]
       : defaultExpectedReports(type),
 
-    caseDocuments,
+    caseDocuments: mergedDocuments,
     updatedAt: localDateTimeValue()
   };
 }
@@ -728,6 +831,13 @@ function resetForm() {
 function saveCase(event) {
   event.preventDefault();
   const record = getFormData();
+
+  // A full save always promotes a draft to a registered case
+  if (record.status === "Draft") {
+    record.status = "Registered";
+    setValue("caseStatus", "Registered");
+  }
+
   const missing = validateRecord(record);
   if (missing.length) {
     const listElement = document.getElementById("validationMissingList");
@@ -1082,24 +1192,27 @@ function goToExaminationFromCase() {
   window.location.href = `ExaminationForms.html?caseId=${encodeURIComponent(selectedCaseId)}`;
 }
 
-function goToEvidenceFromCase() {
+function goToLabRequestFromCase() {
   if (!selectedCaseId) {
     alert("Please select a case first.");
     return;
   }
 
-  const exam = latestExamination(selectedCaseId);
-
-  if (!exam) {
-    const continueAnyway = confirm("No examination found for this case yet. Evidence is usually registered after examination. Open Evidence & Samples anyway?");
-    if (!continueAnyway) return;
-
-    window.location.href = `EvidenceSamples.html?caseId=${encodeURIComponent(selectedCaseId)}`;
+  const record = records.find(item => item.id === selectedCaseId);
+  if (!record) {
+    alert("The selected case could not be found.");
     return;
   }
 
-  window.location.href =
-    `EvidenceSamples.html?caseId=${encodeURIComponent(selectedCaseId)}&examId=${encodeURIComponent(exam.id)}`;
+  const params = new URLSearchParams({
+    caseId: record.id,
+    caseType: record.type === "autopsy" ? "Postmortem" : "Clinical",
+    personName: record.patientName || "",
+    patientId: record.patientId || "",
+    ref: record.mlefNo || record.pmRegistryNo || ""
+  });
+
+  window.location.href = `LabTest_Toxicology.html?${params.toString()}`;
 }
 
 function goToReportFromCase() {
@@ -1166,21 +1279,49 @@ function bindEvents() {
 
 document.getElementById("confidentiality")?.addEventListener("change", enforceConfidentialityFloor);
 
-document.getElementById("btnAddExpectedReport")?.addEventListener("click", addExpectedReportFromInputs);
-
-document.getElementById("expectedReportsTableBody")?.addEventListener("click", event => {
-  const button = event.target.closest("[data-remove-expected-report]");
-  if (!button) return;
-
-  expectedReportsDraft.splice(Number(button.dataset.removeExpectedReport), 1);
-  renderExpectedReportsTable();
-});
-
   document.getElementById("registeredBy")?.addEventListener("change", applyRolePermissions);
 
   //dom.previewBtn.addEventListener("click", previewFromForm);
   dom.caseSearch.addEventListener("input", renderCaseTable);
   dom.statusFilter.addEventListener("change", renderCaseTable);
+
+  const personSearchInput = document.getElementById("personSearch");
+  const personSearchLabel = document.getElementById("personSearchLabel");
+
+  if (personSearchInput) {
+    personSearchInput.addEventListener("input", () => {
+      const query = personSearchInput.value;
+      if (!query.trim()) {
+        hidePersonSearchResults();
+        return;
+      }
+      renderPersonSearchResults(searchPatients(query));
+    });
+
+    personSearchInput.addEventListener("keydown", event => {
+      if (event.key !== "Enter") return;
+      event.preventDefault(); // stop the form from submitting (validation popup)
+
+      const matches = searchPatients(personSearchInput.value);
+      if (matches.length === 1) {
+        selectPatientFromSearch(matches[0].id);
+      } else {
+        renderPersonSearchResults(matches);
+      }
+    });
+  }
+
+  if (personSearchLabel) {
+    personSearchLabel.addEventListener("click", event => {
+      const resultBtn = event.target.closest("[data-person-result]");
+      if (resultBtn) selectPatientFromSearch(resultBtn.dataset.personResult);
+    });
+  }
+
+  document.addEventListener("click", event => {
+    if (!event.target.closest("#personSearchLabel")) hidePersonSearchResults();
+  });
+
   //dom.quickSearch.addEventListener("input", quickSearchPreview);
   
   dom.caseTableBody.addEventListener("click", event => {
@@ -1259,6 +1400,25 @@ document.getElementById("expectedReportsTableBody")?.addEventListener("click", e
   activateTab("details");
 });
 
+document.getElementById("btnAddExpectedReport")?.addEventListener("click", addExpectedReportFromInputs);
+
+document.getElementById("btnAttachDocuments")?.addEventListener("click", () => {
+  const caseId = value("caseId");
+  if (!caseId) {
+    alert("A Case ID has not been generated yet.");
+    return;
+  }
+  window.location.href = `DocumentsAndReports.html?caseId=${encodeURIComponent(caseId)}`;
+});
+
+document.getElementById("expectedReportsTableBody")?.addEventListener("click", event => {
+  const button = event.target.closest("[data-remove-expected-report]");
+  if (!button) return;
+
+  expectedReportsDraft.splice(Number(button.dataset.removeExpectedReport), 1);
+  renderExpectedReportsTable();
+});
+
 document.getElementById("btnGenerateMlrLater")?.addEventListener("click", () => {
   alert("Report tracking flag marked: Not Started.");
   resetForm();
@@ -1285,7 +1445,7 @@ document.getElementById("btnGenerateMlrLater")?.addEventListener("click", () => 
     });
   }
 document.getElementById("btnStartExaminationFromCase")?.addEventListener("click", goToExaminationFromCase);
-document.getElementById("btnOpenEvidenceFromCase")?.addEventListener("click", goToEvidenceFromCase);
+document.getElementById("btnAddLabRequestFromCase")?.addEventListener("click", goToLabRequestFromCase);
 document.getElementById("btnGenerateReportFromCase")?.addEventListener("click", goToReportFromCase);
 } // This cleanly closes the bindEvents function structure
 
@@ -1294,13 +1454,134 @@ function populateFormForEditing(caseId) {
   if (!record) return;
 
   isEditMode = true;
-  
-  // 1. Change layout titles to Edit Mode
+
+  // Switch tab and case type first — this resets IDs, sections and expected reports,
+  // so all record values must be written AFTER these calls.
+  activateTab("registration");
+  activateCaseType("registration", record.type);
+  setCategoryOptions(record.type);
+
+  // Basic case info
+  setValue("caseId", record.id);
+  setValue("caseTypeDisplay", record.type === "clinical" ? "Clinical" : "Autopsy");
+  setValue("caseStatus", record.status);
+  setValue("registeredDateTime", record.registeredDateTime);
+  setValue("registeredBy", record.registeredBy);
+  setValue("casePriority", record.casePriority);
+
+  // Patient / victim details (read-only, restored for display)
+  setValue("patientId", record.patientId);
+  setValue("personStatus", record.personStatus);
+  setValue("identificationStatus", record.identificationStatus);
+  setValue("patientName", record.patientName);
+  setValue("patientNic", record.patientNic);
+  setValue("patientDob", record.patientDob);
+  setValue("patientAge", record.patientAge);
+  setValue("patientGender", record.patientGender);
+  setValue("patientContact", record.patientContact);
+  setValue("patientBht", record.patientBht);
+  setValue("patientAddress", record.patientAddress);
+  setValue("personSearch", record.patientId ? `${record.patientId}${record.patientName ? " - " + record.patientName : ""}` : "");
+  setValue("caseConsentStatus", record.consentStatus);
+  setValue("caseConsentFormAvailability", record.consentFormAvailability);
+  setValue("caseConsentGivenBy", record.consentGivenBy);
+  setValue("minor", record.minor ? "Yes" : "No");
+  setValue("sexualAssault", record.sexualAssault ? "Yes" : "No");
+
+  // Category + confidentiality
+  setValue(record.type === "clinical" ? "caseCategory" : "autopsyCategory", record.category);
+  confidentialityFloor = "Normal";
+  setValue("confidentiality", record.confidentiality || "Normal");
+
+  // Clinical referral / MLEF details
+  setValue("mlefNo", record.mlefNo);
+  setValue("mlefFormNo", record.mlefFormNo);
+  setValue("mlefDate", record.mlefDate);
+  setValue("mlefReceivedDateTime", record.mlefReceivedDateTime);
+  setValue("mlefIssuedBy", record.mlefIssuedBy);
+  setValue("clinicalReason", record.clinicalReason);
+  setValue("briefAllegation", record.briefAllegation);
+  setValue("clinicalSubCategory", record.clinicalSubCategory);
+  setValue("incidentDateTime", record.incidentDateTime);
+  setValue("placeOfIncident", record.placeOfIncident);
+  setValue("natureOfHarm", record.natureOfHarm);
+  setValue("natureOfWeapon", record.natureOfWeapon);
+  setValue("hurtCategory", record.hurtCategory);
+  setValue("patientHistory", record.patientHistory);
+
+  // Autopsy details
+  setValue("dateOfDeath", record.dateOfDeath);
+  setValue("dateTimeFound", record.dateTimeFound);
+  setValue("deathLocation", record.deathLocation);
+  setValue("placeOfDeath", record.placeOfDeath);
+  setValue("mannerOfDeath", record.mannerOfDeath);
+  setValue("orderType", record.orderType);
+  setValue("inquestNo", record.inquestNo);
+  setValue("courtOrderNo", record.courtOrderNo);
+  setValue("deathReportNo", record.deathReportNo);
+  setValue("orderDate", record.orderDate);
+  setValue("orderedBy", record.orderedBy);
+  setValue("dateOfInquest", record.dateOfInquest);
+  setValue("pmRegistryNo", record.pmRegistryNo);
+  setValue("bodyTagNumber", record.bodyTagNumber);
+  setValue("bodyReceivedDateTime", record.bodyReceivedDateTime);
+  setValue("bodyReceivedFrom", record.bodyReceivedFrom);
+  setValue("placeOfPM", record.placeOfPM);
+  setValue("bodyCondition", record.bodyCondition);
+  setValue("causeSummary", record.causeSummary);
+
+  // Police details (field ids differ between clinical and autopsy sections)
+  if (record.type === "clinical") {
+    setValue("policeStation", record.policeStation);
+    setValue("policeRef", record.policeRef);
+    setValue("policeOfficer", record.policeOfficer);
+    setValue("policeOfficerContact", record.policeOfficerContact);
+  } else {
+    setValue("autopsyPoliceStation", record.policeStation);
+    setValue("autopsyPoliceRef", record.policeRef);
+    setValue("autopsyPoliceOfficer", record.policeOfficer);
+    setValue("autopsyPoliceContact", record.policeOfficerContact);
+  }
+  setValue("policeDivision", record.policeDivision);
+  setValue("policeOfficerRank", record.policeOfficerRank);
+  setValue("policeOfficerRegNo", record.policeOfficerRegNo);
+
+  // Examination & doctors
+  setValue("examDateTime", record.examDateTime);
+  setValue("examLocation", record.examLocation);
+  setValue("primaryDoctor", record.primaryDoctor);
+  setValue("supervisingConsultant", record.supervisingConsultant);
+  setValue("femaleDoctorRequired", record.femaleDoctorRequired);
+  setValue("assignedDate", record.assignedDate);
+
+  // Investigation checkboxes
+  setValue("reqXray", record.reqXray);
+  setValue("reqCt", record.reqCt);
+  setValue("reqBlood", record.reqBlood);
+  setValue("reqUrine", record.reqUrine);
+  setValue("reqSwabs", record.reqSwabs);
+  setValue("reqDna", record.reqDna);
+  setValue("reqPhotos", record.reqPhotos);
+  setValue("chainOfCustodyRequired", record.chainOfCustodyRequired);
+
+  // Court details
+  setValue("courtName", record.courtName);
+  setValue("courtRef", record.courtRef);
+  setValue("trialDate", record.trialDate);
+
+  // Expected reports (activateCaseType reset these to defaults, so restore saved list)
+  expectedReportsDraft = record.expectedReports ? [...record.expectedReports] : defaultExpectedReports(record.type);
+  renderExpectedReportsTable();
+
+  // Re-apply sensitivity rules and role locks with restored values
+  applySensitivityRules();
+  applyRolePermissions();
+
+  // Edit mode titles
   if (dom.formHeader) dom.formHeader.textContent = `Update Medico-Legal Case: ${record.id}`;
   if (dom.submitBtn) dom.submitBtn.textContent = "Update Case Records";
 
-  // Switch tabs cleanly
-  activateTab("registration");
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function init() {
@@ -1320,3 +1601,282 @@ function init() {
 }
 
 init();
+
+/* ===================== NOTIFICATIONS ===================== */
+
+function buildNotificationItems() {
+  const today = dateValue();
+  const items = [];
+
+  records.forEach(record => {
+    if (record.status === "Draft") {
+      items.push({
+        caseId: record.id,
+        icon: "\u{1F4DD}",
+        tone: "warn",
+        title: `Draft case ${record.id} is incomplete`,
+        meta: "Resume registration to submit this case"
+      });
+    }
+
+    (record.expectedReports || []).forEach(report => {
+      if (report.status !== "Expected" || !report.dueDate) return;
+      if (report.dueDate < today) {
+        items.push({
+          caseId: record.id,
+          icon: "\u26A0\uFE0F",
+          tone: "danger",
+          title: `${display(report.reportType)} overdue for ${record.id}`,
+          meta: `Was due ${formatDate(report.dueDate)}`
+        });
+      } else if (report.dueDate === today) {
+        items.push({
+          caseId: record.id,
+          icon: "\u23F0",
+          tone: "warn",
+          title: `${display(report.reportType)} due today for ${record.id}`,
+          meta: `Due ${formatDate(report.dueDate)}`
+        });
+      }
+    });
+
+    if (record.status !== "Closed") {
+      const labPending = linkedEvidence(record.id)
+        .filter(item => item.labRequired === "Yes" && item.sampleStatus !== "Result Received").length;
+      if (labPending) {
+        items.push({
+          caseId: record.id,
+          icon: "\u{1F9EA}",
+          tone: "info",
+          title: `${labPending} lab result${labPending === 1 ? "" : "s"} pending for ${record.id}`,
+          meta: "Awaiting laboratory results"
+        });
+      }
+    }
+
+    if (
+      record.casePriority && record.casePriority !== "Normal" &&
+      !["Closed", "Report Submitted"].includes(record.status)
+    ) {
+      items.push({
+        caseId: record.id,
+        icon: "\u{1F512}",
+        tone: "danger",
+        title: `${record.casePriority}: ${record.id} still open`,
+        meta: `Status: ${display(record.status)}`
+      });
+    }
+  });
+
+  return items;
+}
+
+function renderNotifications() {
+  const badge = document.getElementById("notifyCount");
+  const list = document.getElementById("notifyList");
+  const headCount = document.getElementById("notifyHeadCount");
+  if (!badge || !list) return;
+
+  const items = buildNotificationItems();
+
+  badge.textContent = items.length > 9 ? "9+" : items.length;
+  badge.hidden = items.length === 0;
+  if (headCount) headCount.textContent = items.length ? `${items.length} new` : "";
+
+  list.innerHTML = items.length
+    ? items.map(item => `
+        <button type="button" class="notify-item ${item.tone}" data-notify-case="${item.caseId}">
+          <span class="notify-item-icon">${item.icon}</span>
+          <span class="notify-item-text"><strong>${item.title}</strong><small>${item.meta}</small></span>
+        </button>`).join("")
+    : `<div class="notify-empty">You're all caught up.</div>`;
+}
+
+function bindNotificationEvents() {
+  const btn = document.getElementById("notifyBtn");
+  const dropdown = document.getElementById("notifyDropdown");
+  if (!btn || !dropdown) return;
+
+  btn.addEventListener("click", event => {
+    event.stopPropagation();
+    renderNotifications();
+    const willOpen = dropdown.hidden;
+    dropdown.hidden = !willOpen;
+    btn.setAttribute("aria-expanded", String(willOpen));
+  });
+
+  document.addEventListener("click", event => {
+    if (!event.target.closest(".notify-wrap")) {
+      dropdown.hidden = true;
+      btn.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  dropdown.addEventListener("click", event => {
+    const item = event.target.closest("[data-notify-case]");
+    if (!item) return;
+    dropdown.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+
+    const record = records.find(entry => entry.id === item.dataset.notifyCase);
+    if (!record) return;
+    selectedCaseId = record.id;
+    activateTab("details");
+    renderPreview();
+    renderLinkedRecords();
+    populateFullCaseDetails(selectedCaseId);
+  });
+}
+
+bindNotificationEvents();
+renderNotifications();
+
+/* ===================== GLOBAL SEARCH (TOPBAR) ===================== */
+
+function globalSearchMatches(query) {
+  const q = query.toLowerCase().trim();
+  if (!q) return [];
+
+  const results = [];
+  const seen = new Set();
+
+  const pushResult = (caseId, icon, label, sub) => {
+    const key = `${icon}:${caseId}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    results.push({ caseId, icon, label, sub });
+  };
+
+  // 1. Cases (IDs, references, doctors, status...)
+  records.forEach(record => {
+    const haystack = [
+      record.id, record.patientId, record.patientName, record.category,
+      record.status, record.primaryDoctor, record.mlefNo, record.mlrSerial,
+      record.pmRegistryNo, record.inquestNo, record.courtOrderNo,
+      record.policeStation, record.policeRef, record.courtName, record.courtRef
+    ].join(" ").toLowerCase();
+    if (haystack.includes(q)) {
+      pushResult(record.id, "\u25A3",
+        `${record.id} \u2014 ${display(record.patientName)}`,
+        `${record.type === "autopsy" ? "Autopsy" : "Clinical"} \u2022 ${display(record.status)}`);
+    }
+  });
+
+  // 2. Patients (resolved to their cases)
+  loadStorageArray(PATIENT_STORAGE_KEY).forEach(patient => {
+    const haystack = [
+      patient.id, patient.fullName, patient.nicPassportNo,
+      patient.hospitalNo, patient.bhtNo, patient.contactNo
+    ].join(" ").toLowerCase();
+    if (!haystack.includes(q)) return;
+    records
+      .filter(record => record.patientId === patient.id)
+      .forEach(record => pushResult(record.id, "\u263A",
+        `${display(patient.fullName)} (${patient.id})`,
+        `Patient \u2022 Case ${record.id}`));
+  });
+
+  // 3. Reports (resolved to their cases)
+  loadStorageArray(REPORT_STORAGE_KEY).forEach(report => {
+    const haystack = [
+      report.id, report.reportNo, report.reportType,
+      report.reportStatus, report.caseId
+    ].join(" ").toLowerCase();
+    if (!haystack.includes(q)) return;
+    if (records.some(record => record.id === report.caseId)) {
+      pushResult(report.caseId, "\u2637",
+        `${display(report.reportType)} \u2014 ${display(report.reportNo || report.id)}`,
+        `Report \u2022 Case ${report.caseId}`);
+    }
+  });
+
+  return results.slice(0, 8);
+}
+
+function renderGlobalSearchResults(items) {
+  const panel = document.getElementById("globalSearchResults");
+  if (!panel) return;
+
+  if (!items.length) {
+    panel.innerHTML = `<div class="global-search-empty">No matches found</div>`;
+    panel.hidden = false;
+    return;
+  }
+
+  panel.innerHTML = items.map(item => `
+    <button type="button" class="global-search-item" data-global-result="${item.caseId}">
+      <span class="global-search-item-icon">${item.icon}</span>
+      <span class="global-search-item-text">
+        <strong>${item.label}</strong>
+        <small>${item.sub}</small>
+      </span>
+    </button>`).join("");
+  panel.hidden = false;
+}
+
+function hideGlobalSearchResults() {
+  const panel = document.getElementById("globalSearchResults");
+  if (panel) panel.hidden = true;
+}
+
+function openCaseFromGlobalSearch(caseId) {
+  const record = records.find(entry => entry.id === caseId);
+  if (!record) return;
+  hideGlobalSearchResults();
+  const input = document.getElementById("globalSearch");
+  if (input) input.value = "";
+  selectedCaseId = record.id;
+  activateTab("details");
+  renderPreview();
+  renderLinkedRecords();
+  populateFullCaseDetails(selectedCaseId);
+}
+
+function bindGlobalSearchEvents() {
+  const input = document.getElementById("globalSearch");
+  const label = document.getElementById("globalSearchLabel");
+  const panel = document.getElementById("globalSearchResults");
+  if (!input || !panel) return;
+
+  input.addEventListener("input", () => {
+    const query = input.value;
+    if (!query.trim()) {
+      hideGlobalSearchResults();
+      return;
+    }
+    renderGlobalSearchResults(globalSearchMatches(query));
+  });
+
+  input.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      input.value = "";
+      hideGlobalSearchResults();
+      input.blur();
+      return;
+    }
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    const matches = globalSearchMatches(input.value);
+    if (matches.length) openCaseFromGlobalSearch(matches[0].caseId);
+  });
+
+  panel.addEventListener("click", event => {
+    const item = event.target.closest("[data-global-result]");
+    if (item) openCaseFromGlobalSearch(item.dataset.globalResult);
+  });
+
+  document.addEventListener("click", event => {
+    if (!event.target.closest("#globalSearchLabel")) hideGlobalSearchResults();
+  });
+
+  // Ctrl + K (or Cmd + K) focuses the search box
+  document.addEventListener("keydown", event => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+      event.preventDefault();
+      input.focus();
+      input.select();
+    }
+  });
+}
+
+bindGlobalSearchEvents();
