@@ -34,40 +34,54 @@
                     <span>Dashboard</span>
                 </a>
 
-                <a href="PatientManagement.html" class="nav-item">
+                <a href="PatientManagement.html"
+                    class="nav-item"
+                    data-roles="ADMIN,JMO,ASSISTANT_JMO,DOCTOR,CLERK">
+                    
                     <i data-lucide="users"></i>
-                    <span>Patient Management</span>
+                    
+                    Patient Management
+                    
                 </a>
 
-                <a href="CaseManagement.html" class="nav-item">
-                    <i data-lucide="folder-open"></i>
-                    <span>My Cases</span>
+               <a href="CaseManagement.html"
+                class="nav-item"
+                data-roles="JMO,ASSISTANT_JMO,DOCTOR">
+                
+                <i data-lucide="folder-open"></i>
+                
+                My Cases
+                
                 </a>
 
-                <a href="ExaminationForms.html" class="nav-item">
-                    <i data-lucide="clipboard-list"></i>
-                    <span>Examination Forms</span>
-                </a>
-
-                <a href="EvidenceSamples.html" class="nav-item">
-                    <i data-lucide="dna"></i>
-                    <span>Evidence &amp; Samples</span>
-                </a>
-
-                <a href="ReportGeneration.html" class="nav-item">
-                    <i data-lucide="file-check"></i>
-                    <span>Reports</span>
-                </a>
-
-                <a href="Documents&Reports.html" class="nav-item">
-                    <i data-lucide="file-text"></i>
-                    <span>Documents</span>
-                </a>
-
-                <a href="#" class="nav-item" id="dashboardSearchBtn">
-                    <i data-lucide="search"></i>
-                    <span>Search</span>
-                </a>
+              <a href="ExaminationForms.html"
+                class="nav-item"
+                data-roles="JMO,ASSISTANT_JMO,DOCTOR">
+                
+                <i data-lucide="clipboard-list"></i>
+                
+                Examination Forms
+                
+              </a>
+               <a href="EvidenceSamples.html"
+                class="nav-item"
+                data-roles="JMO,DOCTOR,LAB">
+                
+                <i data-lucide="dna"></i>
+                
+                Evidence & Samples
+                
+              </a>
+               <a href="Documents & Reports.html"
+               class="nav-item"
+               data-roles="ADMIN,JMO,ASSISTANT_JMO,DOCTOR,LAB,CLERK">
+                    
+               <i data-lucide="file-text"></i>
+                    
+              Documents & Reports
+                    
+               </a>                 
+                                
             </nav>
 
             <div class="security-card">
