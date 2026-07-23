@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from database import get_connection
 from routes.auth import auth
 from routes.admin import admin
+from routes.police_court import police_court
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -12,6 +13,10 @@ app.register_blueprint(
 )
 app.register_blueprint(
     admin,
+    url_prefix="/api"
+)
+app.register_blueprint(
+    police_court,
     url_prefix="/api"
 )
 
